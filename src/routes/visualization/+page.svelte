@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { q_learning } from '$lib/q_learning.js';
     import * as d3 from "d3";
+    import QTableArrows from '$lib/QTableArrows.svelte';
 
     let world_width = 5;
     let world_height = 5;
@@ -52,8 +53,6 @@
         for (let i = 0; i <= success_rates_data.length; i += tickInterval) {
             xTicks.push(i);
         }
-
-        console.log(xTicks);
 
         svg.append("g")
             .attr("transform", `translate(0,${height - margin.bottom})`)
@@ -108,6 +107,7 @@
     // Derived state for current Q-values (for display)
     $: currentQTable = q_tables_data[currentEpisode]?.[`${currentAgentPosition[0]},${currentAgentPosition[1]}`] || {};
 
+    $: currentQTableForArrows = q_tables_data[currentEpisode]?.[currentStep];
 
     function nextStep() {
         if (!agent_positions_data[currentEpisode]) return;
@@ -224,6 +224,19 @@
         {/each}
     </div>
 
+    {#if currentQTableForArrows}
+        <QTableArrows
+            qTable={currentQTableForArrows}
+            world_width={world_width}
+            world_height={world_height}
+            start={start}
+            goal={goal}
+            holes={holes}
+        />
+    {:else}
+        <p>Carregando visualização da Q-table...</p>
+    {/if}
+
     <div class="info-panel">
         <h2>Current Q-Values for Agent's Cell ({currentAgentPosition[0]}, {currentAgentPosition[1]}):</h2>
         <ul>
@@ -274,25 +287,25 @@
     .cell {
         width: 50px;
         height: 50px;
-        border: 5px solid #000;
+        border: 5px solid #3318e9;
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: bold;
-        background-color: #f9f9f9;
+        background-color: #000000;
         position: relative;
     }
 
     .cell.start {
-        background-color: #d4edda; /* Light green */
+        background-color: #000033; /* Light green */
     }
 
     .cell.goal {
-        background-color: #d1ecf1; /* Light blue */
+        background-color: #b782ff; /* Light blue */
     }
 
     .cell.hole {
-        background-color: #f8d7da; /* Light red */
+        background-color: #003366; /* Light red */
     }
 
     .cell.agent {

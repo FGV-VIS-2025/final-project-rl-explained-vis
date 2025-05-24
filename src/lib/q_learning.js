@@ -97,7 +97,7 @@ export function q_learning({
         let [r, c] = start;
         agent_positions.push([r, c]);
 
-        q_tables.push(Q);
+        q_tables.push(JSON.parse(JSON.stringify(Q)));
 
         let reachedGoal = false;
 
@@ -117,7 +117,7 @@ export function q_learning({
 
             // Salva os dados
             agent_positions.push([nr, nc]);
-            q_tables.push(Q);
+            q_tables.push(JSON.parse(JSON.stringify(Q)));
 
             // Se for a meta, ganhou
             if (grid[nr][nc] === 'G') {
