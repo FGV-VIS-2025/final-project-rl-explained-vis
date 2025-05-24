@@ -1,17 +1,28 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount } from 'svelte';
+    import { q_learning } from '$lib/q_learning.js';
     import * as d3 from "d3";
-    import { q_learning } from "$lib/q_learning";
 
-    // Exemplo de uso (ver nomes dos parâmetros na função)
-    var data = q_learning({ epsilon_decay: 0 });
-    var data_success_rates = data.success_rates;
+    let world_width = 5;
+    let world_height = 5;
+    let start = [0, 0];
+    let goal = [4, 4];
+    let holes = [[1, 2], [2, 3], [3, 1], [4, 0], [0, 2], [4, 3]];
+
+    let agent_positions_data = [];
+    let q_tables_data = [];
+    let success_rates_data = [];
+
+    let currentEpisode = 0;
+    let currentStep = 0;
+
+    let playing = false;
+    let intervalId;
+    let playSpeed = 200; // milliseconds
 
     let svgContainer;
 
-    onMount(() => {
-        const width = 1200;
-        const height = 400;
+    function get_accuracy(svgContainer ,width, height, success_rates_data){
         const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 
         const svg = d3
@@ -21,7 +32,7 @@
 
         const x = d3
             .scaleLinear()
-            .domain([0, data_success_rates.length - 1])
+            .domain([0, success_rates_data.length - 1])
             .range([margin.left, width - margin.right]);
 
         const y = d3
@@ -38,7 +49,7 @@
         const tickInterval = 100;
         const xTicks = [];
 
-        for (let i = 0; i <= data_success_rates.length; i += tickInterval) {
+        for (let i = 0; i <= success_rates_data.length; i += tickInterval) {
             xTicks.push(i);
         }
 
@@ -49,7 +60,7 @@
             .call(d3.axisBottom(x).tickValues(xTicks));
 
         svg.append("path")
-            .datum(data_success_rates)
+            .datum(success_rates_data)
             .attr("fill", "none")
             .attr("stroke", "blue")
             .attr("stroke-width", 2)
@@ -58,7 +69,255 @@
         svg.append("g")
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y));
+    }
+    // Function to initialize or re-run Q-learning
+    function initializeQLearning() {
+        const { agent_positions, q_tables, success_rates } = q_learning({
+            world_width,
+            world_height,
+            start,
+            goal,
+            holes
+        });
+        agent_positions_data = agent_positions;
+        q_tables_data = q_tables;
+        success_rates_data = success_rates;
+        currentEpisode = 0;
+        currentStep = 0;
+        stopAnimation();
+    }
+
+    onMount(() => {
+        initializeQLearning();
+        get_accuracy(svgContainer,1000, 300, success_rates_data)
     });
+
+    // Derived state for current agent position
+    $: currentAgentPosition = agent_positions_data[currentEpisode]?.[currentStep] || start;
+
+    // Derived state for current grid
+    $: currentGrid = Array.from({ length: world_height }, (_, r) =>
+        Array.from({ length: world_width }, (_, c) => {
+            if (r === start[0] && c === start[1]) return 'S';
+            if (r === goal[0] && c === goal[1]) return 'G';
+            if (holes.some(h => h[0] === r && h[1] === c)) return 'H';
+            return ' ';
+        })
+    );
+
+    // Derived state for current Q-values (for display)
+    $: currentQTable = q_tables_data[currentEpisode]?.[`${currentAgentPosition[0]},${currentAgentPosition[1]}`] || {};
+
+
+    function nextStep() {
+        if (!agent_positions_data[currentEpisode]) return;
+
+        if (currentStep < agent_positions_data[currentEpisode].length - 1) {
+            currentStep++;
+        } else if (currentEpisode < agent_positions_data.length - 1) {
+            currentEpisode++;
+            currentStep = 0;
+        } else {
+            stopAnimation();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+        } else if (currentEpisode > 0) {
+            currentEpisode--;
+            currentStep = (agent_positions_data[currentEpisode]?.length || 1) - 1;
+        }
+    }
+
+    function togglePlay() {
+        if (playing) {
+            stopAnimation();
+        } else {
+            startAnimation();
+        }
+    }
+
+    function startAnimation() {
+        playing = true;
+        intervalId = setInterval(nextStep, playSpeed);
+    }
+
+    function stopAnimation() {
+        playing = false;
+        clearInterval(intervalId);
+    }
+
+    function goToEpisode(e) {
+        const episodeNum = parseInt(e.target.value, 10);
+        if (!isNaN(episodeNum) && episodeNum >= 0 && episodeNum < agent_positions_data.length) {
+            currentEpisode = episodeNum;
+            currentStep = 0; // Reset step when changing episode
+        }
+    }
+
+    function goToStep(e) {
+        const stepNum = parseInt(e.target.value, 10);
+        if (!isNaN(stepNum) && stepNum >= 0 && stepNum < (agent_positions_data[currentEpisode]?.length || 0)) {
+            currentStep = stepNum;
+        }
+    }
+
 </script>
 
-<svg bind:this={svgContainer}></svg>
+<svelte:head>
+	<title>Q-Learning Visualization</title>
+</svelte:head>
+
+<div class="container">
+    <h1>Q-Learning Visualization</h1>
+
+    <div class="controls">
+        <label for="episodeSlider">Episode: {currentEpisode + 1}/{agent_positions_data.length}</label>
+        <input
+            type="range"
+            id="episodeSlider"
+            min="0"
+            max={agent_positions_data.length > 0 ? agent_positions_data.length - 1 : 0}
+            bind:value={currentEpisode}
+            on:input={goToEpisode}
+            disabled={agent_positions_data.length === 0}
+        />
+
+        <label for="stepSlider">Step: {currentStep + 1}/{agent_positions_data[currentEpisode]?.length || 0}</label>
+        <input
+            type="range"
+            id="stepSlider"
+            min="0"
+            max={agent_positions_data[currentEpisode]?.length ? agent_positions_data[currentEpisode].length - 1 : 0}
+            bind:value={currentStep}
+            on:input={goToStep}
+            disabled={!agent_positions_data[currentEpisode]}
+        />
+
+        <div class="playback-buttons">
+            <button on:click={prevStep}>Previous Step</button>
+            <button on:click={togglePlay}>{playing ? 'Pause' : 'Play'}</button>
+            <button on:click={nextStep}>Next Step</button>
+        </div>
+
+        <label for="playSpeed">Play Speed (ms):</label>
+        <input type="number" id="playSpeed" bind:value={playSpeed} min="50" max="1000" step="50" />
+
+        <button on:click={initializeQLearning}>Rerun Q-Learning</button>
+    </div>
+
+    <div class="grid-container" style="--grid-width: {world_width}; --grid-height: {world_height};">
+        {#each currentGrid as row, r (r)}
+            {#each row as cell, c (c)}
+                <div
+                    class="cell"
+                    class:start={r === start[0] && c === start[1]}
+                    class:goal={r === goal[0] && c === goal[1]}
+                    class:hole={holes.some(h => h[0] === r && h[1] === c)}
+                    class:agent={r === currentAgentPosition[0] && c === currentAgentPosition[1]}
+                >
+                    {cell}
+                </div>
+            {/each}
+        {/each}
+    </div>
+
+    <div class="info-panel">
+        <h2>Current Q-Values for Agent's Cell ({currentAgentPosition[0]}, {currentAgentPosition[1]}):</h2>
+        <ul>
+            {#each Object.entries(currentQTable) as [action, value]}
+                <li>{action}: {value.toFixed(2)}</li>
+            {/each}
+        </ul>
+
+        <h2>Success Rate (Last 100 Episodes):</h2>
+        <p>{success_rates_data[currentEpisode]}%</p>
+    </div>
+
+    <svg bind:this={svgContainer}></svg>
+</div>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .controls {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .playback-buttons button {
+        margin: 0 5px;
+        padding: 8px 15px;
+        cursor: pointer;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(var(--grid-width), 50px);
+        grid-template-rows: repeat(var(--grid-height), 50px);
+        /* border: 1px solid #ccc; */
+        margin-top: 20px;
+    }
+
+    .cell {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        background-color: #f9f9f9;
+        position: relative;
+    }
+
+    .cell.start {
+        background-color: #d4edda; /* Light green */
+    }
+
+    .cell.goal {
+        background-color: #d1ecf1; /* Light blue */
+    }
+
+    .cell.hole {
+        background-color: #f8d7da; /* Light red */
+    }
+
+    .cell.agent {
+        background-color: #ffeeba; /* Light yellow */
+        border: 2px solid #ffc107;
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    .info-panel {
+        margin-top: 30px;
+        padding: 20px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+        color: #000;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .info-panel ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .info-panel li {
+        margin-bottom: 5px;
+    }
+</style>
