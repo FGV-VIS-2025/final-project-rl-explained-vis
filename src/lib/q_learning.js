@@ -6,7 +6,7 @@ export function q_learning({
     gamma = 0.9,
     epsilon = 0.1,
     epsilon_decay = 0.003,
-    num_episodes = 1000,
+    num_episodes = 10000,
     max_steps = 9 ,
     step_punishment = -1,
     hole_punishment = -100,
