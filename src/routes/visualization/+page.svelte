@@ -20,7 +20,7 @@
 
     let playing = false;
     let intervalId;
-    let playSpeed = 200; // milliseconds
+    let playSpeed = 2; // milliseconds
 
     let svgContainer;
 
@@ -54,7 +54,7 @@
         svg.selectAll("*").remove();
             const totalEpisodes = q_tables_data.length;
     
-        for (let i = 0; i < totalEpisodes; i += tickInterval) {
+        for (let i = 0; i <= totalEpisodes; i += tickInterval) {
             xTicks.push(i);
         }
 
@@ -76,7 +76,30 @@
         svg.append("g")
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y));
+
+        if (success_rates_data.length > 0) {
+            const lastDataPoint = success_rates_data[success_rates_data.length - 1];
+            const lastEpisodeIndex = success_rates_data.length - 1;
+
+            svg.append("circle")
+                .attr("cx", x(lastEpisodeIndex))
+                .attr("cy", y(lastDataPoint))
+                .attr("r", 5)
+                .attr("fill", "blue")
+                .attr("stroke", "white")
+                .attr("stroke-width", 1.5);
+
+            svg.append("line")
+                .attr("x1", x(lastEpisodeIndex))
+                .attr("y1", margin.top)
+                .attr("x2", x(lastEpisodeIndex))
+                .attr("y2", height - margin.bottom)
+                .attr("stroke", "blue")
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.2);
+        }
     }
+
     // Function to initialize or re-run Q-learning
     function initializeQLearning() {
         const { agent_positions, q_tables, success_rates } = q_learning({
@@ -263,7 +286,7 @@
         <p>Carregando visualização da Q-table...</p>
     {/if}
 
-    <div class="info-panel">
+    <!-- <div class="info-panel">
         <h2>Current Q-Values for Agent's Cell ({currentAgentPosition[0]}, {currentAgentPosition[1]}):</h2>
         <ul>
             {#each Object.entries(currentQTable) as [action, value]}
@@ -273,7 +296,7 @@
 
         <h2>Success Rate (Last 100 Episodes):</h2>
         <p>{success_rates_data[currentEpisode]}%</p>
-    </div>
+    </div> -->
 
     <svg bind:this={svgContainer}></svg>
 </div>
