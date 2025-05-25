@@ -3,6 +3,7 @@
     import { q_learning } from '$lib/q_learning.js';
     import * as d3 from "d3";
     import QTableArrows from '$lib/QTableArrows.svelte';
+    import QTableValues from '$lib/QTableValues.svelte';
 
     let world_width = 5;
     let world_height = 5;
@@ -226,6 +227,20 @@
 
     {#if currentQTableForArrows}
         <QTableArrows
+            qTable={currentQTableForArrows}
+            world_width={world_width}
+            world_height={world_height}
+            start={start}
+            goal={goal}
+            holes={holes}
+        />
+    {:else}
+        <p>Carregando visualização da Q-table...</p>
+    {/if}
+
+    {#if currentQTableForArrows}
+        <QTableValues
+            allQTables={q_tables_data}
             qTable={currentQTableForArrows}
             world_width={world_width}
             world_height={world_height}

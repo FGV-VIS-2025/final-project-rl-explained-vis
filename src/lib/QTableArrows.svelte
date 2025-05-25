@@ -6,25 +6,6 @@
     export let goal;
     export let holes;
 
-    // Função para determinar a melhor ação (seta) para uma dada célula
-    function getBestAction(row, col) {
-        console.log("Teste");
-        const stateKey = `${row},${col}`;
-        const actions = qTable[stateKey];
-        if (!actions) return ''; // Caso a célula não esteja na Q-table (pode acontecer com estados terminais)
-
-        let bestAction = '';
-        let maxValue = -Infinity;
-
-        for (const action in actions) {
-            if (actions[action] > maxValue) {
-                maxValue = actions[action];
-                bestAction = action;
-            }
-        }
-        return bestAction;
-    }
-
     // Mapeamento de ações para caracteres de seta ou ícones (você pode usar ícones SVG reais ou unicode)
     const arrowMap = {
         'up': '↑',
@@ -144,11 +125,5 @@
 
     .q-grid-cell.hole {
         background-color: #003366;
-    }
-
-    .q-grid-cell.agent-policy {
-        background-color: #ffeeba;
-        border: 2px solid #ffc107; /* Mantenha essa borda para o agente, se desejar um destaque diferente */
-        box-sizing: border-box;
     }
 </style>
