@@ -34,7 +34,7 @@
 
         const x = d3
             .scaleLinear()
-            .domain([0, success_rates_data.length - 1])
+            .domain([0, q_tables_data.length > 0 ? q_tables_data.length - 1 : 0])
             .range([margin.left, width - margin.right]);
 
         const y = d3
@@ -51,8 +51,15 @@
         const tickInterval = 100;
         const xTicks = [];
 
-        for (let i = 0; i <= success_rates_data.length; i += tickInterval) {
+        svg.selectAll("*").remove();
+            const totalEpisodes = q_tables_data.length;
+    
+        for (let i = 0; i < totalEpisodes; i += tickInterval) {
             xTicks.push(i);
+        }
+
+        if (totalEpisodes > 0 && xTicks[xTicks.length - 1] < totalEpisodes - 1) {
+            xTicks.push(totalEpisodes - 1);
         }
 
         svg.append("g")
@@ -91,6 +98,10 @@
         initializeQLearning();
         get_accuracy(svgContainer,1000, 300, success_rates_data)
     });
+
+    $: if (svgContainer && success_rates_data.length > 0) {
+        get_accuracy(svgContainer, 1000, 300, success_rates_data.slice(0, currentEpisode + 1));
+    }
 
     // Derived state for current agent position
     $: currentAgentPosition = agent_positions_data[currentEpisode]?.[currentStep] || start;
