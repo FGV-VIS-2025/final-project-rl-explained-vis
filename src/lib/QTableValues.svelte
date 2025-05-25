@@ -117,7 +117,7 @@
 </script>
 
 <div class="q-grid-wrapper">
-    <h2>Política Aprendida (Q-Table)</h2>
+    <h3>Q-values</h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}
@@ -155,8 +155,8 @@
     }
 
     .q-grid-cell {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-right: 5px solid #3318e9;
         border-bottom: 5px solid #3318e9;
         display: flex;
