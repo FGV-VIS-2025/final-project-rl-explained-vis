@@ -8,6 +8,7 @@
     import AccuracyChart from '$lib/AccuracyChart.svelte';
     import ChangeParams from '$lib/ChangeParams.svelte';
     import ChangeGrid from '$lib/ChangeGrid.svelte';
+    import InfoTooltip from '$lib/InfoTooltip.svelte';
 
     //Grid Params
     let world_width = 5;

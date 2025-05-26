@@ -6,6 +6,8 @@
     export let holes;
     export let currentAgentPosition;
 
+    import InfoTooltip from "./InfoTooltip.svelte";
+
     // Função para determinar o tipo da célula
     function getCellType(row, col) {
         if (row === start[0] && col === start[1]) return 'start';
@@ -25,7 +27,16 @@
 </script>
 
 <div class="q-grid-wrapper">
-    <h3>Environment</h3>
+    <h3>
+        Environment
+        <InfoTooltip>
+            <div slot = "tooltipContent">
+                The grid-based reinforcement learning<br>
+                environment where an agent navigates<br>
+                from a start to a goal, avoiding holes.
+            </div>
+        </InfoTooltip>
+    </h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}
