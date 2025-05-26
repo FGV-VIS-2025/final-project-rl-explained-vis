@@ -13,6 +13,25 @@
     // For grid size selection
     let tempWorldWidth = world_width;
     let tempWorldHeight = world_height;
+    const MIN_DIMENSION = 2;
+    const MAX_DIMENSION = 10;
+     $: {
+        if (tempWorldWidth < MIN_DIMENSION) {
+            tempWorldWidth = MIN_DIMENSION;
+        }
+        if (tempWorldWidth > MAX_DIMENSION) {
+            tempWorldWidth = MAX_DIMENSION;
+        }
+    }
+
+    $: {
+        if (tempWorldHeight < MIN_DIMENSION) {
+            tempWorldHeight = MIN_DIMENSION;
+        }
+        if (tempWorldHeight > MAX_DIMENSION) {
+            tempWorldHeight = MAX_DIMENSION;
+        }
+    }
 
     // Start and Goal are now derived from grid dimensions
     $: tempStart = [0, 0];
@@ -39,7 +58,7 @@
     }
 
     function isHole(r, c) {
-        return tempHoles.some(hole => hole[0] === r && hole[1] === c);
+        return tempHoles.some(hole => hole[0] === r && hole[1] === c) && !isGoal(r,c) && !isStart(r,c);
     }
 
     // BFS algorithm to check if a path exists
@@ -130,6 +149,7 @@
             errorMessage = "Impossible path! Remove some holes to ensure a path from Start to Goal exists.";
             return;
         }
+        
 
         // Update stores with new values
         world_width = tempWorldWidth;
@@ -176,10 +196,10 @@
 <div class="overlay">
     <div class="change-container">
         <div class="header-section">
+            
             <h2>Configuração do Mundo</h2>
             <button class="close-button" on:click={unShowParamSetter} aria-label="Fechar configurações">X</button>
 
-            <p class="info-message">Defina o tamanho do grid, e clique nas células para adicionar/remover buracos. O Ponto de Início (S) é sempre no canto superior esquerdo e o Ponto de Fim (G) é sempre no canto inferior direito.</p>
         </div>
 
         {#if errorMessage}
@@ -230,14 +250,14 @@
                     {/key}
                 </div>
 
-              
+                <div class="action-buttons">
+                    <button class = "button-reset" on:click={resetConfiguration}>Reiniciar</button>
+                    <button class = "button-apply" on:click={applyConfiguration}>Aplicar Configurações</button>
+                </div>
             </div>
         </div>
 
-        <div class="action-buttons">
-            <button on:click={resetConfiguration} class="reset-button">Reiniciar</button>
-            <button on:click={applyConfiguration}>Aplicar Configurações</button>
-        </div>
+      
     </div>
 </div>
 
@@ -262,31 +282,45 @@
         flex-direction: column;
         align-items: center;
         padding: 20px;
-        background-color: #f0f0f0;
+        background-color: #000000;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         font-family: sans-serif;
         width: 80vw;
-        max-width: 900px;
-        height: 70vh; /* Adjust height to give more space */
+        max-width: 1000px;
+        height: 80vh; /* Adjust height to give more space */
         max-height: 800px;
         overflow-y: auto;
         box-sizing: border-box;
     }
 
-    .header-section {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+.header-section {
+  display: flex; /* Transforma a div em um container flex */
+  align-items: center; /* Alinha os itens verticalmente ao centro */
+  width: 100%;
+  font-size: 0.8em;
+  /* Remove o justify-content: space-between; */
+}
 
-    h2 {
-        font-size: 1.8em;
-        color: #333;
-        margin-bottom: 10px;
-    }
+.header-section h2 {
+  flex-grow: 1; /* Permite que o h2 ocupe o espaço disponível */
+  text-align: center; /* Centraliza o texto dentro do h2 */
+  margin: 0;
+}
+
+.close-button {
+  border: none;
+  background-color: #000000;
+  color: white;
+  margin-left: auto; /* ESSENCIAL: Empurra este item para a direita */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+
 
     .info-message {
-        color: #3f51b5;
+        color: white;
         margin-top: 10px;
         font-size: 0.9em;
     }
@@ -301,8 +335,8 @@
     .controls-and-grid {
         display: flex;
         flex-direction: row; /* Arrange inputs and grid side-by-side */
-        gap: 30px; /* Space between them */
-        width: 100%;
+        gap: 10%; /* Space between them */
+        width: 80%;
         justify-content: center;
         flex-grow: 1; /* Allow this section to take available space */
     }
@@ -310,16 +344,16 @@
     .grid-size-inputs {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         gap: 10px;
         align-items: flex-start;
         padding: 10px;
         border-radius: 5px;
-        background-color: #e8e8e8;
     }
 
     .grid-size-inputs label {
         font-weight: bold;
-        color: #555;
+        color: #ccc;
     }
 
     .grid-size-inputs input {
@@ -332,8 +366,8 @@
 
     .grid-display-area {
         display: flex;
-        flex-direction: column;
-        align-items: center; /* Center the grid and values */
+        justify-content: center;
+        align-items: center; 
         flex-grow: 1;
         gap: 15px;
     }
@@ -350,8 +384,8 @@
     }
 
     .grid-cell {
-        width: 10px; /* Cell size */
-        height: 10px;
+        width: 30px; /* Cell size */
+        height: 30px;
         border: 1px solid #eee;
         display: flex;
         justify-content: center;
@@ -400,14 +434,15 @@
     }
 
 
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 25px;
+    margin-left: 10%;
+}
 
-    .action-buttons {
-        display: flex;
-        gap: 15px;
-        margin-top: 25px;
-    }
-
-    button {
+    /* button {
         padding: 10px 25px;
         border: none;
         border-radius: 5px;
@@ -425,7 +460,7 @@
     button:disabled {
         background-color: #cccccc;
         cursor: not-allowed;
-    }
+    } */
 
     .reset-button {
         background-color: #ff9800;

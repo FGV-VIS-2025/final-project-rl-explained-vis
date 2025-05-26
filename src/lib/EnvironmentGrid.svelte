@@ -24,6 +24,7 @@
         if (type === 'hole') return 'H';
         return '';
     }
+    $: goal = goal
 </script>
 
 <div class="q-grid-wrapper">
@@ -59,8 +60,8 @@
 
     .q-grid {
         display: grid;
-        border-top: 5px solid #3318e9;
-        border-left: 5px solid #3318e9;
+        border-top: 3px solid #3318e9;
+        border-left: 3px solid #3318e9;
         width: fit-content;
         margin: 0 auto;
     }
@@ -68,8 +69,8 @@
     .q-grid-cell {
         width: 35px;
         height: 35px;
-        border-right: 5px solid #3318e9;
-        border-bottom: 5px solid #3318e9;
+        border-right: 3px solid #3318e9;
+        border-bottom: 3px solid #3318e9;
         display: flex;
         justify-content: center;
         align-items: center;

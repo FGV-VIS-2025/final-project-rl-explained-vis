@@ -74,6 +74,8 @@
         tempNumEpisodes = num_episodes;
         tempMaxSteps = max_steps;
     }
+
+    $: console.log(alpha, gamma)
 </script>
 
 <div class="change-params-container">
@@ -87,76 +89,87 @@
 
     <div class="param-grid">
         <div class="param-group">
-            <label for="alpha">Alpha (Taxa de Aprendizagem):</label>
-            <input
-                type="range"
-                id="alpha"
-                bind:value={tempAlpha}
-                min="0"
-                max="1"
-                step="0.001"
-            />
-        </div>
+    <label for="alpha">Alpha (Taxa de Aprendizagem):</label>
+    <div class="slider-wrapper"> <span class="slider-value" style="--value: {tempAlpha};">{tempAlpha.toFixed(3)}</span> <input
+            type="range"
+            id="alpha"
+            bind:value={tempAlpha}
+            min="0"
+            max="1"
+            step="0.001"
+        />
+    </div>
+</div>
 
-        <div class="param-group">
-            <label for="gamma">Gamma (Fator de Desconto):</label>
-            <input
-                type="range"
-                id="gamma"
-                bind:value={tempGamma}
-                min="0"
-                max="1"
-                step="0.001"
-            />
-        </div>
+<div class="param-group">
+    <label for="gamma">Gamma (Fator de Desconto):</label>
+    <div class="slider-wrapper">
+        <span class="slider-value" style="--value: {tempGamma};">{tempGamma.toFixed(3)}</span> <input
+            type="range"
+            id="gamma"
+            bind:value={tempGamma}
+            min="0"
+            max="1"
+            step="0.001"
+        />
+    </div>
+</div>
 
-        <div class="param-group">
-            <label for="epsilon">Epsilon (Exploração):</label>
-            <input
-                type="range"
-                id="epsilon"
-                bind:value={tempEpsilon}
-                min="0"
-                max="1"
-                step="0.001"
-            />
-        </div>
+<div class="param-group">
+    <label for="epsilon">Epsilon (Exploração):</label>
+    <div class="slider-wrapper">
+        <span class="slider-value" style="--value: {tempEpsilon};">{tempEpsilon.toFixed(3)}</span> <input
+            type="range"
+            id="epsilon"
+            bind:value={tempEpsilon}
+            min="0"
+            max="1"
+            step="0.001"
+        />
+    </div>
+</div>
 
-        <div class="param-group">
-            <label for="epsilon_decay">Epsilon Decay:</label>
-            <input
-                type="range"
-                id="epsilon_decay"
-                bind:value={tempEpsilonDecay}
-                min="0"
-                max="0.01"
-                step="0.0001"
-            />
-        </div>
+<div class="param-group">
+    <label for="epsilon_decay">Epsilon Decay:</label>
+    <div class="slider-wrapper">
+        <span class="slider-value" style="--value: {tempEpsilonDecay};">{tempEpsilonDecay.toFixed(4)}</span> <input
+            type="range"
+            id="epsilon_decay"
+            bind:value={tempEpsilonDecay}
+            min="0"
+            max="0.01"
+            step="0.0001"
+        />
+    </div>
+</div>
 
-        <div class="param-group">
-            <label for="num_episodes">Número de Episódios:</label>
-            <input
-                type="range"
-                id="num_episodes"
-                bind:value={tempNumEpisodes}
-                min="100"
-                max="5000"
-                step="100"
-            />
-        </div>
+<div class="param-group">
+    <label for="num_episodes">Número de Episódios:</label>
+    <div class="slider-wrapper">
+        <span class="slider-value" style="--value: {tempNumEpisodes};">{tempNumEpisodes}</span> <input
+            type="range"
+            id="num_episodes"
+            bind:value={tempNumEpisodes}
+            min="100"
+            max="5000"
+            step="100"
+        />
+    </div>
+</div>
 
-        <div class="param-group">
-            <label for="max_steps">Máximo de Passos por Episódio:</label>
-            <input
-                type="range"
-                id="max_steps"
-                bind:value={tempMaxSteps}
-                min="1"
-                max="100"
-                step="1"
-            />
-        </div>
+<div class="param-group">
+    <label for="max_steps">Máximo de Passos por Episódio:</label>
+    <div class="slider-wrapper">
+        <span class="slider-value" style="--value: {tempMaxSteps};">{tempMaxSteps}</span> <input
+            type="range"
+            id="max_steps"
+            bind:value={tempMaxSteps}
+            min="1"
+            max="100"
+            step="1"
+        />
+    </div>
+</div>
     </div>
 
     <div class="action-buttons">
@@ -222,6 +235,7 @@
 
 
     .param-group {
+        font-size: 0.7em;
         display: flex;
         flex-direction: column;
         gap: 5px;
@@ -238,14 +252,7 @@
         margin-bottom: 5px; /* Space between label and input */
     }
 
-    /* Display current value next to label or in a span if preferred */
-    .param-group label::after {
-        content: " " attr(for) ": " /* Adds the 'for' attribute as content, e.g., 'Alpha: ' */
-            counter(param-value); /* You'd need a counter for actual value display */
-        font-weight: normal;
-        margin-left: 5px;
-        color: #c0c0c0;
-    }
+
 
     /* Override the default number input styling to match the dark theme */
 
