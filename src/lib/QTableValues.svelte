@@ -155,8 +155,8 @@
     }
 
     .q-grid-cell {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         border-right: 5px solid #3318e9;
         border-bottom: 5px solid #3318e9;
         display: flex;

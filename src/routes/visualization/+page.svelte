@@ -32,7 +32,10 @@
 
     let playing = false;
     let intervalId;
-    let playSpeed = 2; // milliseconds
+
+    const speeds = [500, 100, 20, 1];
+    let currentSpeedIndex = 0;
+    let playSpeed = speeds[currentSpeedIndex];
 
     let svgContainer;
 
@@ -100,6 +103,7 @@
 
     function startAnimation() {
         playing = true;
+        clearInterval(intervalId);
         intervalId = setInterval(nextStep, playSpeed);
     }
 
@@ -122,13 +126,25 @@
             currentStep = stepNum;
         }
     }
+
+    // Função para alternar a velocidade de reprodução
+    function togglePlaySpeed() {
+        currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+        playSpeed = speeds[currentSpeedIndex];
+        // Se estiver tocando, reinicia a animação com a nova velocidade
+        if (playing) {
+            startAnimation();
+        }
+    }
+
+    // Texto dinâmico para o botão de velocidade
+    $: playSpeedText = currentSpeedIndex === 0 ? 'Slow' : currentSpeedIndex === 1 ? 'Mid' : currentSpeedIndex === 2 ? 'Fast' : "Catchau";
+
     $: showconfig = false;
     function showParamSetter(){
         console.log(showconfig)
         showconfig = true;
     }
-
-
 </script>
 
 <svelte:head>
@@ -187,7 +203,7 @@
             <AccuracyChart
                 success_rates_data={success_rates_data}
                 currentEpisode={currentEpisode}
-                width={750}
+                width={650}
                 height={250}
             />
         </div>
@@ -218,36 +234,27 @@
                 bind:max_steps={max_steps}
             />
             
-            <label for="episodeSlider">Episode: {currentEpisode + 1}/{agent_positions_data.length}</label>
-            <input
-                type="range"
-                id="episodeSlider"
-                min="0"
-                max={agent_positions_data.length > 0 ? agent_positions_data.length - 1 : 0}
-                bind:value={currentEpisode}
-                on:input={goToEpisode}
-                disabled={agent_positions_data.length === 0}
-            />
-
-            <label for="stepSlider">Step: {currentStep + 1}/{agent_positions_data[currentEpisode]?.length || 0}</label>
-            <input
-                type="range"
-                id="stepSlider"
-                min="0"
-                max={agent_positions_data[currentEpisode]?.length ? agent_positions_data[currentEpisode].length - 1 : 0}
-                bind:value={currentStep}
-                on:input={goToStep}
-                disabled={!agent_positions_data[currentEpisode]}
-            />
+            <div class="episode-and-speed-controls">
+                <button on:click={togglePlaySpeed}>{playSpeedText}</button>
+                <div class="episode-info">
+                    <label for="episodeSlider">Episode: {currentEpisode + 1}/{agent_positions_data.length}</label>
+                    <input
+                        type="range"
+                        id="episodeSlider"
+                        min="0"
+                        max={agent_positions_data.length > 0 ? agent_positions_data.length - 1 : 0}
+                        bind:value={currentEpisode}
+                        on:input={goToEpisode}
+                        disabled={agent_positions_data.length === 0}
+                    />
+                </div>
+            </div>
 
             <div class="playback-buttons">
                 <button on:click={prevStep}>Previous Step</button>
                 <button on:click={togglePlay}>{playing ? 'Pause' : 'Play'}</button>
                 <button on:click={nextStep}>Next Step</button>
             </div>
-
-            <label for="playSpeed">Play Speed (ms):</label>
-            <input type="number" id="playSpeed" bind:value={playSpeed} min="50" max="1000" step="50" />
 
             <button on:click={initializeQLearning}>Rerun Q-Learning</button>
         </div>
@@ -308,6 +315,56 @@
         width: 100%;
     }
 
+    .episode-and-speed-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: nowrap;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .episode-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-grow: 1;
+    }
+
+    .episode-info label {
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: 170px;
+        text-align: center;
+    }
+
+    .episode-info input[type="range"] {
+        flex-grow: 1;
+        /* max-width: 150px; */
+        min-width: 100px;
+        margin-top: 0;
+        flex-shrink: 1;
+    }
+
+    .episode-and-speed-controls button {
+        padding: 8px 15px;
+        cursor: pointer;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: 80px;
+        min-height: 35px;
+        text-align: center;
+    }
+
+    .episode-and-speed-controls button:hover {
+        background-color: #218838;
+    }
+
     .playback-buttons {
         display: flex;
         justify-content: center;
@@ -348,7 +405,7 @@
         margin-top: -6px;
     }
 
-    input[type="number"] {
+    /* input[type="number"] {
         width: 100%;
         padding: 8px;
         border: 1px solid #333;
@@ -356,7 +413,7 @@
         color: white;
         border-radius: 4px;
         margin-top: 5px;
-    }
+    } */
 
     label {
         margin-top: 10px;
