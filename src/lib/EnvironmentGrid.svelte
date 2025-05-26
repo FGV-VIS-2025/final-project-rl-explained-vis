@@ -28,13 +28,12 @@
 </script>
 
 <div class="q-grid-wrapper">
-    <h3>
-        Environment
+    <h3>Environment
         <InfoTooltip>
             <div slot = "tooltipContent">
-                The grid-based reinforcement learning<br>
-                environment where an agent navigates<br>
-                from a start to a goal, avoiding holes.
+                This grid represents the environment,<br>
+                showing the agent's current position,<br>
+                the start, the goal, and any dangerous holes.
             </div>
         </InfoTooltip>
     </h3>

@@ -7,6 +7,8 @@
     export let width = 1000;
     export let height = 300;
 
+    import InfoTooltip from './InfoTooltip.svelte';
+
     let svgContainer;
 
     // Função reativa para desenhar/atualizar o gráfico
@@ -40,7 +42,7 @@
             .x((d, i) => x(i))
             .y((d) => y(d));
 
-        const tickInterval = 100;
+        const tickInterval = Math.round(success_rates_data.length / 100) * 10;
         const xTicks = [];
         const totalEpisodes = success_rates_data.length;
     
@@ -92,7 +94,15 @@
 </script>
 
 <div class="chart-wrapper">
-    <h3>Success Rate Over Episodes</h3>
+    <h3>Success Rate Over Episodes
+        <InfoTooltip>
+            <div slot = "tooltipContent">
+                This chart tracks the agent's success rate,<br>
+                showing the percentage of the last 100 episodes<br>
+                where it successfully reached the goal.
+            </div>
+        </InfoTooltip>
+    </h3>
     <svg bind:this={svgContainer}></svg>
 </div>
 

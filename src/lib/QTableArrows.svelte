@@ -6,6 +6,8 @@
     export let goal;
     export let holes;
 
+    import InfoTooltip from "./InfoTooltip.svelte";
+
     // Mapeamento de ações para caracteres de seta ou ícones (você pode usar ícones SVG reais ou unicode)
     const arrowMap = {
         'up': '↑',
@@ -68,7 +70,15 @@
 </script>
 
 <div class="q-grid-wrapper">
-    <h3>Policy</h3>
+    <h3>Policy
+        <InfoTooltip>
+            <div slot = "tooltipContent">
+                This grid visualizes the agent's<br>
+                current optimal policy: the best action<br>
+                to take from each cell to reach the goal.
+            </div>
+        </InfoTooltip>
+    </h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}

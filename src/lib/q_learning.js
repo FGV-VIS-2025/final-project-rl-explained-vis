@@ -86,6 +86,7 @@ export function q_learning({
 
     // Tamanho da janela de cálculo da média móvel de sucessos
     const window_size = 100;
+    console.log(window_size);
 
     // Para cada episódio...
     for (let episode = 1; episode <= num_episodes; episode++) {

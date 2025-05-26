@@ -7,6 +7,8 @@
     export let goal;
     export let holes;
 
+    import InfoTooltip from "./InfoTooltip.svelte";
+
     // Função para encontrar o valor absoluto máximo entre todas as Q-tables
     function getGlobalMaxAbsoluteQValue(allQTables) {
         let maxAbsVal = 0;
@@ -118,7 +120,16 @@
 </script>
 
 <div class="q-grid-wrapper">
-    <h3>Q-values</h3>
+    <h3>Q-values
+        <InfoTooltip>
+            <div slot = "tooltipContent">
+                This grid displays the current maximum Q-value<br>
+                for each cell, representing the estimated<br>
+                long-term reward an agent can expect by<br>
+                following the optimal policy from that state.
+            </div>
+        </InfoTooltip>
+    </h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}
