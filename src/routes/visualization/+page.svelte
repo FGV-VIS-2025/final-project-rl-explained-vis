@@ -6,12 +6,22 @@
     import QTableValues from '$lib/QTableValues.svelte';
     import EnvironmentGrid from '$lib/EnvironmentGrid.svelte';
     import AccuracyChart from '$lib/AccuracyChart.svelte';
+    import ChangeParams from '$lib/ChangeParams.svelte';
+    import ChangeGrid from '$lib/ChangeGrid.svelte';
 
+    //Grid Params
     let world_width = 5;
     let world_height = 5;
     let start = [0, 0];
     let goal = [4, 4];
     let holes = [[1, 2], [2, 3], [3, 1], [4, 0], [0, 2], [4, 3]];
+
+    let alpha = 0.1;
+    let gamma = 0.9;
+    let epsilon = 0.1;
+    let epsilon_decay = 0.003;
+    let num_episodes = 1000;
+    let max_steps = 9;
 
     let agent_positions_data = [];
     let q_tables_data = [];
@@ -28,12 +38,18 @@
 
     // Function to initialize or re-run Q-learning
     function initializeQLearning() {
-        const { agent_positions, q_tables, success_rates } = q_learning({
+            const { agent_positions, q_tables, success_rates } = q_learning({
             world_width,
             world_height,
             start,
             goal,
-            holes
+            holes,
+            alpha,
+            gamma,
+            epsilon,
+            epsilon_decay,     
+            num_episodes,
+            max_steps
         });
         agent_positions_data = agent_positions;
         q_tables_data = q_tables;
@@ -106,17 +122,45 @@
             currentStep = stepNum;
         }
     }
+    $: showconfig = false;
+    function showParamSetter(){
+        console.log(showconfig)
+        showconfig = true;
+    }
+
 
 </script>
 
 <svelte:head>
 	<title>Q-Learning Visualization</title>
 </svelte:head>
-
+<button class="btn-change" on:click={showParamSetter}>
+    alterar param
+</button>
+{#if showconfig}
+    <ChangeGrid on:configUpdated={initializeQLearning} 
+        bind:showconfig={showconfig}        
+        bind:world_width={world_width}
+        bind:world_height={world_height}
+        bind:hole_positions={holes}
+        bind:start_position={start}
+        bind:goal_position={goal} />
+{/if}
 <div class="container">
     <h1>Q-Learning Visualization</h1>
 
     <div class="controls">
+          <div class="overlay">
+            <ChangeParams
+                on:paramsUpdated={initializeQLearning}
+                bind:alpha={alpha}
+                bind:gamma={gamma}
+                bind:epsilon={epsilon}
+                bind:epsilon_decay={epsilon_decay}
+                bind:num_episodes={num_episodes}
+                bind:max_steps={max_steps}
+            />
+        </div>
         <label for="episodeSlider">Episode: {currentEpisode + 1}/{agent_positions_data.length}</label>
         <input
             type="range"
