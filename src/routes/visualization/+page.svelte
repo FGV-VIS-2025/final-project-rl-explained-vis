@@ -57,7 +57,7 @@
         agent_positions_data = agent_positions;
         q_tables_data = q_tables;
         success_rates_data = success_rates;
-        currentEpisode = 0;
+        currentEpisode = success_rates_data.length -1;
         currentStep = 0;
         stopAnimation();
     }
