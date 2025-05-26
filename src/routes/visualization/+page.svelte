@@ -251,12 +251,11 @@
             </div>
 
             <div class="playback-buttons">
+                <button on:click={initializeQLearning}>Reset</button>
                 <button on:click={prevStep}>Previous Step</button>
                 <button on:click={togglePlay}>{playing ? 'Pause' : 'Play'}</button>
                 <button on:click={nextStep}>Next Step</button>
             </div>
-
-            <button on:click={initializeQLearning}>Rerun Q-Learning</button>
         </div>
     </div>
 </div>
@@ -340,10 +339,38 @@
 
     .episode-info input[type="range"] {
         flex-grow: 1;
-        /* max-width: 150px; */
         min-width: 100px;
         margin-top: 0;
         flex-shrink: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        background: #333;
+        border-radius: 5px;
+        outline: none;
+        transition: background 0.2s ease-in-out;
+    }
+
+    .episode-info input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #00bcd4;
+        cursor: grab;
+        margin-top: 0px;
+        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .episode-info input[type="range"]::-webkit-slider-thumb:hover {
+        background-color: #008c9e;
+    }
+
+    .episode-info input[type="range"]::-webkit-slider-thumb:active {
+        cursor: grabbing;
+        background-color: #007bff;
     }
 
     .episode-and-speed-controls button {
@@ -386,14 +413,14 @@
         background-color: #0056b3;
     }
 
-    input[type="range"] {
+    /* input[type="range"] {
         width: 100%;
         margin-top: 5px;
         background: #333;
         height: 8px;
         border-radius: 5px;
         outline: none;
-    }
+    } */
 
     input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
