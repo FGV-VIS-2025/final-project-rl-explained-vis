@@ -116,7 +116,7 @@
         if (holes.some(hole => hole[0] === row && hole[1] === col)) return 'hole';
         return '';
     }
-    $: goal = goal
+
 </script>
 
 <div class="q-grid-wrapper">
@@ -131,6 +131,7 @@
         </InfoTooltip>
     </h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
+        {#key world_width + world_height + JSON.stringify(holes) + JSON.stringify(start) + JSON.stringify(goal)}
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}
                 <div
@@ -144,21 +145,21 @@
                     {:else if getCellType(r,c) === 'start'}
                         S
                     {:else}
-                        {bestQValuesGrid[r][c].toFixed(1)}
+                        <!-- {bestQValuesGrid[r][c].toFixed(1)} -->
                     {/if}
                 </div>
             {/each}
         {/each}
+        {/key}
     </div>
 </div>
 
 <style>
     :root {
-        --color-border: #3318e9;
+        --color-border: #9f96d8;
         --size-border: 3px
     }
     .q-grid-wrapper {
-        margin-top: 30px;
         text-align: center;
     }
 

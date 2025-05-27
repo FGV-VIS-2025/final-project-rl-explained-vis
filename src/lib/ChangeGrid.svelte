@@ -156,7 +156,7 @@
         world_height = tempWorldHeight;
         start_position = tempStart;
         goal_position = tempGoal;
-        hole_positions = tempHoles;
+        hole_positions = [...tempHoles];
 
         // Dispatch an event so the parent component knows the configuration has been updated
         dispatch('configUpdated');
