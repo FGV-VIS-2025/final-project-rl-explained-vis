@@ -173,8 +173,8 @@
                         type="range"
                         id="num_episodes"
                         bind:value={tempNumEpisodes}
-                        min="100"
-                        max="5000"
+                        min="1000"
+                        max="3500"
                         step="100"
                     />
                 </div>

@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from "svelte";
 
     export let world_width;
     export let world_height;
@@ -15,7 +15,7 @@
     let tempWorldHeight = world_height;
     const MIN_DIMENSION = 2;
     const MAX_DIMENSION = 10;
-     $: {
+    $: {
         if (tempWorldWidth < MIN_DIMENSION) {
             tempWorldWidth = MIN_DIMENSION;
         }
@@ -44,7 +44,7 @@
     let hoveredCell = null; // [r, c] of the cell under the mouse
 
     // Error or feedback messages
-    let errorMessage = '';
+    let errorMessage = "";
 
     // === Utility Functions ===
 
@@ -58,7 +58,11 @@
     }
 
     function isHole(r, c) {
-        return tempHoles.some(hole => hole[0] === r && hole[1] === c) && !isGoal(r,c) && !isStart(r,c);
+        return (
+            tempHoles.some((hole) => hole[0] === r && hole[1] === c) &&
+            !isGoal(r, c) &&
+            !isStart(r, c)
+        );
     }
 
     // BFS algorithm to check if a path exists
@@ -67,7 +71,12 @@
         const visited = new Set();
         visited.add(`${start[0]},${start[1]}`);
 
-        const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]; // right, left, down, up
+        const directions = [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [-1, 0],
+        ]; // right, left, down, up
 
         while (queue.length > 0) {
             const [r, c] = queue.shift();
@@ -84,7 +93,10 @@
                 if (nr >= 0 && nr < height && nc >= 0 && nc < width) {
                     const nextStateKey = `${nr},${nc}`;
                     // Check if it's not a hole and has not been visited
-                    if (!isHoleInPathCheck(nr, nc, holes) && !visited.has(nextStateKey)) {
+                    if (
+                        !isHoleInPathCheck(nr, nc, holes) &&
+                        !visited.has(nextStateKey)
+                    ) {
                         visited.add(nextStateKey);
                         queue.push([nr, nc]);
                     }
@@ -96,13 +108,13 @@
 
     // Auxiliary function for hasPath, to check holes in the path verification context
     function isHoleInPathCheck(r, c, holesArray) {
-        return holesArray.some(hole => hole[0] === r && hole[1] === c);
+        return holesArray.some((hole) => hole[0] === r && hole[1] === c);
     }
 
     // === Event Handling Logic ===
 
     function handleCellClick(r, c) {
-        errorMessage = ''; // Clear previous error messages
+        errorMessage = ""; // Clear previous error messages
 
         if (isStart(r, c) || isGoal(r, c)) {
             errorMessage = "Cannot place holes on Start or Goal positions.";
@@ -111,7 +123,9 @@
 
         if (isHole(r, c)) {
             // If it's already a hole, remove it
-            tempHoles = tempHoles.filter(hole => !(hole[0] === r && hole[1] === c));
+            tempHoles = tempHoles.filter(
+                (hole) => !(hole[0] === r && hole[1] === c),
+            );
         } else {
             // If it's not a hole, add it
             tempHoles = [...tempHoles, [r, c]];
@@ -121,8 +135,10 @@
     function handleRightClick(r, c) {
         // Remove holes when right-clicking
         if (isHole(r, c)) {
-            tempHoles = tempHoles.filter(hole => !(hole[0] === r && hole[1] === c));
-            errorMessage = ''; // Clear any hole error, as one was removed
+            tempHoles = tempHoles.filter(
+                (hole) => !(hole[0] === r && hole[1] === c),
+            );
+            errorMessage = ""; // Clear any hole error, as one was removed
         }
     }
 
@@ -137,20 +153,32 @@
     // === Apply Configuration Logic ===
 
     async function applyConfiguration() {
-        errorMessage = ''; // Clear error messages on applying
-        tempHoles = tempHoles.filter(hole => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]));
+        errorMessage = ""; // Clear error messages on applying
+        tempHoles = tempHoles.filter(
+            (hole) => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]),
+        );
         if (tempWorldWidth < 2 || tempWorldHeight < 2) {
             errorMessage = "Grid size must be at least 2x2.";
             return;
         }
 
         // Validate path before applying
-        if (!hasPath(tempStart, tempGoal, tempHoles, tempWorldWidth, tempWorldHeight)) {
-            errorMessage = "Impossible path! Remove some holes to ensure a path from Start to Goal exists.";
+        if (
+            !hasPath(
+                tempStart,
+                tempGoal,
+                tempHoles,
+                tempWorldWidth,
+                tempWorldHeight,
+            )
+        ) {
+            errorMessage =
+                "Impossible path! Remove some holes to ensure a path from Start to Goal exists.";
             return;
         }
-        tempHoles = tempHoles.filter(hole => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]));
-        
+        tempHoles = tempHoles.filter(
+            (hole) => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]),
+        );
 
         // Update stores with new values
         world_width = tempWorldWidth;
@@ -160,12 +188,12 @@
         hole_positions = [...tempHoles];
 
         // Dispatch an event so the parent component knows the configuration has been updated
-        dispatch('configUpdated');
+        dispatch("configUpdated");
         showconfig = false;
     }
 
     function resetConfiguration() {
-        errorMessage = '';
+        errorMessage = "";
         tempWorldWidth = world_width;
         tempWorldHeight = world_height;
         tempHoles = JSON.parse(JSON.stringify(hole_positions)); // Reset holes to the last applied state
@@ -173,34 +201,41 @@
 
     // === Dynamic CSS Classes ===
     function getCellClass(r, c) {
-        let classes = '';
+        let classes = "";
 
-        if (isStart(r, c)) classes += ' is-start';
-        if (isGoal(r, c)) classes += ' is-goal';
-        if (isHole(r, c)) classes += ' is-hole';
+        if (isStart(r, c)) classes += " is-start";
+        if (isGoal(r, c)) classes += " is-goal";
+        if (isHole(r, c)) classes += " is-hole";
 
         // Prevent Start/Goal from being styled as hovered holes
-        if (hoveredCell && hoveredCell[0] === r && hoveredCell[1] === c && !isStart(r,c) && !isGoal(r,c)) {
-            classes += ' hovered-cell';
+        if (
+            hoveredCell &&
+            hoveredCell[0] === r &&
+            hoveredCell[1] === c &&
+            !isStart(r, c) &&
+            !isGoal(r, c)
+        ) {
+            classes += " hovered-cell";
         }
 
         return classes;
     }
 
-     function unShowParamSetter(){
-        console.log(showconfig)
+    function unShowParamSetter() {
+        console.log(showconfig);
         showconfig = false;
     }
-
 </script>
 
 <div class="overlay">
     <div class="change-container">
         <div class="header-section">
-            
-            <h2>Configuração do Mundo</h2>
-            <button class="close-button" on:click={unShowParamSetter} aria-label="Fechar configurações">X</button>
-
+            <h2>Grid World Configuration</h2>
+            <button
+                class="close-button"
+                on:click={unShowParamSetter}
+                aria-label="Fechar configurações">X</button
+            >
         </div>
 
         {#if errorMessage}
@@ -208,17 +243,36 @@
         {/if}
 
         <div class="controls-and-grid">
-            <div class="grid-size-inputs">
-                <label for="width">Largura:</label>
-                <input type="number" id="width" bind:value={tempWorldWidth} min="2" max="10" />
+            <div class="grid-size-inputs-text">
+                <p class="texto-exp">Clique abaixo para aumentar o grid. Clique no grid para adicionar e tirar buracos</p>
+                <div class="grid-size-inputs">
+    <label for="width">Largura:</label>
+    <label for="height">Altura:</label>
 
-                <label for="height">Altura:</label>
-                <input type="number" id="height" bind:value={tempWorldHeight} min="2" max="10"  />
+    <input
+        type="number"
+        id="width"
+        bind:value={tempWorldWidth}
+        min="2"
+        max="10"
+    />
+    <input
+        type="number"
+        id="height"
+        bind:value={tempWorldHeight}
+        min="2"
+        max="10"
+    />
+</div>
+
+               
             </div>
 
             <div class="grid-display-area">
-                <div class="grid-container"
-                    style="grid-template-columns: repeat({tempWorldWidth}, 1fr);">
+                <div
+                    class="grid-container"
+                    style="grid-template-columns: repeat({tempWorldWidth}, 1fr);"
+                >
                     {#key tempWorldWidth + tempWorldHeight + JSON.stringify(tempHoles) + JSON.stringify(tempStart) + JSON.stringify(tempGoal) + JSON.stringify(hoveredCell)}
                         {#each Array(tempWorldHeight) as _, r}
                             {#each Array(tempWorldWidth) as __, c}
@@ -228,16 +282,23 @@
                                     tabindex="0"
                                     on:click={() => handleCellClick(r, c)}
                                     on:keydown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
+                                        if (
+                                            e.key === "Enter" ||
+                                            e.key === " "
+                                        ) {
                                             handleCellClick(r, c);
                                             e.preventDefault();
                                         }
-                                        if (e.key === 'Delete' || e.key === 'Backspace') {
+                                        if (
+                                            e.key === "Delete" ||
+                                            e.key === "Backspace"
+                                        ) {
                                             handleRightClick(r, c);
                                             e.preventDefault();
                                         }
                                     }}
-                                    on:contextmenu|preventDefault={() => handleRightClick(r, c)}
+                                    on:contextmenu|preventDefault={() =>
+                                        handleRightClick(r, c)}
                                     on:mouseenter={() => handleMouseEnter(r, c)}
                                     on:mouseleave={handleMouseLeave}
                                     on:focus={() => handleMouseEnter(r, c)}
@@ -250,19 +311,29 @@
                         {/each}
                     {/key}
                 </div>
-
-                <div class="action-buttons">
-                    <button class = "button-reset" on:click={resetConfiguration}>Reiniciar</button>
-                    <button class = "button-apply" on:click={applyConfiguration}>Aplicar Configurações</button>
-                </div>
             </div>
         </div>
-
-      
+        <div class="action-buttons">
+            <button
+                class="btn-config button-reset"
+                on:click={resetConfiguration}>Reiniciar</button
+            >
+            <button
+                class="btn-config button-apply"
+                on:click={applyConfiguration}>Aplicar Configurações</button
+            >
+        </div>
     </div>
 </div>
 
 <style>
+    :root {
+        --color-border: #454b5e;
+        --color-hole:#003366;
+        --color-goal: #b782ff;
+        --color-start: #4caf50;
+        --size-border: 1px;
+    }
     /* Overlay Styles */
     .overlay {
         position: fixed;
@@ -283,48 +354,54 @@
         flex-direction: column;
         align-items: center;
         padding: 20px;
-        background-color: #000000;
+        background-color: #1e1e1e;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         font-family: sans-serif;
         width: 80vw;
         max-width: 1000px;
-        height: 80vh; /* Adjust height to give more space */
+        height: 90vh; /* Adjust height to give more space */
         max-height: 800px;
         overflow-y: auto;
         box-sizing: border-box;
     }
 
-.header-section {
-  display: flex; /* Transforma a div em um container flex */
-  align-items: center; /* Alinha os itens verticalmente ao centro */
-  width: 100%;
-  font-size: 0.8em;
-  /* Remove o justify-content: space-between; */
-}
+    .header-section {
+        display: flex; /* Transforma a div em um container flex */
+        align-items: center; /* Alinha os itens verticalmente ao centro */
+        width: 100%;
+        font-size: 0.8em;
+        /* Remove o justify-content: space-between; */
+    }
 
-.header-section h2 {
-  flex-grow: 1; /* Permite que o h2 ocupe o espaço disponível */
-  text-align: center; /* Centraliza o texto dentro do h2 */
-  margin: 0;
-}
+    .header-section h2 {
+        font-family: "Press Start 2P";
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+    }
 
-.close-button {
-  border: none;
-  background-color: #000000;
-  color: white;
-  margin-left: auto; /* ESSENCIAL: Empurra este item para a direita */
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-
+    .close-button {
+        border: none;
+        background-color: #1e1e1e;
+        color: white;
+        margin-left: auto; /* ESSENCIAL: Empurra este item para a direita */
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
 
     .info-message {
         color: white;
         margin-top: 10px;
         font-size: 0.9em;
     }
+
+
+.texto-exp {
+
+    line-height: 1.6;         /* Espaçamento entre linhas maior (ajuste conforme necessário) */
+    text-align: justify;      /* Justifica o texto (correto é 'text-align', não 'justify') */
+}
 
     .error-message {
         color: #d32f2f;
@@ -342,7 +419,22 @@
         flex-grow: 1; /* Allow this section to take available space */
     }
 
-    .grid-size-inputs {
+    .btn-config {
+        padding: 6px 12px;
+        cursor: pointer;
+        background-color: #9a5bf4; /* tom roxo da imagem */
+        color: white;
+        border: 2px solid black;
+        border-radius: 10px; /* estilo quadrado */
+        font-family: "Press Start 2P", monospace; /* estilo pixel retro */
+        font-size: 10px;
+        text-transform: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .grid-size-inputs-text {
+        font-family: "Press Start 2P";
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -350,32 +442,45 @@
         align-items: flex-start;
         padding: 10px;
         border-radius: 5px;
+        width: 256px;
     }
 
+    .grid-size-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+    justify-items: center;
+    align-items: center;
+}
+
+    
+    
     .grid-size-inputs label {
+        
         font-weight: bold;
         color: #ccc;
     }
 
     .grid-size-inputs input {
-        padding: 8px;
+        font-family: "Press Start 2P";
+        padding: 6px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        width: 80px; /* Fixed width for inputs */
+        width: 40px; /* Fixed width for inputs */
         text-align: center;
     }
 
     .grid-display-area {
         display: flex;
         justify-content: center;
-        align-items: center; 
+        align-items: center;
         flex-grow: 1;
         gap: 15px;
     }
 
     .grid-container {
         display: grid;
-        border: 1px solid #ccc;
+        border: var(--size-border) solid var(--color-border);
         background-color: #fff;
         box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
         /* Ensure the grid doesn't grow too large */
@@ -384,17 +489,27 @@
         overflow: auto; /* Add scrollbars if grid is too big */
     }
 
+    .grid {
+        display: grid;
+        border-top: var(--size-border) solid var(--color-border);
+        border-left: var(--size-border) solid var(--color-border);
+        width: fit-content;
+        margin: 0 auto;
+    }
+
     .grid-cell {
-        width: 30px; /* Cell size */
-        height: 30px;
-        border: 1px solid #eee;
+        width: 35px;
+        height: 35px;
+        border-right: var(--size-border) solid var(--color-border);
+        border-bottom: var(--size-border) solid var(--color-border);
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 0.8em;
-        cursor: pointer;
-        transition: background-color 0.1s ease;
-        box-sizing: border-box; /* Include padding/border in width/height */
+        font-weight: normal;
+        background-color: #000000;
+        color: #ffffff;
+        position: relative;
+        font-size: 1.5em;
     }
 
     .grid-cell:hover:not(.is-start):not(.is-goal) {
@@ -403,19 +518,19 @@
 
     /* Cell States */
     .grid-cell.is-start {
-        background-color: #4CAF50; /* Green */
+        background-color: var(--color-start);
         color: white;
         font-weight: bold;
     }
 
     .grid-cell.is-goal {
-        background-color: #F44336; /* Red */
+        background-color: var(--color-goal);
         color: white;
         font-weight: bold;
     }
 
     .grid-cell.is-hole {
-        background-color: #607D8B; /* Blue-gray */
+        background-color: var(--color-hole); 
         color: white;
         font-weight: bold;
     }
@@ -425,7 +540,7 @@
     }
 
     .current-values {
-        background-color: #e0e0e0;
+        background-color: #ffeeba;
         padding: 10px;
         border-radius: 5px;
         font-size: 0.8em;
@@ -434,34 +549,11 @@
         text-align: center;
     }
 
-
-.action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 25px;
-    margin-left: 10%;
-}
-
-    /* button {
-        padding: 10px 25px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-        font-size: 1em;
-        transition: background-color 0.2s ease;
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 0.5em;
     }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
-    button:disabled {
-        background-color: #cccccc;
-        cursor: not-allowed;
-    } */
 
     .reset-button {
         background-color: #ff9800;
