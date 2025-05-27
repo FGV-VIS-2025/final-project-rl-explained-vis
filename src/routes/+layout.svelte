@@ -1,6 +1,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
 <header>
 <h1>Reinforcement Learning</h1>
@@ -13,8 +16,9 @@
     :global(body) {
         margin: 0;
         padding: 0;
-        background-color: black;
+        background-color: #1e1e1e;
         color: white;
+        font-family: "Press Start 2P";
 
     }
 
