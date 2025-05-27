@@ -138,7 +138,7 @@
 
     async function applyConfiguration() {
         errorMessage = ''; // Clear error messages on applying
-
+        tempHoles = tempHoles.filter(hole => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]));
         if (tempWorldWidth < 2 || tempWorldHeight < 2) {
             errorMessage = "Grid size must be at least 2x2.";
             return;
@@ -149,6 +149,7 @@
             errorMessage = "Impossible path! Remove some holes to ensure a path from Start to Goal exists.";
             return;
         }
+        tempHoles = tempHoles.filter(hole => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]));
         
 
         // Update stores with new values
