@@ -320,8 +320,8 @@
             </div>
 
             <AccuracyChart
-                {success_rates_data}
-                {currentEpisode}
+                success_rates_data={success_rates_data}
+                bind:currentEpisode={currentEpisode}
                 width={650}
                 height={250}
             />
