@@ -22,13 +22,24 @@
     </div>
 
     <div class="button-group">
-      <button on:click={handleFirstAction}>O que é Reinforcement Learning?</button>
-      <button on:click={handleSecondAction}>Aprender interativamente</button>
+      <button class= "btn-handle" on:click={handleFirstAction}>O que é Reinforcement Learning?</button>
+      <button class= "btn-handle" on:click={handleSecondAction}>Aprender interativamente</button>
     </div>
   </div>
   
   <style>
     /* Centraliza tudo no meio da tela */
+    .btn-handle {
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #9a5bf4; /* tom roxo da imagem */
+    color: white;
+    font-family: 'Press Start 2P', monospace; /* estilo pixel retro */
+    font-size: 1em;
+    text-transform: none;
+    display: inline-block;
+    text-align: center;
+}
     .center-box {
       position: absolute;
       top: 50%;
@@ -64,19 +75,6 @@
       justify-content: center;
     }
   
-    button {
-      font-family: "Lato", sans-serif;
-      background-color: #444;
-      color: white;
-      border: 2px solid white;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      font-size: 1rem;
-    }
-  
-    button:hover {
-      background-color: #666;
-    }
+
   </style>
   
