@@ -5,6 +5,7 @@
     export let currentEpisode = 0;
     export let width = 1000;
     export let height = 300;
+    export let speedIndex = 0;
 
     import InfoTooltip from './InfoTooltip.svelte';
 
@@ -16,18 +17,25 @@
     let tooltipBg;
     let tooltipTextEpisode;
     let tooltipTextRate;
-    let overlayRect; // Adicionar uma variável para o overlay
+    let overlayRect;
 
     let interactiveElementsCreated = false;
 
     // Função reativa para desenhar/atualizar o gráfico
     $: if (svgContainer && success_rates_data.length > 0) {
-        const svg = d3.select(svgContainer); // Obtenha a seleção D3 do SVG
+        const svg = d3.select(svgContainer);
         drawChart(svg, width, height, success_rates_data.slice(0, currentEpisode + 1));
+        
         if (!interactiveElementsCreated) {
-            // Passe a seleção SVG para a função
             createInteractiveElements(svg, width, height);
             interactiveElementsCreated = true;
+        }
+        
+        if (focusLine && focusCircle && tooltip && overlayRect) {
+            focusLine.raise();
+            focusCircle.raise();
+            tooltip.raise();
+            overlayRect.raise(); 
         }
     }
 
@@ -73,8 +81,7 @@
             .style("fill", "white");
 
         // Retângulo invisível para capturar eventos do mouse sobre a área do gráfico
-        // Guarde a referência para poder usar .raise() nele também, se necessário.
-        overlayRect = svg.append("rect") // <<< Use overlayRect aqui
+        overlayRect = svg.append("rect") 
             .attr("class", "overlay")
             .attr("width", w - margin.left - margin.right)
             .attr("height", h - margin.top - margin.bottom)
@@ -82,13 +89,11 @@
             .attr("y", margin.top)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            .on("mouseover", () => {
-                // Ao entrar no gráfico, levanta os elementos para garantir que estejam por cima
-                // E também levanta o overlay para que ele continue capturando eventos
-                focusLine.raise().transition().duration(50).attr("opacity", 0.15);
-                focusCircle.raise().transition().duration(50).attr("opacity", 0.5);
-                tooltip.raise().transition().duration(50).attr("opacity", 1);
-            })
+            // .on("mouseover", () => {
+            //     focusLine.raise().transition().duration(50).attr("opacity", 0.15);
+            //     focusCircle.raise().transition().duration(50).attr("opacity", 0.5);
+            //     tooltip.raise().transition().duration(50).attr("opacity", 1);
+            // })
             .on("mouseout", () => {
                 focusLine.transition().duration(50).attr("opacity", 0);
                 focusCircle.transition().duration(50).attr("opacity", 0);
@@ -98,11 +103,11 @@
             .on("click", clickHandler);
     }
 
-    function drawChart(svg, w, h, data) { // <<< Aceita a seleção SVG como argumento
+    function drawChart(svg, w, h, data) {
         const margin = { top: 30, right: 48, bottom: 50, left: 60 };
 
         svg.attr("width", w)
-            .attr("height", h);
+           .attr("height", h);
 
         // Remover elementos que serão redesenhados a cada atualização
         svg.selectAll(".chart-line, .last-point-circle, .last-point-line, .success-rate-label").remove();
@@ -135,14 +140,12 @@
             xTicks.push(totalEpisodes - 1);
         }
 
-        // Eixos e Títulos de Eixos (usando enter/merge para atualização)
+        // Eixos e Títulos de Eixos
         const xAxisGroup = svg.selectAll(".x-axis-group").data([null]);
         xAxisGroup.enter().append("g")
             .attr("class", "x-axis-group")
             .attr("transform", `translate(0,${h - margin.bottom})`)
             .merge(xAxisGroup)
-            .transition() // Pode adicionar transição para os eixos
-            .duration(100)
             .call(d3.axisBottom(x).tickValues(xTicks));
 
         const yAxisGroup = svg.selectAll(".y-axis-group").data([null]);
@@ -150,8 +153,6 @@
             .attr("class", "y-axis-group")
             .attr("transform", `translate(${margin.left},0)`)
             .merge(yAxisGroup)
-            .transition() // Pode adicionar transição para os eixos
-            .duration(100)
             .call(d3.axisLeft(y));
 
         svg.selectAll(".x-axis-label").data([null]).enter().append("text")
@@ -219,13 +220,6 @@
                 .style("fill", "white")
                 .text(`${Math.trunc(lastDataPoint)}%`);
         }
-        
-        if (focusLine && focusCircle && tooltip && overlayRect) { // Verifica se já foram criados
-            focusLine.raise();
-            focusCircle.raise();
-            tooltip.raise();
-            overlayRect.raise(); // O overlay também precisa estar sempre por cima dos elementos do gráfico
-        }
     }
 
     function mousemove(event) {
@@ -241,7 +235,7 @@
         const x0 = x.invert(d3.pointer(event)[0]);
         const i = Math.round(x0);
 
-        if (!focusLine || !focusCircle || !tooltip) return;
+        if (!focusLine || !focusCircle || !tooltip || !overlayRect) return;
         
         if (i < 0 || i >= success_rates_data.length || i > currentEpisode) {
             focusLine.transition().duration(50).attr("opacity", 0);
@@ -268,11 +262,14 @@
         focusLine.raise().attr("opacity", 0.15);
         focusCircle.raise().attr("opacity", 0.5);
         tooltip.raise().attr("opacity", 1);
-        overlayRect.raise(); // Garante que o overlay esteja por cima dos elementos do gráfico
+        overlayRect.raise();
     }
 
     // Função para atualizar o episódio atual ao clicar no gráfico
     function clickHandler(event) {
+        // Se estiver muito rápido, desativa o clique
+        if (speedIndex >= 2) return;
+
         const margin = { top: 30, right: 48, bottom: 50, left: 60 };
         const x = d3.scaleLinear()
             .domain([0, success_rates_data.length > 0 ? success_rates_data.length - 1 : 0])
@@ -281,13 +278,19 @@
         const x0 = x.invert(d3.pointer(event)[0]);
         const clickedEpisode = Math.round(x0);
 
-        if (clickedEpisode >= 0 && clickedEpisode < success_rates_data.length) {
-            currentEpisode = clickedEpisode;
-            if (focusLine && focusCircle && tooltip) {
-                focusLine.attr("opacity", 0);
-                focusCircle.attr("opacity", 0);
-                tooltip.attr("opacity", 0);
-            }
+        if (clickedEpisode < 0 || clickedEpisode >= success_rates_data.length) {
+            return;
+        }
+
+        currentEpisode = clickedEpisode;
+        if (focusLine && focusCircle && tooltip) {
+            focusLine.attr("opacity", 0);
+            focusCircle.attr("opacity", 0);
+            tooltip.attr("opacity", 0);
+        }
+        // Garante que o overlay ainda esteja pronto para capturar eventos após o clique
+        if (overlayRect) {
+            overlayRect.raise();
         }
     }
 </script>

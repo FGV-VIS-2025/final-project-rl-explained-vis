@@ -327,6 +327,7 @@
                 bind:currentEpisode
                 width={650}
                 height={250}
+                speedIndex={currentSpeedIndex}
             />
         </div>
     </div>
