@@ -184,11 +184,7 @@
             .attr("y", margin.top)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            .on("mouseover", () => {
-                focusLine.transition().duration(50).attr("opacity", 0.15);
-                focusCircle.transition().duration(50).attr("opacity", 0.5);
-                tooltip.transition().duration(50).attr("opacity", 1);
-            })
+            // .on("mouseover", mousemove)
             .on("mouseout", () => {
                 focusLine.transition().duration(50).attr("opacity", 0);
                 focusCircle.transition().duration(50).attr("opacity", 0);
@@ -235,9 +231,6 @@
 
             if (clickedEpisode >= 0 && clickedEpisode < success_rates_data.length) {
                 currentEpisode = clickedEpisode;
-                focusLine.attr("opacity", 0);
-                focusCircle.attr("opacity", 0);
-                tooltip.attr("opacity", 0);
             }
         }
     }
