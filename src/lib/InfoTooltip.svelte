@@ -2,13 +2,19 @@
     let showTooltip = false;
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
+
 <div
     class="tooltip-container"
     on:mouseenter={() => (showTooltip = true)}
     on:mouseleave={() => (showTooltip = false)}
 >
     <slot>
-        <div class="info-circle">?</div>
+        <div class="info-circle">
+            <span class="info-question-mark">?</span>
+        </div>
     </slot>
 
     {#if showTooltip}
@@ -34,16 +40,25 @@
         height: 20px;
         border-radius: 50%;
         background-color: #00bcd4;
-        color: #000;
-        font-weight: bold;
+        color: #000000;
+        font-weight: normal;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9em;
-        line-height: 0.85;
+        font-size: 15px;
+        line-height: 1;
         user-select: none;
         transition: background-color 0.2s ease;
-        transform: translateY(-1px);
+        transform: translateY(1px);
+        font-family: "Press Start 2P";
+        position: relative;
+    }
+
+    .info-question-mark {
+        position: absolute;
+        top: 50%;
+        left: 55%;
+        transform: translate(-50%, -50%);
     }
 
     .info-circle:hover {
@@ -64,7 +79,9 @@
         z-index: 100;
         opacity: 0;
         animation: fadeIn 0.2s forwards;
-        font-size: 0.7em;
+        font-size: 16px;
+        font-family: "VT323";
+        font-weight: normal;
     }
 
     .tooltip-box::after {

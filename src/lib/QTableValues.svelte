@@ -119,6 +119,10 @@
 
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
+
 <div class="q-grid-wrapper">
     <h3>Q-values
         <InfoTooltip>
@@ -159,8 +163,11 @@
         --color-border: #9f96d8;
         --size-border: 3px
     }
-    .q-grid-wrapper {
+    .q-grid-wrapper h3 {
         text-align: center;
+        font-family: "Press Start 2P";
+        font-weight: normal;
+        font-size: 14px;
     }
 
     .q-grid {
@@ -179,8 +186,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1em;
-        font-weight: bold;
+        font-size: 1.5em;
+        font-weight: normal;
         color: #ffffff;
         position: relative;
     }

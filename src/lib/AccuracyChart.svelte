@@ -127,11 +127,9 @@
             svg.append("text")
                 .attr("class", "success-rate-label")
                 .attr("x", circleX + 12)
-                .attr("y", lastDataPoint < 7 ? y(7) + 4 : circleY + 4)
+                .attr("y", lastDataPoint < 7 ? y(7) + 5 : circleY + 5)
                 .attr("text-anchor", "left")
                 .style("fill", "white")
-                .style("font-size", "12px")
-                .style("font-weight", "bold")
                 .text(`${Math.trunc(lastDataPoint)}%`);
         }
 
@@ -166,14 +164,12 @@
         tooltipTextEpisode = tooltip.append("text")
             .attr("x", 10)
             .attr("y", 16)
-            .style("fill", "white")
-            .style("font-size", "11px");
+            .style("fill", "white");
 
         tooltipTextRate = tooltip.append("text")
             .attr("x", 10)
             .attr("y", 31)
-            .style("fill", "white")
-            .style("font-size", "11px");
+            .style("fill", "white");
 
         // Retângulo invisível para capturar eventos do mouse sobre a área do gráfico
         svg.append("rect")
@@ -236,6 +232,10 @@
     }
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
+
 <div class="chart-wrapper">
     <h3>Success Rate Over Episodes
         <InfoTooltip>
@@ -258,6 +258,9 @@
     .chart-wrapper h3 {
         margin-bottom: -5px;
         color: #ffffff;
+        font-weight: normal;
+        font-size: 14px;
+        font-family: "Press Start 2P";
     }
 
     svg {
@@ -268,11 +271,32 @@
     }
 
     :global(.axis-label) {
-        font-size: 13px;
-        font-weight: bold;
+        font-size: 0.6em;
+        font-weight: normal;
+        font-family: "Press Start 2P";
     }
 
     :global(.tooltip) {
         pointer-events: none;
+    }
+
+    :global(.tick text)
+    {
+        font-family: "Press Start 2P";
+        font-weight: normal;
+        font-size: 0.7em;
+    }
+
+    :global(.tooltip text)
+    {
+        font-family: "VT323";
+        font-weight: normal;
+        font-size: 0.9em;
+    }
+
+    :global(.success-rate-label) {
+        font-family: "VT323";
+        font-weight: normal;
+        font-size: 1.3em;
     }
 </style>

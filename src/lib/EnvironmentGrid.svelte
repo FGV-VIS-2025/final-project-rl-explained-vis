@@ -27,6 +27,10 @@
 
 </script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
+
 <div class="q-grid-wrapper">
     <h3>Environment
         <InfoTooltip>
@@ -60,8 +64,11 @@
         --color-border: #454b5e;
         --size-border: 1px
     }
-    .q-grid-wrapper {
+    .q-grid-wrapper h3 {
         text-align: center;
+        font-family: "Press Start 2P";
+        font-weight: normal;
+        font-size: 14px;
     }
 
     .q-grid {
@@ -80,7 +87,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-weight: bold;
+        font-weight: normal;
         background-color: #000000;
         color: #ffffff;
         position: relative;
