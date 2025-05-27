@@ -17,7 +17,7 @@
     }
 
     function drawChart(container, w, h, data) {
-        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const margin = { top: 20, right: 48, bottom: 50, left: 60 };
 
         const svg = d3
             .select(container)
@@ -58,6 +58,14 @@
             .attr("transform", `translate(0,${h - margin.bottom})`)
             .call(d3.axisBottom(x).tickValues(xTicks));
 
+        svg.append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", w / 2 + 50)
+            .attr("y", h - 12)
+            .style("fill", "#ffffff")
+            .text("Episodes");
+
         svg.append("path")
             .datum(data)
             .attr("fill", "none")
@@ -69,26 +77,48 @@
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y));
 
+        svg.append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", - (h / 2) + 15)
+            .attr("y", margin.left - 37)
+            .attr("transform", "rotate(-90)")
+            .style("fill", "#ffffff")
+            .text("Success Rate (%)");
+
         if (data.length > 0) {
             const lastDataPoint = data[data.length - 1];
             const lastEpisodeIndex = data.length - 1;
 
+            const circleX = x(lastEpisodeIndex);
+            const circleY = y(lastDataPoint);
+
             svg.append("circle")
-                .attr("cx", x(lastEpisodeIndex))
-                .attr("cy", y(lastDataPoint))
+                .attr("cx", circleX)
+                .attr("cy", circleY)
                 .attr("r", 5)
                 .attr("fill", "blue")
                 .attr("stroke", "white")
                 .attr("stroke-width", 1.5);
 
             svg.append("line")
-                .attr("x1", x(lastEpisodeIndex))
+                .attr("x1", circleX)
                 .attr("y1", margin.top)
-                .attr("x2", x(lastEpisodeIndex))
+                .attr("x2", circleX)
                 .attr("y2", h - margin.bottom)
                 .attr("stroke", "blue")
                 .attr("stroke-width", 2)
                 .attr("opacity", 0.2);
+
+            svg.append("text")
+                .attr("class", "success-rate-label")
+                .attr("x", circleX + 12)
+                .attr("y", lastDataPoint < 7 ? y(7) + 4 : circleY + 4)
+                .attr("text-anchor", "left")
+                .style("fill", "white")
+                .style("font-size", "12px")
+                .style("font-weight", "bold")
+                .text(`${Math.trunc(lastDataPoint)}%`);
         }
     }
 </script>
@@ -98,7 +128,7 @@
         <InfoTooltip>
             <div slot = "tooltipContent">
                 This chart tracks the agent's success rate,<br>
-                showing the percentage of the last 100 episodes<br>
+                showing the percentage of the last episodes<br>
                 where it successfully reached the goal.
             </div>
         </InfoTooltip>
@@ -122,5 +152,10 @@
         border: 1px solid #3318e9;
         background-color: #0d0d0d;
         border-radius: 8px;
+    }
+
+    :global(.axis-label) {
+        font-size: 13px;
+        font-weight: bold;
     }
 </style>

@@ -85,8 +85,15 @@ export function q_learning({
     const success_rates = [];
 
     // Tamanho da janela de cálculo da média móvel de sucessos
-    const window_size = 100;
-    console.log(window_size);
+    let window_size;
+
+    if (num_episodes >= 500) {
+        window_size = 100;
+    } else if (num_episodes >= 250) {
+        window_size = 50;
+    } else {
+        window_size = 20;
+    }
 
     // Para cada episódio...
     for (let episode = 1; episode <= num_episodes; episode++) {
