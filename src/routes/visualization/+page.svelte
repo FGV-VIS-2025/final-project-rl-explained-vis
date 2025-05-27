@@ -391,44 +391,12 @@
     .btn-change:hover {
         background-color: #0056b3;
     }
+    .episode-slider{
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.8em;
+    }
 
-    /* .episode-slider input[type="range"] {
-        background-color: #9a5bf4;
-        width: 100%;
-        height: 6px;
-        background: #ccc;
-        border-radius: 3px;
-        outline: none;
-        margin-top: 8px;
-        }
-        .episode-slider input[type="range"]::-moz-range-track {
-    width: 100%;
-    height: 6px;
-    background: #9a5bf4; 
-    border-radius: 3px;
-    cursor: pointer;
-}
-.episode-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #000;
-  cursor: pointer;
-  margin-top: 0px; 
-}
-
-
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #00bcd4;
-        cursor: pointer;
-        margin-top: -6px;
-    } */
-
+  
     label {
         margin-top: 10px;
         font-weight: bold;
@@ -473,6 +441,7 @@
     }
 
     .play-btn {
+        font-family: 'Press Start 2P', monospace;
         color: #ffffff;
     }
     .episode-slider input[type="range"] {
