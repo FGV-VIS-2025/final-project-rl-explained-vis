@@ -24,7 +24,7 @@
         if (type === 'hole') return 'H';
         return '';
     }
-    $: goal = goal
+
 </script>
 
 <div class="q-grid-wrapper">
@@ -38,6 +38,7 @@
         </InfoTooltip>
     </h3>
     <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
+        {#key world_width + world_height + JSON.stringify(holes) + JSON.stringify(start) + JSON.stringify(goal) + JSON.stringify(currentAgentPosition)}
         {#each Array(world_height) as _, r}
             {#each Array(world_width) as __, c}
                 <div
@@ -48,16 +49,18 @@
                 </div>
             {/each}
         {/each}
+        {/key}
     </div>
+
+
 </div>
 
 <style>
     :root {
-        --color-border: #3318e9;
-        --size-border: 3px
+        --color-border: #454b5e;
+        --size-border: 1px
     }
     .q-grid-wrapper {
-        margin-top: 30px;
         text-align: center;
     }
 

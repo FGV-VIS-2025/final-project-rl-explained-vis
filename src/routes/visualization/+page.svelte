@@ -1,21 +1,29 @@
 <script>
-    import { onMount } from 'svelte';
-    import { q_learning } from '$lib/q_learning.js';
+    import { onMount } from "svelte";
+    import { q_learning } from "$lib/q_learning.js";
     import * as d3 from "d3";
-    import QTableArrows from '$lib/QTableArrows.svelte';
-    import QTableValues from '$lib/QTableValues.svelte';
-    import EnvironmentGrid from '$lib/EnvironmentGrid.svelte';
-    import AccuracyChart from '$lib/AccuracyChart.svelte';
-    import ChangeParams from '$lib/ChangeParams.svelte';
-    import ChangeGrid from '$lib/ChangeGrid.svelte';
-    import InfoTooltip from '$lib/InfoTooltip.svelte';
+    import QTableArrows from "$lib/QTableArrows.svelte";
+    import QTableValues from "$lib/QTableValues.svelte";
+    import EnvironmentGrid from "$lib/EnvironmentGrid.svelte";
+    import AccuracyChart from "$lib/AccuracyChart.svelte";
+    import ChangeParams from "$lib/ChangeParams.svelte";
+    import ChangeGrid from "$lib/ChangeGrid.svelte";
+    import InfoTooltip from "$lib/InfoTooltip.svelte";
+    import Icon from "$lib/Icons.svelte";
 
     //Grid Params
     let world_width = 5;
     let world_height = 5;
     let start = [0, 0];
     let goal = [4, 4];
-    let holes = [[1, 2], [2, 3], [3, 1], [4, 0], [0, 2], [4, 3]];
+    let holes = [
+        [1, 2],
+        [2, 3],
+        [3, 1],
+        [4, 0],
+        [0, 2],
+        [4, 3],
+    ];
 
     let alpha = 0.1;
     let gamma = 0.9;
@@ -42,7 +50,7 @@
 
     // Function to initialize or re-run Q-learning
     function initializeQLearning() {
-            const { agent_positions, q_tables, success_rates } = q_learning({
+        const { agent_positions, q_tables, success_rates } = q_learning({
             world_width,
             world_height,
             start,
@@ -51,14 +59,14 @@
             alpha,
             gamma,
             epsilon,
-            epsilon_decay,     
+            epsilon_decay,
             num_episodes,
-            max_steps
+            max_steps,
         });
         agent_positions_data = agent_positions;
         q_tables_data = q_tables;
         success_rates_data = success_rates;
-        currentEpisode = success_rates_data.length -1;
+        currentEpisode = success_rates_data.length - 1;
         currentStep = 0;
         stopAnimation();
     }
@@ -68,7 +76,8 @@
     });
 
     // Derived state for current agent position
-    $: currentAgentPosition = agent_positions_data[currentEpisode]?.[currentStep] || start;
+    $: currentAgentPosition =
+        agent_positions_data[currentEpisode]?.[currentStep] || start;
 
     $: currentQTable = q_tables_data[currentEpisode]?.[currentStep];
 
@@ -90,19 +99,21 @@
             currentStep--;
         } else if (currentEpisode > 0) {
             currentEpisode--;
-            currentStep = (agent_positions_data[currentEpisode]?.length || 1) - 1;
+            currentStep =
+                (agent_positions_data[currentEpisode]?.length || 1) - 1;
         }
     }
 
     function togglePlay() {
-
         if (playing) {
             stopAnimation();
-        } else if(!playing && currentEpisode == success_rates_data.length -1){
+        } else if (
+            !playing &&
+            currentEpisode == success_rates_data.length - 1
+        ) {
             currentEpisode = 0;
             startAnimation();
-        }
-        else {
+        } else {
             startAnimation();
         }
     }
@@ -120,7 +131,11 @@
 
     function goToEpisode(e) {
         const episodeNum = parseInt(e.target.value, 10);
-        if (!isNaN(episodeNum) && episodeNum >= 0 && episodeNum < agent_positions_data.length) {
+        if (
+            !isNaN(episodeNum) &&
+            episodeNum >= 0 &&
+            episodeNum < agent_positions_data.length
+        ) {
             currentEpisode = episodeNum;
             currentStep = 0; // Reset step when changing episode
         }
@@ -128,7 +143,11 @@
 
     function goToStep(e) {
         const stepNum = parseInt(e.target.value, 10);
-        if (!isNaN(stepNum) && stepNum >= 0 && stepNum < (agent_positions_data[currentEpisode]?.length || 0)) {
+        if (
+            !isNaN(stepNum) &&
+            stepNum >= 0 &&
+            stepNum < (agent_positions_data[currentEpisode]?.length || 0)
+        ) {
             currentStep = stepNum;
         }
     }
@@ -144,18 +163,27 @@
     }
 
     // Texto dinâmico para o botão de velocidade
-    $: playSpeedText = currentSpeedIndex === 0 ? 'Slow' : currentSpeedIndex === 1 ? 'Mid' : currentSpeedIndex === 2 ? 'Fast' : "Catchau";
+    $: playSpeedText =
+        currentSpeedIndex === 0
+            ? "1X"
+            : currentSpeedIndex === 1
+              ? "2X"
+              : currentSpeedIndex === 2
+                ? "5X"
+                : "10X";
 
     $: showParamGrid = false;
-    function showParamSetter(){
+    function showParamSetter() {
         showParamGrid = true;
     }
 
-    $: showParamRL = false
-    function showRLSetter(){
-        console.log(showParamRL)
+    $: showParamRL = false;
+    function showRLSetter() {
+        console.log(showParamRL);
         showParamRL = true;
     }
+
+    $: goal = goal;
 </script>
 
 <svelte:head>
@@ -164,30 +192,107 @@
 
 <div class="main-layout">
     <div class="left-panel">
-        <h1>Q-Learning Visualization</h1>
+        <div class="buttons-change">
+            <button class="btn-change" on:click={showParamSetter}>
+                Alterar Parâmetros do Grid
+            </button>
+            {#if showParamGrid}
+                <ChangeGrid
+                    on:configUpdated={initializeQLearning}
+                    bind:showconfig={showParamGrid}
+                    bind:world_width
+                    bind:world_height
+                    bind:hole_positions={holes}
+                    bind:start_position={start}
+                    bind:goal_position={goal}
+                />
+            {/if}
 
+            <button class="btn-change" on:click={showRLSetter}>
+                Alterar parâmetros RL
+            </button>
+            {#if showParamRL}
+                <ChangeParams
+                    on:paramsUpdated={initializeQLearning}
+                    bind:alpha
+                    bind:gamma
+                    bind:epsilon
+                    bind:epsilon_decay
+                    bind:num_episodes
+                    bind:max_steps
+                    bind:showParamRL
+                />
+            {/if}
+        </div>
+        <div class="player-controls">
+            <button class="play-btn" on:click={togglePlaySpeed}
+                >{playSpeedText}</button
+            >
+            <!-- Botão de reset -->
+            <button on:click={initializeQLearning} title="Reset">
+                <Icon name="reset" color="white"></Icon>
+            </button>
+
+            <!-- Botão anterior -->
+            <button on:click={prevStep} title="Previous Step">
+                <Icon name="previous"></Icon>
+            </button>
+
+            <!-- Botão play/pause -->
+            <button on:click={togglePlay} title={playing ? "Pause" : "Play"}>
+                {#if playing}
+                    <Icon name="pause"></Icon>
+                {:else}
+                    <Icon name="play"></Icon>
+                {/if}
+            </button>
+
+            <!-- Botão próximo -->
+            <button on:click={nextStep} title="Next Step">
+                <Icon name="next"></Icon>
+            </button>
+
+            <!-- Episode Slider -->
+            <div class="episode-slider">
+                <label for="episodeSlider">
+                    Ep: {currentEpisode + 1}/{agent_positions_data.length}
+                </label>
+                <input
+                    type="range"
+                    id="episodeSlider"
+                    min="0"
+                    max={agent_positions_data.length > 0
+                        ? agent_positions_data.length - 1
+                        : 0}
+                    bind:value={currentEpisode}
+                    on:input={goToEpisode}
+                    disabled={agent_positions_data.length === 0}
+                />
+            </div>
+        </div>
+        <div class="grid-display-wrapper-env">
+            <EnvironmentGrid
+                {world_width}
+                {world_height}
+                {start}
+                {goal}
+                bind:holes
+                {currentAgentPosition}
+            />
+        </div>
+    </div>
+    <div class="right-panel">
         <div class="grids-and-chart-wrapper">
             <div class="grids-wrapper">
-                <div class="grid-display-wrapper">
-                    <EnvironmentGrid
-                        world_width={world_width}
-                        world_height={world_height}
-                        start={start}
-                        goal={goal}
-                        holes={holes}
-                        currentAgentPosition={currentAgentPosition}
-                    />
-                </div>
-
                 <div class="grid-display-wrapper">
                     {#if currentQTable}
                         <QTableArrows
                             qTable={currentQTable}
-                            world_width={world_width}
-                            world_height={world_height}
-                            start={start}
-                            goal={goal}
-                            holes={holes}
+                            {world_width}
+                            {world_height}
+                            {start}
+                            {goal}
+                            {holes}
                         />
                     {:else}
                         <p>Carregando visualização da Q-table (Setas)...</p>
@@ -199,11 +304,11 @@
                         <QTableValues
                             allQTables={q_tables_data}
                             qTable={currentQTable}
-                            world_width={world_width}
-                            world_height={world_height}
-                            start={start}
-                            goal={goal}
-                            holes={holes}
+                            {world_width}
+                            {world_height}
+                            {start}
+                            {goal}
+                            {holes}
                         />
                     {:else}
                         <p>Carregando visualização da Q-table (Valores)...</p>
@@ -219,66 +324,6 @@
             />
         </div>
     </div>
-
-    <div class="right-panel">
-        <div class="buttons-change">
-        <button class="btn-change" on:click={showParamSetter}>
-            Alterar Parâmetros do Grid
-        </button>
-        {#if showParamGrid}
-            <ChangeGrid on:configUpdated={initializeQLearning} 
-                bind:showconfig={showParamGrid}        
-                bind:world_width={world_width}
-                bind:world_height={world_height}
-                bind:hole_positions={holes}
-                bind:start_position={start}
-                bind:goal_position={goal} />
-        {/if}
-
-         <button class="btn-change" on:click={showRLSetter}>
-            Alterar parâmetros RL
-        </button>
-        {#if showParamRL}
-            <ChangeParams
-                on:paramsUpdated={initializeQLearning}
-                bind:alpha={alpha}
-                bind:gamma={gamma}
-                bind:epsilon={epsilon}
-                bind:epsilon_decay={epsilon_decay}
-                bind:num_episodes={num_episodes}
-                bind:max_steps={max_steps}
-                bind:showParamRL={showParamRL}
-            />
-        {/if}
-        </div>
-        <div class="controls">
-            <h2>Controles de Simulação</h2>
-            
-            
-            <div class="episode-and-speed-controls">
-                <button on:click={togglePlaySpeed}>{playSpeedText}</button>
-                <div class="episode-info">
-                    <label for="episodeSlider">Episode: {currentEpisode + 1}/{agent_positions_data.length}</label>
-                    <input
-                        type="range"
-                        id="episodeSlider"
-                        min="0"
-                        max={agent_positions_data.length > 0 ? agent_positions_data.length - 1 : 0}
-                        bind:value={currentEpisode}
-                        on:input={goToEpisode}
-                        disabled={agent_positions_data.length === 0}
-                    />
-                </div>
-            </div>
-
-            <div class="playback-buttons">
-                <button on:click={initializeQLearning}>Reset</button>
-                <button on:click={prevStep}>Previous Step</button>
-                <button on:click={togglePlay}>{playing ? 'Pause' : 'Play'}</button>
-                <button on:click={nextStep}>Next Step</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <style>
@@ -287,7 +332,7 @@
         justify-content: space-between;
         padding: 20px;
         font-family: Arial, sans-serif;
-        background-color: #000000;
+        background-color: #1e1e1e;
         color: #ffffff;
         min-height: 100vh;
         gap: 30px;
@@ -311,13 +356,8 @@
         gap: 15px;
     }
 
-    h1 {
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        margin-top: 0;
-        color: #00bcd4;
+    .grid-display-wrapper-env {
+        align-items: center;
     }
 
     .grids-and-chart-wrapper {
@@ -328,99 +368,7 @@
         align-items: center;
     }
 
-    .controls {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .episode-and-speed-controls {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: nowrap;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .episode-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        flex-grow: 1;
-    }
-
-    .episode-info label {
-        white-space: nowrap;
-        flex-shrink: 0;
-        min-width: 170px;
-        text-align: center;
-    }
-
-    .episode-info input[type="range"] {
-        flex-grow: 1;
-        min-width: 100px;
-        margin-top: 0;
-        flex-shrink: 1;
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100%;
-        height: 8px;
-        background: #333;
-        border-radius: 5px;
-        outline: none;
-        transition: background 0.2s ease-in-out;
-    }
-
-    .episode-info input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: #00bcd4;
-        cursor: grab;
-        margin-top: 0px;
-        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-
-    .episode-info input[type="range"]::-webkit-slider-thumb:hover {
-        background-color: #008c9e;
-    }
-
-    .episode-info input[type="range"]::-webkit-slider-thumb:active {
-        cursor: grabbing;
-        background-color: #007bff;
-    }
-
-    .episode-and-speed-controls button {
-        padding: 8px 15px;
-        cursor: pointer;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-        white-space: nowrap;
-        flex-shrink: 0;
-        min-width: 80px;
-        min-height: 35px;
-        text-align: center;
-    }
-
-    .episode-and-speed-controls button:hover {
-        background-color: #218838;
-    }
-
-    .playback-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .playback-buttons button, .btn-change {
+    .btn-change {
         padding: 10px 20px;
         cursor: pointer;
         background-color: #007bff;
@@ -430,18 +378,30 @@
         transition: background-color 0.3s ease;
     }
 
-    .playback-buttons button:hover, .btn-change:hover {
+    .btn-change:hover {
         background-color: #0056b3;
     }
 
-    /* input[type="range"] {
+    .episode-slider input[type="range"] {
         width: 100%;
-        margin-top: 5px;
-        background: #333;
-        height: 8px;
-        border-radius: 5px;
+        height: 6px;
+        background: #ccc;
+        border-radius: 3px;
         outline: none;
-    } */
+        margin-top: 8px; /* opcional para espaçamento com o label */
+        }
+
+        /* Thumb (a bolinha) - WebKit (Chrome, Safari) */
+.episode-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: #000;
+  cursor: pointer;
+  margin-top: 0px; /* centraliza verticalmente em relação à track */
+}
+
 
     input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
@@ -452,16 +412,6 @@
         cursor: pointer;
         margin-top: -6px;
     }
-
-    /* input[type="number"] {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #333;
-        background-color: #222;
-        color: white;
-        border-radius: 4px;
-        margin-top: 5px;
-    } */
 
     label {
         margin-top: 10px;
@@ -481,7 +431,32 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-top: 20px;
         width: fit-content;
+    }
+
+    .player-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .player-controls button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+
+    .episode-slider {
+        flex-grow: 1;
+    }
+
+    .play-btn {
+        color: #ffffff;
+    }
+
+    input[type="range"] {
+        width: 100%;
     }
 </style>
