@@ -17,121 +17,19 @@
     let tooltipTextEpisode;
     let tooltipTextRate;
 
+    let interactiveElementsCreated = false;
+
     // Função reativa para desenhar/atualizar o gráfico
     $: if (svgContainer && success_rates_data.length > 0) {
         drawChart(svgContainer, width, height, success_rates_data.slice(0, currentEpisode + 1));
+        if (!interactiveElementsCreated) {
+            createInteractiveElements(d3.select(svgContainer), width, height);
+            interactiveElementsCreated = true;
+        }
     }
 
-    function drawChart(container, w, h, data) {
+    function createInteractiveElements(svg, w, h) {
         const margin = { top: 30, right: 48, bottom: 50, left: 60 };
-
-        const svg = d3
-            .select(container)
-            .attr("width", w)
-            .attr("height", h);
-
-        svg.selectAll("*").remove();
-
-        const x = d3
-            .scaleLinear()
-            .domain([0, success_rates_data.length > 0 ? success_rates_data.length - 1 : 0])
-            .range([margin.left, w - margin.right]);
-
-        const y = d3
-            .scaleLinear()
-            .domain([0, 100])
-            .nice()
-            .range([h - margin.bottom, margin.top]);
-
-        const line = d3
-            .line()
-            .x((d, i) => x(i))
-            .y((d) => y(d));
-
-        const tickInterval = Math.round(success_rates_data.length / 100) * 10;
-        const xTicks = [];
-        const totalEpisodes = success_rates_data.length;
-        
-        for (let i = 0; i <= totalEpisodes; i += tickInterval) {
-            xTicks.push(i);
-        }
-
-        if (totalEpisodes > 0 && xTicks[xTicks.length - 1] < totalEpisodes - 1) {
-            xTicks.push(totalEpisodes - 1);
-        }
-
-        // Eixo X
-        svg.append("g")
-            .attr("transform", `translate(0,${h - margin.bottom})`)
-            .call(d3.axisBottom(x).tickValues(xTicks));
-
-        // Título do Eixo X
-        svg.append("text")
-            .attr("class", "x axis-label")
-            .attr("text-anchor", "middle")
-            .attr("x", w / 2 + 35)
-            .attr("y", h - 12)
-            .style("fill", "#ffffff")
-            .text("Episodes");
-
-        // Linha do gráfico
-        svg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", "blue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
-
-        // Eixo Y
-        svg.append("g")
-            .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y));
-
-        // Título do Eixo Y
-        svg.append("text")
-            .attr("class", "y axis-label")
-            .attr("text-anchor", "middle")
-            .attr("x", - (h / 2) + 15)
-            .attr("y", margin.left - 37)
-            .attr("transform", "rotate(-90)")
-            .style("fill", "#ffffff")
-            .text("Success Rate (%)");
-
-        if (data.length > 0) {
-            const lastDataPoint = data[data.length - 1];
-            const lastEpisodeIndex = data.length - 1;
-
-            const circleX = x(lastEpisodeIndex);
-            const circleY = y(lastDataPoint);
-
-            // Círculo do último ponto
-            svg.append("circle")
-                .attr("cx", circleX)
-                .attr("cy", circleY)
-                .attr("r", 5)
-                .attr("fill", "blue")
-                .attr("stroke", "white")
-                .attr("stroke-width", 1.5);
-
-            // Linha vertical do último ponto
-            svg.append("line")
-                .attr("x1", circleX)
-                .attr("y1", margin.top)
-                .attr("x2", circleX)
-                .attr("y2", h - margin.bottom)
-                .attr("stroke", "blue")
-                .attr("stroke-width", 2)
-                .attr("opacity", 0.2);
-
-            // Texto da taxa de sucesso do último ponto
-            svg.append("text")
-                .attr("class", "success-rate-label")
-                .attr("x", circleX + 12)
-                .attr("y", lastDataPoint < 7 ? y(7) + 5 : circleY + 5)
-                .attr("text-anchor", "left")
-                .style("fill", "white")
-                .text(`${Math.trunc(lastDataPoint)}%`);
-        }
 
         // Elementos de interatividade
         focusLine = svg.append("line")
@@ -180,7 +78,11 @@
             .attr("y", margin.top)
             .attr("fill", "none")
             .attr("pointer-events", "all")
-            // .on("mouseover", mousemove)
+            // .on("mouseover", () => {
+            //     focusLine.raise().transition().duration(50).attr("opacity", 0.15);
+            //     focusCircle.raise().transition().duration(50).attr("opacity", 0.5);
+            //     tooltip.raise().transition().duration(50).attr("opacity", 1);
+            // })
             .on("mouseout", () => {
                 focusLine.transition().duration(50).attr("opacity", 0);
                 focusCircle.transition().duration(50).attr("opacity", 0);
@@ -188,45 +90,189 @@
             })
             .on("mousemove", mousemove)
             .on("click", clickHandler);
+    }
 
-        function mousemove(event) {
-            const x0 = x.invert(d3.pointer(event)[0]);
-            const i = Math.round(x0);
-            
-            if (i < 0 || i >= success_rates_data.length || i > currentEpisode) {
-                focusLine.transition().duration(50).attr("opacity", 0);
-                focusCircle.transition().duration(50).attr("opacity", 0);
-                tooltip.transition().duration(50).attr("opacity", 0);
-                return;
-            }
+    function drawChart(container, w, h, data) {
+        const margin = { top: 30, right: 48, bottom: 50, left: 60 };
 
-            const d = success_rates_data[i];
+        const svg = d3
+            .select(container)
+            .attr("width", w)
+            .attr("height", h);
 
-            focusLine.attr("x1", x(i)).attr("x2", x(i));
-            focusCircle.attr("cx", x(i)).attr("cy", y(d));
+        svg.selectAll(".chart-line, .last-point-circle, .last-point-line, .success-rate-label").remove();
 
-            const tooltipX = x(i) + 15;
-            const tooltipY = d < 15 ? y(15) - 20 : y(d) - 20;
+        const x = d3
+            .scaleLinear()
+            .domain([0, success_rates_data.length > 0 ? success_rates_data.length - 1 : 0])
+            .range([margin.left, w - margin.right]);
 
-            const tooltipWidth = 120;
-            const adjustedTooltipX = (tooltipX + tooltipWidth > w - margin.right) ? (x(i) - tooltipWidth + 15) : tooltipX;
+        const y = d3
+            .scaleLinear()
+            .domain([0, 100])
+            .nice()
+            .range([h - margin.bottom, margin.top]);
 
-            tooltip.attr("transform", `translate(${adjustedTooltipX},${tooltipY})`);
-            tooltipTextEpisode.text(`Episode: ${i}`);
-            tooltipTextRate.text(`Rate: ${Math.trunc(d)}%`);
+        const line = d3
+            .line()
+            .x((d, i) => x(i))
+            .y((d) => y(d));
 
-            focusLine.transition().duration(50).attr("opacity", 0.15);
-            focusCircle.transition().duration(50).attr("opacity", 0.5);
-            tooltip.transition().duration(50).attr("opacity", 1);
+        const tickInterval = Math.round(success_rates_data.length / 100) * 10;
+        const xTicks = [];
+        const totalEpisodes = success_rates_data.length;
+        
+        for (let i = 0; i <= totalEpisodes; i += tickInterval) {
+            xTicks.push(i);
         }
 
-        // Função para atualizar o episódio atual ao clicar no gráfico
-        function clickHandler(event) {
-            const x0 = x.invert(d3.pointer(event)[0]);
-            const clickedEpisode = Math.round(x0);
+        if (totalEpisodes > 0 && xTicks[xTicks.length - 1] < totalEpisodes - 1) {
+            xTicks.push(totalEpisodes - 1);
+        }
 
-            if (clickedEpisode >= 0 && clickedEpisode < success_rates_data.length) {
-                currentEpisode = clickedEpisode;
+        const xAxisGroup = svg.selectAll(".x-axis-group").data([null]);
+        xAxisGroup.enter().append("g")
+            .attr("class", "x-axis-group")
+            .attr("transform", `translate(0,${h - margin.bottom})`)
+            .merge(xAxisGroup)
+            .call(d3.axisBottom(x).tickValues(xTicks));
+
+        const yAxisGroup = svg.selectAll(".y-axis-group").data([null]);
+        yAxisGroup.enter().append("g")
+            .attr("class", "y-axis-group")
+            .attr("transform", `translate(${margin.left},0)`)
+            .merge(yAxisGroup)
+            .call(d3.axisLeft(y));
+
+
+        // Título do Eixo X
+        svg.selectAll(".x-axis-label").data([null]).enter().append("text")
+            .attr("class", "x axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", w / 2 + 35)
+            .attr("y", h - 12)
+            .style("fill", "#ffffff")
+            .text("Episodes");
+
+        // Título do Eixo Y
+        svg.selectAll(".y-axis-label").data([null]).enter().append("text")
+            .attr("class", "y axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", - (h / 2) + 15)
+            .attr("y", margin.left - 37)
+            .attr("transform", "rotate(-90)")
+            .style("fill", "#ffffff")
+            .text("Success Rate (%)");
+
+
+        // Linha do gráfico
+        svg.append("path")
+            .datum(data)
+            .attr("class", "chart-line")
+            .attr("fill", "none")
+            .attr("stroke", "blue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+        if (data.length > 0) {
+            const lastDataPoint = data[data.length - 1];
+            const lastEpisodeIndex = data.length - 1;
+
+            const circleX = x(lastEpisodeIndex);
+            const circleY = y(lastDataPoint);
+
+            // Círculo do último ponto
+            svg.append("circle")
+                .attr("class", "last-point-circle")
+                .attr("cx", circleX)
+                .attr("cy", circleY)
+                .attr("r", 5)
+                .attr("fill", "blue")
+                .attr("stroke", "white")
+                .attr("stroke-width", 1.5);
+
+            // Linha vertical do último ponto
+            svg.append("line")
+                .attr("class", "last-point-line")
+                .attr("x1", circleX)
+                .attr("y1", margin.top)
+                .attr("x2", circleX)
+                .attr("y2", h - margin.bottom)
+                .attr("stroke", "blue")
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.2);
+
+            // Texto da taxa de sucesso do último ponto
+            svg.append("text")
+                .attr("class", "success-rate-label")
+                .attr("x", circleX + 12)
+                .attr("y", lastDataPoint < 7 ? y(7) + 5 : circleY + 5)
+                .attr("text-anchor", "left")
+                .style("fill", "white")
+                .text(`${Math.trunc(lastDataPoint)}%`);
+        }
+    }
+
+    function mousemove(event) {
+        const margin = { top: 30, right: 48, bottom: 50, left: 60 };
+        const svgElement = d3.select(svgContainer);
+
+        const x = d3.scaleLinear()
+            .domain([0, success_rates_data.length > 0 ? success_rates_data.length - 1 : 0])
+            .range([margin.left, width - margin.right]);
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .nice()
+            .range([height - margin.bottom, margin.top]);
+
+        const x0 = x.invert(d3.pointer(event)[0]);
+        const i = Math.round(x0);
+
+        if (!focusLine || !focusCircle || !tooltip) return;
+        
+        if (i < 0 || i >= success_rates_data.length || i > currentEpisode) {
+            focusLine.transition().duration(50).attr("opacity", 0);
+            focusCircle.transition().duration(50).attr("opacity", 0);
+            tooltip.transition().duration(50).attr("opacity", 0);
+            return;
+        }
+
+        const d = success_rates_data[i];
+
+        focusLine.attr("x1", x(i)).attr("x2", x(i));
+        focusCircle.attr("cx", x(i)).attr("cy", y(d));
+
+        const tooltipX = x(i) + 15;
+        const tooltipY = d < 15 ? y(15) - 20 : y(d) - 20;
+
+        const tooltipWidth = 120;
+        const adjustedTooltipX = (tooltipX + tooltipWidth > width - margin.right) ? (x(i) - tooltipWidth + 15) : tooltipX;
+
+        tooltip.attr("transform", `translate(${adjustedTooltipX},${tooltipY})`);
+        tooltipTextEpisode.text(`Episode: ${i}`);
+        tooltipTextRate.text(`Rate: ${Math.trunc(d)}%`);
+
+        focusLine.raise().attr("opacity", 0.15);
+        focusCircle.raise().attr("opacity", 0.5);
+        tooltip.raise().attr("opacity", 1);
+    }
+
+    // Função para atualizar o episódio atual ao clicar no gráfico
+    function clickHandler(event) {
+        const margin = { top: 30, right: 48, bottom: 50, left: 60 };
+        const x = d3.scaleLinear()
+            .domain([0, success_rates_data.length > 0 ? success_rates_data.length - 1 : 0])
+            .range([margin.left, width - margin.right]);
+
+        const x0 = x.invert(d3.pointer(event)[0]);
+        const clickedEpisode = Math.round(x0);
+
+        if (clickedEpisode >= 0 && clickedEpisode < success_rates_data.length) {
+            currentEpisode = clickedEpisode;
+            if (focusLine && focusCircle && tooltip) {
+                focusLine.attr("opacity", 0);
+                focusCircle.attr("opacity", 0);
+                tooltip.attr("opacity", 0);
             }
         }
     }
