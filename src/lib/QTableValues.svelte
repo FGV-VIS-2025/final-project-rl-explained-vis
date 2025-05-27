@@ -153,6 +153,10 @@
 </div>
 
 <style>
+    :root {
+        --color-border: #3318e9;
+        --size-border: 3px
+    }
     .q-grid-wrapper {
         margin-top: 30px;
         text-align: center;
@@ -160,8 +164,8 @@
 
     .q-grid {
         display: grid;
-        border-top: 3px solid #3318e9;
-        border-left: 3px solid #3318e9;
+        border-top: var(--size-border) solid var(--color-border);
+        border-left: var(--size-border) solid var(--color-border);
         width: fit-content;
         margin: 0 auto;
     }
@@ -169,8 +173,8 @@
     .q-grid-cell {
         width: 35px;
         height: 35px;
-        border-right: 3px solid #3318e9;
-        border-bottom: 3px solid #3318e9;
+        border-right: var(--size-border) solid var(--color-border);
+        border-bottom: var(--size-border) solid var(--color-border);
         display: flex;
         justify-content: center;
         align-items: center;

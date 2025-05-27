@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher } from "svelte";
 
     // Props for two-way binding
     export let alpha;
@@ -8,6 +8,7 @@
     export let epsilon_decay;
     export let num_episodes;
     export let max_steps;
+    export let showParamRL;
 
     const dispatch = createEventDispatcher();
 
@@ -20,10 +21,10 @@
     let tempMaxSteps = max_steps;
 
     // Error or feedback messages
-    let errorMessage = '';
+    let errorMessage = "";
 
     function applyParameters() {
-        errorMessage = ''; // Clear previous error messages
+        errorMessage = ""; // Clear previous error messages
 
         // Basic validation (you can add more robust validation if needed)
         if (tempAlpha < 0 || tempAlpha > 1 || isNaN(tempAlpha)) {
@@ -58,15 +59,16 @@
         epsilon_decay = tempEpsilonDecay;
         num_episodes = tempNumEpisodes;
         max_steps = tempMaxSteps;
+        showParamRL = false;
 
         // Dispatch an event to notify the parent component that parameters are updated
-        dispatch('paramsUpdated');
+        dispatch("paramsUpdated");
         // Optionally, you might want to hide this component after applying
         // This component doesn't manage its own visibility, the parent does.
     }
 
     function resetParameters() {
-        errorMessage = '';
+        errorMessage = "";
         tempAlpha = alpha;
         tempGamma = gamma;
         tempEpsilon = epsilon;
@@ -75,123 +77,177 @@
         tempMaxSteps = max_steps;
     }
 
-    $: console.log(alpha, gamma)
+    $: console.log(alpha, gamma);
 </script>
 
-<div class="change-params-container">
-    <div class="header-section">
-        <h2>Configuração de Parâmetros do Q-Learning</h2>
-    </div>
+<div class="overlay">
+    <div class="change-params-container">
+        <div class="header-section">
+            <h2>Configuração de Parâmetros do Q-Learning</h2>
+        </div>
 
-    {#if errorMessage}
-        <div class="error-message">{errorMessage}</div>
-    {/if}
+        {#if errorMessage}
+            <div class="error-message">{errorMessage}</div>
+        {/if}
 
-    <div class="param-grid">
-        <div class="param-group">
-    <label for="alpha">Alpha (Taxa de Aprendizagem):</label>
-    <div class="slider-wrapper"> <span class="slider-value" style="--value: {tempAlpha};">{tempAlpha.toFixed(3)}</span> <input
-            type="range"
-            id="alpha"
-            bind:value={tempAlpha}
-            min="0"
-            max="1"
-            step="0.001"
-        />
-    </div>
-</div>
+        <div class="param-grid">
+            <div class="param-group">
+                <label for="alpha">Alpha (Taxa de Aprendizagem):</label>
+                <div class="slider-wrapper">
+                    <span class="slider-value" style="--value: {tempAlpha};"
+                        >{tempAlpha.toFixed(3)}</span
+                    >
+                    <input
+                        type="range"
+                        id="alpha"
+                        bind:value={tempAlpha}
+                        min="0"
+                        max="1"
+                        step="0.001"
+                    />
+                </div>
+            </div>
 
-<div class="param-group">
-    <label for="gamma">Gamma (Fator de Desconto):</label>
-    <div class="slider-wrapper">
-        <span class="slider-value" style="--value: {tempGamma};">{tempGamma.toFixed(3)}</span> <input
-            type="range"
-            id="gamma"
-            bind:value={tempGamma}
-            min="0"
-            max="1"
-            step="0.001"
-        />
-    </div>
-</div>
+            <div class="param-group">
+                <label for="gamma">Gamma (Fator de Desconto):</label>
+                <div class="slider-wrapper">
+                    <span class="slider-value" style="--value: {tempGamma};"
+                        >{tempGamma.toFixed(3)}</span
+                    >
+                    <input
+                        type="range"
+                        id="gamma"
+                        bind:value={tempGamma}
+                        min="0"
+                        max="1"
+                        step="0.001"
+                    />
+                </div>
+            </div>
 
-<div class="param-group">
-    <label for="epsilon">Epsilon (Exploração):</label>
-    <div class="slider-wrapper">
-        <span class="slider-value" style="--value: {tempEpsilon};">{tempEpsilon.toFixed(3)}</span> <input
-            type="range"
-            id="epsilon"
-            bind:value={tempEpsilon}
-            min="0"
-            max="1"
-            step="0.001"
-        />
-    </div>
-</div>
+            <div class="param-group">
+                <label for="epsilon">Epsilon (Exploração):</label>
+                <div class="slider-wrapper">
+                    <span class="slider-value" style="--value: {tempEpsilon};"
+                        >{tempEpsilon.toFixed(3)}</span
+                    >
+                    <input
+                        type="range"
+                        id="epsilon"
+                        bind:value={tempEpsilon}
+                        min="0"
+                        max="1"
+                        step="0.001"
+                    />
+                </div>
+            </div>
 
-<div class="param-group">
-    <label for="epsilon_decay">Epsilon Decay:</label>
-    <div class="slider-wrapper">
-        <span class="slider-value" style="--value: {tempEpsilonDecay};">{tempEpsilonDecay.toFixed(4)}</span> <input
-            type="range"
-            id="epsilon_decay"
-            bind:value={tempEpsilonDecay}
-            min="0"
-            max="0.01"
-            step="0.0001"
-        />
-    </div>
-</div>
+            <div class="param-group">
+                <label for="epsilon_decay">Epsilon Decay:</label>
+                <div class="slider-wrapper">
+                    <span
+                        class="slider-value"
+                        style="--value: {tempEpsilonDecay};"
+                        >{tempEpsilonDecay.toFixed(4)}</span
+                    >
+                    <input
+                        type="range"
+                        id="epsilon_decay"
+                        bind:value={tempEpsilonDecay}
+                        min="0"
+                        max="0.01"
+                        step="0.0001"
+                    />
+                </div>
+            </div>
 
-<div class="param-group">
-    <label for="num_episodes">Número de Episódios:</label>
-    <div class="slider-wrapper">
-        <span class="slider-value" style="--value: {tempNumEpisodes};">{tempNumEpisodes}</span> <input
-            type="range"
-            id="num_episodes"
-            bind:value={tempNumEpisodes}
-            min="100"
-            max="5000"
-            step="100"
-        />
-    </div>
-</div>
+            <div class="param-group">
+                <label for="num_episodes">Número de Episódios:</label>
+                <div class="slider-wrapper">
+                    <span
+                        class="slider-value"
+                        style="--value: {tempNumEpisodes};"
+                        >{tempNumEpisodes}</span
+                    >
+                    <input
+                        type="range"
+                        id="num_episodes"
+                        bind:value={tempNumEpisodes}
+                        min="100"
+                        max="5000"
+                        step="100"
+                    />
+                </div>
+            </div>
 
-<div class="param-group">
-    <label for="max_steps">Máximo de Passos por Episódio:</label>
-    <div class="slider-wrapper">
-        <span class="slider-value" style="--value: {tempMaxSteps};">{tempMaxSteps}</span> <input
-            type="range"
-            id="max_steps"
-            bind:value={tempMaxSteps}
-            min="1"
-            max="100"
-            step="1"
-        />
-    </div>
-</div>
-    </div>
+            <div class="param-group">
+                <label for="max_steps">Máximo de Passos por Episódio:</label>
+                <div class="slider-wrapper">
+                    <span class="slider-value" style="--value: {tempMaxSteps};"
+                        >{tempMaxSteps}</span
+                    >
+                    <input
+                        type="range"
+                        id="max_steps"
+                        bind:value={tempMaxSteps}
+                        min="1"
+                        max="100"
+                        step="1"
+                    />
+                </div>
+            </div>
+        </div>
 
-    <div class="action-buttons">
-        <button on:click={resetParameters} class="reset-button">Reiniciar</button>
-        <button on:click={applyParameters}>Aplicar Parâmetros</button>
+        <div class="action-buttons">
+            <button on:click={resetParameters} class="reset-button"
+                >Reiniciar</button
+            >
+            <button on:click={applyParameters}>Aplicar Parâmetros</button>
+        </div>
     </div>
 </div>
 
 <style>
-    .change-params-container {
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(5px);
         display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        font-family: sans-serif;
-        width: 100%;
-        max-width: 900px; /* Increased max-width to accommodate a 3x3 grid */
-        margin-top: 20px;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
     }
+    .change-params-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally in a column flex container */
+    justify-content: center; /* Centers items vertically in a column flex container */
+    padding: 20px;
+    background-color: #000000;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: sans-serif;
+    width: 80vw;
+    max-width: 1000px;
+    height: 80vh;
+    max-height: 800px;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
 
+.param-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: start;
+    width: 100%; /* Ensure the grid takes full available width to allow centering */
+    max-width: 900px; /* Optional: set a max-width for the grid itself */
+    margin: 0 auto; /* This is crucial for centering the grid horizontally */
+}
     .header-section {
         text-align: center;
         margin-bottom: 10px;
@@ -203,8 +259,6 @@
         margin-bottom: 5px;
     }
 
-
-
     .error-message {
         color: #ff6666; /* Redder error message */
         font-weight: bold;
@@ -212,17 +266,14 @@
         margin-bottom: 15px;
     }
 
-    /* --- Grid Layout for Parameters --- */
-    .param-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Three columns, equal width */
-        gap: 20px; /* Space between grid items */
-        align-items: start; /* Align items to the start of their grid cell */
-    }
+
 
     @media (max-width: 768px) {
         .param-grid {
-            grid-template-columns: repeat(2, 1fr); /* Two columns on smaller screens */
+            grid-template-columns: repeat(
+                2,
+                1fr
+            ); /* Two columns on smaller screens */
         }
     }
 
@@ -232,7 +283,6 @@
         }
     }
     /* --- End Grid Layout --- */
-
 
     .param-group {
         font-size: 0.7em;
@@ -252,10 +302,7 @@
         margin-bottom: 5px; /* Space between label and input */
     }
 
-
-
     /* Override the default number input styling to match the dark theme */
-
 
     .param-group input[type="range"] {
         width: 100%;
@@ -264,7 +311,7 @@
         border-radius: 5px;
         outline: none;
         opacity: 0.9;
-        transition: opacity .2s;
+        transition: opacity 0.2s;
         margin-top: 5px; /* Space below label */
     }
 
@@ -287,9 +334,6 @@
         cursor: pointer;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     }
-
-
-
 
     .action-buttons {
         display: flex;

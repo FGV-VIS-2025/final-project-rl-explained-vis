@@ -95,9 +95,14 @@
     }
 
     function togglePlay() {
+
         if (playing) {
             stopAnimation();
-        } else {
+        } else if(!playing && currentEpisode == success_rates_data.length -1){
+            currentEpisode = 0;
+            startAnimation();
+        }
+        else {
             startAnimation();
         }
     }
@@ -141,10 +146,15 @@
     // Texto dinâmico para o botão de velocidade
     $: playSpeedText = currentSpeedIndex === 0 ? 'Slow' : currentSpeedIndex === 1 ? 'Mid' : currentSpeedIndex === 2 ? 'Fast' : "Catchau";
 
-    $: showconfig = false;
+    $: showParamGrid = false;
     function showParamSetter(){
-        console.log(showconfig)
-        showconfig = true;
+        showParamGrid = true;
+    }
+
+    $: showParamRL = false
+    function showRLSetter(){
+        console.log(showParamRL)
+        showParamRL = true;
     }
 </script>
 
@@ -211,20 +221,24 @@
     </div>
 
     <div class="right-panel">
+        <div class="buttons-change">
         <button class="btn-change" on:click={showParamSetter}>
             Alterar Parâmetros do Grid
         </button>
-        {#if showconfig}
+        {#if showParamGrid}
             <ChangeGrid on:configUpdated={initializeQLearning} 
-                bind:showconfig={showconfig}        
+                bind:showconfig={showParamGrid}        
                 bind:world_width={world_width}
                 bind:world_height={world_height}
                 bind:hole_positions={holes}
                 bind:start_position={start}
                 bind:goal_position={goal} />
         {/if}
-        <div class="controls">
-            <h2>Controles de Simulação</h2>
+
+         <button class="btn-change" on:click={showRLSetter}>
+            Alterar parâmetros RL
+        </button>
+        {#if showParamRL}
             <ChangeParams
                 on:paramsUpdated={initializeQLearning}
                 bind:alpha={alpha}
@@ -233,7 +247,13 @@
                 bind:epsilon_decay={epsilon_decay}
                 bind:num_episodes={num_episodes}
                 bind:max_steps={max_steps}
+                bind:showParamRL={showParamRL}
             />
+        {/if}
+        </div>
+        <div class="controls">
+            <h2>Controles de Simulação</h2>
+            
             
             <div class="episode-and-speed-controls">
                 <button on:click={togglePlaySpeed}>{playSpeedText}</button>
