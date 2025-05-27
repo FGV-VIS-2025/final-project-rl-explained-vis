@@ -11,13 +11,20 @@
 
     let svgContainer;
 
+    let focusLine;
+    let focusCircle;
+    let tooltip;
+    let tooltipBg;
+    let tooltipTextEpisode;
+    let tooltipTextRate;
+
     // Função reativa para desenhar/atualizar o gráfico
     $: if (svgContainer && success_rates_data.length > 0) {
         drawChart(svgContainer, width, height, success_rates_data.slice(0, currentEpisode + 1));
     }
 
     function drawChart(container, w, h, data) {
-        const margin = { top: 20, right: 48, bottom: 50, left: 60 };
+        const margin = { top: 30, right: 48, bottom: 50, left: 60 };
 
         const svg = d3
             .select(container)
@@ -61,7 +68,7 @@
         svg.append("text")
             .attr("class", "x axis-label")
             .attr("text-anchor", "middle")
-            .attr("x", w / 2 + 50)
+            .attr("x", w / 2 + 35)
             .attr("y", h - 12)
             .style("fill", "#ffffff")
             .text("Episodes");
@@ -85,6 +92,89 @@
             .attr("transform", "rotate(-90)")
             .style("fill", "#ffffff")
             .text("Success Rate (%)");
+
+        focusLine = svg.append("line")
+            .attr("class", "focus-line")
+            .attr("y1", margin.top)
+            .attr("y2", h - margin.bottom)
+            .attr("stroke", "blue")
+            .attr("stroke-width", 1.5)
+            .attr("opacity", 0);
+
+        focusCircle = svg.append("circle")
+            .attr("class", "focus-circle")
+            .attr("r", 5)
+            .attr("fill", "blue")
+            .attr("stroke", "white")
+            .attr("stroke-width", 1.5)
+            .attr("opacity", 0);
+
+        tooltip = svg.append("g")
+            .attr("class", "tooltip")
+            .attr("opacity", 0);
+
+        tooltipBg = tooltip.append("rect")
+            .attr("width", 90)
+            .attr("height", 40)
+            .attr("fill", "rgba(0, 0, 0, 0.7)")
+            .attr("rx", 5)
+            .attr("ry", 5);
+
+        tooltipTextEpisode = tooltip.append("text")
+            .attr("x", 10)
+            .attr("y", 16)
+            .style("fill", "white")
+            .style("font-size", "11px");
+
+        tooltipTextRate = tooltip.append("text")
+            .attr("x", 10)
+            .attr("y", 31)
+            .style("fill", "white")
+            .style("font-size", "11px");
+
+        svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", w - margin.left - margin.right)
+            .attr("height", h - margin.top - margin.bottom)
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("fill", "none")
+            .attr("pointer-events", "all")
+            .on("mouseover", () => {
+                focusLine.transition().duration(50).attr("opacity", 0.15);
+                focusCircle.transition().duration(50).attr("opacity", 0.5);
+                tooltip.transition().duration(50).attr("opacity", 1);
+            })
+            .on("mouseout", () => {
+                focusLine.transition().duration(50).attr("opacity", 0);
+                focusCircle.transition().duration(50).attr("opacity", 0);
+                tooltip.transition().duration(50).attr("opacity", 0);
+            })
+            .on("mousemove", mousemove);
+
+        function mousemove(event) {
+            const x0 = x.invert(d3.pointer(event)[0]);
+            const i = Math.round(x0);
+            
+            if (i < 0 || i >= success_rates_data.length) {
+                return;
+            }
+
+            const d = success_rates_data[i];
+
+            focusLine.attr("x1", x(i)).attr("x2", x(i));
+            focusCircle.attr("cx", x(i)).attr("cy", y(d));
+
+            const tooltipX = x(i) + 15;
+            const tooltipY = d < 15 ? y(15) - 20 : y(d) - 20;
+
+            const tooltipWidth = 120;
+            const adjustedTooltipX = (tooltipX + tooltipWidth > w - margin.right) ? (x(i) - tooltipWidth + 15) : tooltipX;
+
+            tooltip.attr("transform", `translate(${adjustedTooltipX},${tooltipY})`);
+            tooltipTextEpisode.text(`Episode: ${i}`);
+            tooltipTextRate.text(`Rate: ${Math.trunc(d)}%`);
+        }
 
         if (data.length > 0) {
             const lastDataPoint = data[data.length - 1];
@@ -157,5 +247,9 @@
     :global(.axis-label) {
         font-size: 13px;
         font-weight: bold;
+    }
+
+    :global(.tooltip) {
+        pointer-events: none;
     }
 </style>
