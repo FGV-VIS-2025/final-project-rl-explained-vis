@@ -213,7 +213,7 @@
 
             <AccuracyChart
                 success_rates_data={success_rates_data}
-                currentEpisode={currentEpisode}
+                bind:currentEpisode={currentEpisode}
                 width={650}
                 height={250}
             />
