@@ -183,18 +183,21 @@
         showParamRL = true;
     }
 
-    $: goal = goal;
+    let width_icon = 19
 </script>
 
 <svelte:head>
     <title>Q-Learning Visualization</title>
 </svelte:head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
 <div class="main-layout">
     <div class="left-panel">
         <div class="buttons-change">
             <button class="btn-change" on:click={showParamSetter}>
-                Alterar Parâmetros do Grid
+                Parâmetros Grid
             </button>
             {#if showParamGrid}
                 <ChangeGrid
@@ -209,7 +212,7 @@
             {/if}
 
             <button class="btn-change" on:click={showRLSetter}>
-                Alterar parâmetros RL
+                Parâmetros RL
             </button>
             {#if showParamRL}
                 <ChangeParams
@@ -230,26 +233,26 @@
             >
             <!-- Botão de reset -->
             <button on:click={initializeQLearning} title="Reset">
-                <Icon name="reset" color="white"></Icon>
+                <Icon width_icon = {width_icon} name="reset" color="white"></Icon>
             </button>
 
             <!-- Botão anterior -->
             <button on:click={prevStep} title="Previous Step">
-                <Icon name="previous"></Icon>
+                <Icon width_icon = {width_icon} name="previous"></Icon>
             </button>
 
             <!-- Botão play/pause -->
             <button on:click={togglePlay} title={playing ? "Pause" : "Play"}>
                 {#if playing}
-                    <Icon name="pause"></Icon>
+                    <Icon width_icon = {width_icon} name="pause"></Icon>
                 {:else}
-                    <Icon name="play"></Icon>
+                    <Icon width_icon = {width_icon} name="play"></Icon>
                 {/if}
             </button>
 
             <!-- Botão próximo -->
             <button on:click={nextStep} title="Next Step">
-                <Icon name="next"></Icon>
+                <Icon width_icon = {width_icon} name="next"></Icon>
             </button>
 
             <!-- Episode Slider -->
@@ -351,7 +354,6 @@
         flex-direction: column;
         align-items: flex-start;
         padding: 20px;
-        background-color: #1a1a1a;
         border-radius: 8px;
         gap: 15px;
     }
@@ -368,30 +370,44 @@
         align-items: center;
     }
 
-    .btn-change {
-        padding: 10px 20px;
-        cursor: pointer;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
+
+.btn-change {
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: #9a5bf4; /* tom roxo da imagem */
+    color: white;
+    border: 2px solid black;
+    border-radius: 0; /* estilo quadrado */
+    font-family: 'Press Start 2P', monospace; /* estilo pixel retro */
+    font-size: 10px;
+    text-transform: none;
+    letter-spacing: 1px;
+    display: inline-block;
+    text-align: center;
+}
+
+
 
     .btn-change:hover {
         background-color: #0056b3;
     }
 
-    .episode-slider input[type="range"] {
+    /* .episode-slider input[type="range"] {
+        background-color: #9a5bf4;
         width: 100%;
         height: 6px;
         background: #ccc;
         border-radius: 3px;
         outline: none;
-        margin-top: 8px; /* opcional para espaçamento com o label */
+        margin-top: 8px;
         }
-
-        /* Thumb (a bolinha) - WebKit (Chrome, Safari) */
+        .episode-slider input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #9a5bf4; 
+    border-radius: 3px;
+    cursor: pointer;
+}
 .episode-slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   height: 16px;
@@ -399,7 +415,7 @@
   border-radius: 50%;
   background: #000;
   cursor: pointer;
-  margin-top: 0px; /* centraliza verticalmente em relação à track */
+  margin-top: 0px; 
 }
 
 
@@ -411,7 +427,7 @@
         background: #00bcd4;
         cursor: pointer;
         margin-top: -6px;
-    }
+    } */
 
     label {
         margin-top: 10px;
@@ -436,9 +452,13 @@
 
     .player-controls {
         display: flex;
+        font-size: 0.8rem;
         align-items: center;
-        gap: 1rem;
-        padding: 0.5rem;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        padding-right: 4rem;
+        padding-left: 4rem;
+        padding-bottom: 1rem;
     }
 
     .player-controls button {
@@ -455,6 +475,84 @@
     .play-btn {
         color: #ffffff;
     }
+    .episode-slider input[type="range"] {
+    -webkit-appearance: none; /* Remove o estilo padrão do navegador para Webkit */
+    appearance: none; /* Estilo padrão */
+    width: 100%;
+    height: 6px;
+    background: transparent; /* Torna o fundo do input transparente para que a barra de progresso personalizada seja visível */
+    border-radius: 3px;
+    outline: none;
+    margin-top: 8px;
+}
+
+/* Estilo para a barra de progresso (o "track") */
+.episode-slider input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #9a5bf4; /* A cor que você quer para a barra */
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.episode-slider input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #9a5bf4; /* A cor que você quer para a barra */
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.episode-slider input[type="range"]::-ms-track {
+    width: 100%;
+    height: 6px;
+    background: transparent; /* Necessário para MS Edge/IE para o track */
+    border-color: transparent;
+    color: transparent;
+    cursor: pointer;
+}
+
+.episode-slider input[type="range"]::-ms-fill-lower {
+    background: #9a5bf4; /* Cor da parte "preenchida" para MS Edge/IE */
+    border-radius: 3px;
+}
+
+.episode-slider input[type="range"]::-ms-fill-upper {
+    background: #ccc; /* Cor da parte "não preenchida" para MS Edge/IE */
+    border-radius: 3px;
+}
+
+
+/* Estilo para o "polegar" (o "thumb") */
+.episode-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove o estilo padrão do navegador para Webkit */
+    height: 18px; /* Tamanho do thumb */
+    width: 18px; /* Tamanho do thumb */
+    border-radius: 50%; /* Para torná-lo redondo */
+    background: #ffffff; /* Cor do thumb (verde para contraste) */
+    cursor: pointer;
+    margin-top: -6px; /* Ajuste para centralizar o thumb na track */
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Sombra opcional */
+}
+
+.episode-slider input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px #ffffff, 0px 0px 1px #0d0d0d;
+}
+
+.episode-slider input[type="range"]::-ms-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: 0px; /* IE/Edge lidam com a posição do thumb de forma diferente */
+    box-shadow: 1px 1px 1px #ffffff, 0px 0px 1px #0d0d0d;
+}
 
     input[type="range"] {
         width: 100%;
