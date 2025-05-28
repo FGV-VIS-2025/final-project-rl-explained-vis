@@ -329,8 +329,7 @@
 
     svg {
         margin-top: 20px;
-        border: 1px solid #3318e9;
-        background-color: #0d0d0d;
+        background-color: #1e1e1e;
         border-radius: 8px;
     }
 

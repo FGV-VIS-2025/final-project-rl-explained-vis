@@ -303,9 +303,22 @@
                                     on:mouseleave={handleMouseLeave}
                                     on:focus={() => handleMouseEnter(r, c)}
                                 >
-                                    {#if isStart(r, c)}S{/if}
-                                    {#if isGoal(r, c)}G{/if}
-                                    {#if isHole(r, c)}H{/if}
+                                    {#if isStart(r, c)}
+                                    S{/if}
+                                    {#if isGoal(r, c)}
+                                    <img
+                                    src=/coin.png
+                                    alt="Hole"
+                                    style="width: 24px; height: 24px;"/>
+                            {/if}
+                                    {#if isHole(r, c)}
+                                    <img
+      src=/fantasma.png
+      alt="Ghost"
+      style="width: 24px; height: 24px;"
+    />
+                                    
+                                    {/if}
                                 </div>
                             {/each}
                         {/each}
@@ -329,8 +342,8 @@
 <style>
     :root {
         --color-border: #454b5e;
-        --color-hole:#003366;
-        --color-goal: #b782ff;
+        --color-hole:#000000;
+        --color-goal: #000000;
         --color-start: #4caf50;
         --size-border: 1px;
     }
