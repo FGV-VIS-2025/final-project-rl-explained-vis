@@ -8,29 +8,55 @@
     export let inspectedRow;
     export let inspectedCol;
 
+    import { afterUpdate } from "svelte";
+
+    // ... seus exports e funções anteriores ...
+
+    let agentDirection = 0;
+    let lastAgentPosition = [...currentAgentPosition];
+
+    afterUpdate(() => {
+        const [r, c] = currentAgentPosition;
+        const [lastR, lastC] = lastAgentPosition;
+
+        if (r !== lastR || c !== lastC) {
+            if (r === lastR && c > lastC)
+                agentDirection = 0; // direita
+            else if (r === lastR && c < lastC)
+                agentDirection = 180; // esquerda
+            else if (r > lastR && c === lastC)
+                agentDirection = 90; // baixo
+            else if (r < lastR && c === lastC) agentDirection = 270; // cima
+
+            lastAgentPosition = [r, c];
+        }
+    });
+
     import InfoTooltip from "./InfoTooltip.svelte";
 
     // Função para determinar o tipo da célula
     function getCellType(row, col) {
-        if (row === start[0] && col === start[1]) return 'start';
-        if (row === goal[0] && col === goal[1]) return 'goal';
-        if (holes.some(hole => hole[0] === row && hole[1] === col)) return 'hole';
-        return '';
+        if (row === start[0] && col === start[1]) return "start";
+        if (row === goal[0] && col === goal[1]) return "goal";
+        if (holes.some((hole) => hole[0] === row && hole[1] === col))
+            return "hole";
+        return "";
     }
 
     // Função para obter o conteúdo da célula
     function getCellContent(row, col) {
         const type = getCellType(row, col);
-        if (type === 'start') return 'S';
-        if (type === 'goal') return 'G';
-        if (type === 'hole') return 'H';
-        return '';
+        if (type === "goal") return "/coin.png";
+        if (type === "hole") return "/fantasma.png";
+        return "";
     }
 
     // Manipulador de clique na célula
     function handleCellClick(row, col) {
-        if (getCellContent(row, col) != 'H' && getCellContent(row, col) != 'G')
-        {
+        if (
+            getCellContent(row, col) != "H" &&
+            getCellContent(row, col) != "G"
+        ) {
             // Se a célula clicada já for a célula inspecionada, desseleciona
             if (inspectedRow === row && inspectedCol === col) {
                 inspectedRow = null;
@@ -42,48 +68,80 @@
             }
         }
     }
-
 </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap"
+    rel="stylesheet"
+/>
 
 <div class="q-grid-wrapper">
-    <h3>Environment
+    <h3>
+        Environment
         <InfoTooltip>
-            <div slot = "tooltipContent">
-                This grid represents the environment,<br>
-                showing the agent's current position,<br>
+            <div slot="tooltipContent">
+                This grid represents the environment,<br />
+                showing the agent's current position,<br />
                 the start, the goal, and any dangerous holes.
             </div>
         </InfoTooltip>
     </h3>
-    <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
+    <div
+        class="q-grid"
+        style="grid-template-columns: repeat({world_width}, 1fr);"
+    >
         {#key world_width + world_height + JSON.stringify(holes) + JSON.stringify(start) + JSON.stringify(goal) + JSON.stringify(currentAgentPosition)}
-        {#each Array(world_height) as _, r}
-            {#each Array(world_width) as __, c}
-                <div
-                    class="q-grid-cell {getCellType(r, c)}"
-                    class:agent={r === currentAgentPosition[0] && c === currentAgentPosition[1]}
-                    class:inspected={r === inspectedRow && c === inspectedCol}
-                    class:clickable={getCellType(r, c) != 'goal' && getCellType(r, c) != 'hole'}
-                    on:click={() => handleCellClick(r, c)}
-                >
-                    {getCellContent(r, c)}
-                </div>
+            {#each Array(world_height) as _, r}
+                {#each Array(world_width) as __, c}
+                    {@const content = getCellContent(r, c)}
+                    {@const isAgent =
+                        r === currentAgentPosition[0] &&
+                        c === currentAgentPosition[1]}
+
+                    <div
+                        class="q-grid-cell {getCellType(r, c)}"
+                        class:agent={r === currentAgentPosition[0] &&
+                            c === currentAgentPosition[1]}
+                        class:inspected={r === inspectedRow &&
+                            c === inspectedCol}
+                        class:clickable={getCellType(r, c) != "goal" &&
+                            getCellType(r, c) != "hole"}
+                        on:click={() => handleCellClick(r, c)}
+                    >
+                        {#if isAgent}
+                            <img
+                                src="./pacman.png"
+                                alt="Agent"
+                                style="width: 24px; height: 24px; transform: rotate({agentDirection}deg); transition: transform 0.2s ease;"
+                            />
+                        {:else if content.endsWith("fantasma.png")}
+                            <img
+                                src={content}
+                                alt="Hole"
+                                style="width: 24px; height: 24px;"
+                            />
+                        {:else if content.endsWith("coin.png")}
+                            <img
+                                src={content}
+                                alt="Goal"
+                                style="width: 24px; height: 24px;"
+                            />
+                        {:else}
+                            {content}
+                        {/if}
+                    </div>
+                {/each}
             {/each}
-        {/each}
         {/key}
     </div>
-
-
 </div>
 
 <style>
     :root {
         --color-border: #454b5e;
-        --size-border: 1px
+        --size-border: 1px;
     }
     .q-grid-wrapper h3 {
         text-align: center;
@@ -128,21 +186,5 @@
         outline-offset: -3px;
         box-shadow: 0 0 10px rgba(0, 174, 255, 0.3);
         background-color: #4a4a4a;
-    }
-
-    .q-grid-cell.start {
-        background-color: #000033; /* Darker blue */
-    }
-
-    .q-grid-cell.goal {
-        background-color: #b782ff; /* Light purple */
-    }
-
-    .q-grid-cell.hole {
-        background-color: #003366; /* Darker red */
-    }
-
-    .q-grid-cell.agent {
-        background-color: #ffeeba; /* Light yellow */
     }
 </style>

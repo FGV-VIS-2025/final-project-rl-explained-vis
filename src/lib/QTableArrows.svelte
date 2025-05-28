@@ -92,9 +92,17 @@
                     class="q-grid-cell {getCellType(r, c)}"
                 >
                     {#if getCellType(r,c) === 'goal'}
-                        G
+                        <img
+                                src=/coin.png
+                                alt="Hole"
+                                style="width: 24px; height: 24px;"
+                            />
                     {:else if getCellType(r,c) === 'hole'}
-                        H
+                        <img
+                                src=/fantasma.png
+                                alt="Hole"
+                                style="width: 24px; height: 24px;"
+                            />
                     {:else}
                         {#if arrowMap[bestActionsGrid[r][c]] == "?"}
                             ?
@@ -154,11 +162,5 @@
         background-color: #000033;
     }
 
-    .q-grid-cell.goal {
-        background-color: #b782ff;
-    }
 
-    .q-grid-cell.hole {
-        background-color: #003366;
-    }
 </style>

@@ -144,11 +144,17 @@
                     style="background-color: {getCellType(r,c) === '' ? getGradientColor(bestQValuesGrid[r][c]) : ''};"
                 >
                     {#if getCellType(r,c) === 'goal'}
-                        G
+                        <img
+                                src=/coin.png
+                                alt="Coin"
+                                style="width: 24px; height: 24px;"
+                            />
                     {:else if getCellType(r,c) === 'hole'}
-                        H
-                    {:else if getCellType(r,c) === 'start'}
-                        S
+                        <img
+                                src=/fantasma.png
+                                alt="Hole"
+                                style="width: 24px; height: 24px;"
+                            />
                     {:else}
                         <!-- {bestQValuesGrid[r][c].toFixed(1)} -->
                     {/if}
@@ -201,7 +207,5 @@
         background-color: #b782ff;
     }
 
-    .q-grid-cell.hole {
-        background-color: #003366;
-    }
+
 </style>
