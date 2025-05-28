@@ -77,14 +77,23 @@
         tempMaxSteps = max_steps;
     }
 
-    $: console.log(alpha, gamma);
+    function unShowParamSetter() {
+        showParamRL = false;
+    }
+    
 </script>
 
 <div class="overlay">
     <div class="change-params-container">
         <div class="header-section">
             <h2>Configuração de Parâmetros do Q-Learning</h2>
+            <button
+                class="close-button"
+                on:click={unShowParamSetter}
+                aria-label="Fechar configurações">X</button
+            >
         </div>
+
 
         {#if errorMessage}
             <div class="error-message">{errorMessage}</div>
@@ -191,7 +200,7 @@
                         id="max_steps"
                         bind:value={tempMaxSteps}
                         min="1"
-                        max="100"
+                        max="60"
                         step="1"
                     />
                 </div>
@@ -209,6 +218,7 @@
 
 <style>
     .overlay {
+        
         position: fixed;
         top: 0;
         left: 0;
@@ -222,12 +232,12 @@
         z-index: 1000;
     }
     .change-params-container {
+        
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers items horizontally in a column flex container */
-    justify-content: center; /* Centers items vertically in a column flex container */
+    justify-content: space-between;
     padding: 20px;
-    background-color: #000000;
+    background-color: #1e1e1e;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     font-family: sans-serif;
@@ -248,15 +258,28 @@
     max-width: 900px; /* Optional: set a max-width for the grid itself */
     margin: 0 auto; /* This is crucial for centering the grid horizontally */
 }
-    .header-section {
-        text-align: center;
-        margin-bottom: 10px;
+   .header-section {
+        display: flex; /* Transforma a div em um container flex */
+        align-items: center; /* Alinha os itens verticalmente ao centro */
+        width: 100%;
+        font-size: 0.8em;
+        /* Remove o justify-content: space-between; */
     }
 
-    h2 {
-        font-size: 1em; /* Slightly larger title */
-        color: #e0e0e0; /* Lighter color for readability on dark background */
-        margin-bottom: 5px;
+    .header-section h2 {
+        font-family: "Press Start 2P";
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+    }
+
+    .close-button {
+        border: none;
+        background-color: #1e1e1e;
+        color: white;
+        margin-left: auto; /* ESSENCIAL: Empurra este item para a direita */
+        cursor: pointer;
+        transition: background-color 0.2s ease;
     }
 
     .error-message {
@@ -267,32 +290,14 @@
     }
 
 
-
-    @media (max-width: 768px) {
-        .param-grid {
-            grid-template-columns: repeat(
-                2,
-                1fr
-            ); /* Two columns on smaller screens */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .param-grid {
-            grid-template-columns: 1fr; /* Single column on very small screens */
-        }
-    }
-    /* --- End Grid Layout --- */
-
     .param-group {
+        
         font-size: 0.7em;
         display: flex;
         flex-direction: column;
         gap: 5px;
         padding: 10px;
-        border: 1px solid #444; /* Subtle border for each group */
         border-radius: 5px;
-        background-color: #3a3a3a; /* Slightly lighter background for param groups */
     }
 
     .param-group label {
@@ -305,48 +310,103 @@
     /* Override the default number input styling to match the dark theme */
 
     .param-group input[type="range"] {
-        width: 100%;
-        height: 8px;
-        background: #555; /* Darker track for range input */
-        border-radius: 5px;
-        outline: none;
-        opacity: 0.9;
-        transition: opacity 0.2s;
-        margin-top: 5px; /* Space below label */
-    }
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: transparent;
+    border-radius: 3px;
+    outline: none;
+    margin-top: 5px;
+}
 
-    .param-group input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: #6697cb; /* Blue thumb */
-        cursor: pointer;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for thumb */
-    }
+/* Track */
+.param-group input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #9a5bf4;
+    border-radius: 3px;
+    cursor: pointer;
+}
 
-    .param-group input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: #6697cb;
-        cursor: pointer;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    }
+.param-group input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #9a5bf4;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.param-group input[type="range"]::-ms-track {
+    width: 100%;
+    height: 6px;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+    cursor: pointer;
+}
+
+.param-group input[type="range"]::-ms-fill-lower {
+    background: #9a5bf4;
+    border-radius: 3px;
+}
+
+.param-group input[type="range"]::-ms-fill-upper {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+/* Thumb */
+.param-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow:
+        1px 1px 1px #000000,
+        0px 0px 1px #0d0d0d;
+}
+
+.param-group input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    box-shadow:
+        1px 1px 1px #ffffff,
+        0px 0px 1px #0d0d0d;
+}
+
+.param-group input[type="range"]::-ms-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    margin-top: 0px;
+    box-shadow:
+        1px 1px 1px #ffffff,
+        0px 0px 1px #0d0d0d;
+}
+
 
     .action-buttons {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         gap: 10px;
         margin-top: 20px;
     }
 
     button {
+        font-family: "Press Start 2P";
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
-        background-color: #6697cb;
+        background-color: #4E2BD9;
         color: white;
         cursor: pointer;
         font-size: 1em;
@@ -354,14 +414,14 @@
     }
 
     button:hover {
-        background-color: #4a74a1; /* Darker blue on hover */
+        background-color: #5B8DDE; /* Darker blue on hover */
     }
 
     .reset-button {
-        background-color: #ff9800; /* Orange reset button */
+        background-color: #4E2BD9; /* Orange reset button */
     }
 
     .reset-button:hover {
-        background-color: #e68a00; /* Darker orange on hover */
+        background-color: #5B8DDE; /* Darker orange on hover */
     }
 </style>

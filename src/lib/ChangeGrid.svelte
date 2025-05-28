@@ -222,7 +222,6 @@
     }
 
     function unShowParamSetter() {
-        console.log(showconfig);
         showconfig = false;
     }
 </script>
