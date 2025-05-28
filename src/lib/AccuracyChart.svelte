@@ -6,6 +6,7 @@
     export let width = 1000;
     export let height = 300;
     export let speedIndex = 0;
+    export let playing;
 
     import InfoTooltip from './InfoTooltip.svelte';
 
@@ -268,7 +269,7 @@
     // Função para atualizar o episódio atual ao clicar no gráfico
     function clickHandler(event) {
         // Se estiver muito rápido, desativa o clique
-        if (speedIndex >= 2) return;
+        if (playing && speedIndex >= 2) return;
 
         const margin = { top: 30, right: 48, bottom: 50, left: 60 };
         const x = d3.scaleLinear()

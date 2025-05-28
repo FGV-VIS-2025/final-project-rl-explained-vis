@@ -6,12 +6,13 @@
     export let start;
     export let goal;
     export let holes;
+    export let maxAbsVal;
 
     import InfoTooltip from "./InfoTooltip.svelte";
 
     // Função para encontrar o valor absoluto máximo entre todas as Q-tables
     function getGlobalMaxAbsoluteQValue(allQTables) {
-        let maxAbsVal = 0;
+        maxAbsVal = 0;
 
         allQTables.forEach(qTable => {
             for (const stateKey in qTable) {

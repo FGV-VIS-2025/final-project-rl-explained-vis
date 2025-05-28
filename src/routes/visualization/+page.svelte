@@ -8,8 +8,8 @@
     import AccuracyChart from "$lib/AccuracyChart.svelte";
     import ChangeParams from "$lib/ChangeParams.svelte";
     import ChangeGrid from "$lib/ChangeGrid.svelte";
-    import InfoTooltip from "$lib/InfoTooltip.svelte";
     import Icon from "$lib/Icons.svelte";
+    import QCellActions from "$lib/QCellActions.svelte";
 
     //Grid Params
     let world_width = 5;
@@ -75,6 +75,24 @@
     onMount(() => {
         initializeQLearning();
     });
+
+    let globalMaxAbsQValue = 0;
+
+    // Variáveis para a célula que o usuário vai inspecionar
+    let inspectedRow = null;
+    let inspectedCol = null;
+
+    $: console.log(inspectedCol);
+
+    // Função para obter os Q-valores de uma célula específica
+    function getCellQValues(row, col, qTable) {
+        if (!qTable) return { up: 0, down: 0, left: 0, right: 0 };
+        const stateKey = `${row},${col}`;
+        return qTable[stateKey] || { up: 0, down: 0, left: 0, right: 0 };
+    }
+
+    // Q-valores da célula inspecionada, reativos à currentQTable e inspectedRow/inspectedCol
+    $: qValuesForInspectedCell = getCellQValues(inspectedRow, inspectedCol, currentQTable);
 
     // Derived state for current agent position
     $: currentAgentPosition =
@@ -285,6 +303,8 @@
                 {goal}
                 bind:holes
                 {currentAgentPosition}
+                bind:inspectedRow
+                bind:inspectedCol
             />
         </div>
     </div>
@@ -316,6 +336,7 @@
                             {start}
                             {goal}
                             {holes}
+                            bind:maxAbsVal={globalMaxAbsQValue}
                         />
                     {:else}
                         <p>Carregando visualização da Q-table (Valores)...</p>
@@ -329,7 +350,17 @@
                 width={650}
                 height={250}
                 speedIndex={currentSpeedIndex}
+                playing={playing}
             />
+
+            {#if inspectedRow != null && inspectedCol != null}
+                <QCellActions
+                    qValuesForCell={qValuesForInspectedCell}
+                    globalMaxAbsQValue={100}
+                    inspectedRow={inspectedRow}
+                    inspectedCol={inspectedCol}
+                ></QCellActions>
+            {/if}
         </div>
     </div>
 </div>

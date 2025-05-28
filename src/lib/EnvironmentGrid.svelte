@@ -5,6 +5,8 @@
     export let goal;
     export let holes;
     export let currentAgentPosition;
+    export let inspectedRow;
+    export let inspectedCol;
 
     import InfoTooltip from "./InfoTooltip.svelte";
 
@@ -23,6 +25,22 @@
         if (type === 'goal') return 'G';
         if (type === 'hole') return 'H';
         return '';
+    }
+
+    // Manipulador de clique na célula
+    function handleCellClick(row, col) {
+        if (getCellContent(row, col) != 'H' && getCellContent(row, col) != 'G')
+        {
+            // Se a célula clicada já for a célula inspecionada, desseleciona
+            if (inspectedRow === row && inspectedCol === col) {
+                inspectedRow = null;
+                inspectedCol = null;
+            } else {
+                // Caso contrário, seleciona a nova célula
+                inspectedRow = row;
+                inspectedCol = col;
+            }
+        }
     }
 
 </script>
@@ -48,6 +66,9 @@
                 <div
                     class="q-grid-cell {getCellType(r, c)}"
                     class:agent={r === currentAgentPosition[0] && c === currentAgentPosition[1]}
+                    class:inspected={r === inspectedRow && c === inspectedCol}
+                    class:clickable={getCellType(r, c) != 'goal' && getCellType(r, c) != 'hole'}
+                    on:click={() => handleCellClick(r, c)}
                 >
                     {getCellContent(r, c)}
                 </div>
@@ -92,6 +113,21 @@
         color: #ffffff;
         position: relative;
         font-size: 1.5em;
+    }
+
+    .q-grid-cell.clickable {
+        cursor: pointer;
+    }
+
+    .q-grid-cell.clickable:hover:not(.inspected) {
+        background-color: #333333;
+    }
+
+    .q-grid-cell.inspected {
+        outline: 3px solid #0084ff;
+        outline-offset: -3px;
+        box-shadow: 0 0 10px rgba(0, 174, 255, 0.3);
+        background-color: #4a4a4a;
     }
 
     .q-grid-cell.start {
