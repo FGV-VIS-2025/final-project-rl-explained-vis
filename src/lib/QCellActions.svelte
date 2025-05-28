@@ -66,47 +66,100 @@
         hoveredAction = '';
         hoveredValue = null;
     }
+
+    // Variáveis reativas para os valores min/max para a legenda
+    $: legendMinQValue = -globalMaxAbsQValue.toFixed(0);
+    $: legendMaxQValue = globalMaxAbsQValue.toFixed(0);
+    $: legendZeroValue = 0;
+
+    // Gera o gradiente para a legenda
+    $: legendGradient = `linear-gradient(to right,
+        ${getGradientColor(-globalMaxAbsQValue)},
+        ${getGradientColor(0)},
+        ${getGradientColor(globalMaxAbsQValue)})`;
 </script>
 
-<h3>Q-Values of cell {inspectedRow},{inspectedCol}</h3>
-<div class="q-cell-actions-container">
-    <div
-        class="triangle up"
-        style="border-bottom-color: {upColor};"
-        on:mouseenter={() => handleMouseEnter('Up', qValuesForCell.up)}
-        on:mouseleave={handleMouseLeave}
-    ></div>
-    <div
-        class="triangle down"
-        style="border-top-color: {downColor};"
-        on:mouseenter={() => handleMouseEnter('Down', qValuesForCell.down)}
-        on:mouseleave={handleMouseLeave}
-    ></div>
-    <div
-        class="triangle left"
-        style="border-right-color: {leftColor};"
-        on:mouseenter={() => handleMouseEnter('Left', qValuesForCell.left)}
-        on:mouseleave={handleMouseLeave}
-    ></div>
-    <div
-        class="triangle right"
-        style="border-left-color: {rightColor};"
-        on:mouseenter={() => handleMouseEnter('Right', qValuesForCell.right)}
-        on:mouseleave={handleMouseLeave}
-    ></div>
+<div class="q-cell-actions-wrapper">
+    <h3>Q-Values for cell ({inspectedRow},{inspectedCol})
+        <InfoTooltip>
+            <div slot="tooltipContent">
+                This cell shows the Q-value for each<br>
+                possible action (Up, Down, Left, Right)<br>
+                from this state. Each triangle's color represents<br>
+                the estimated long-term reward for that action.
+            </div>
+        </InfoTooltip>
+    </h3>
 
-    {#if hoveredValue !== null}
-        <div class="tooltip">
-            {hoveredAction}: {hoveredValue}
+    <div class="q-cell-actions-container">
+        <div
+            class="triangle up"
+            style="border-bottom-color: {upColor};"
+            on:mouseenter={() => handleMouseEnter('Up', qValuesForCell.up)}
+            on:mouseleave={handleMouseLeave}
+        ></div>
+        <div
+            class="triangle down"
+            style="border-top-color: {downColor};"
+            on:mouseenter={() => handleMouseEnter('Down', qValuesForCell.down)}
+            on:mouseleave={handleMouseLeave}
+        ></div>
+        <div
+            class="triangle left"
+            style="border-right-color: {leftColor};"
+            on:mouseenter={() => handleMouseEnter('Left', qValuesForCell.left)}
+            on:mouseleave={handleMouseLeave}
+        ></div>
+        <div
+            class="triangle right"
+            style="border-left-color: {rightColor};"
+            on:mouseenter={() => handleMouseEnter('Right', qValuesForCell.right)}
+            on:mouseleave={handleMouseLeave}
+        ></div>
+
+        {#if hoveredValue !== null}
+            <div class="tooltip">
+                {hoveredAction}: {hoveredValue}
+            </div>
+        {/if}
+    </div>
+
+    <div class="color-legend">
+        <div class="gradient-bar" style="background: {legendGradient};"></div>
+        <div class="labels">
+            <span>{legendMinQValue}</span>
+            <span>{legendZeroValue}</span>
+            <span>{legendMaxQValue}</span>
         </div>
-    {/if}
+        <div class="legend-title">
+            <span>Q-value</span>
+        </div>
+    </div>
 </div>
 
 <style>
+    .q-cell-actions-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .q-cell-actions-wrapper h3 {
+        text-align: center;
+        font-family: "Press Start 2P";
+        font-weight: normal;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
     .q-cell-actions-container {
+        --cell-size: 150px;
+        --border-thickness: 2px;
+
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: var(--cell-size);
+        height: var(--cell-size);
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr;
@@ -115,10 +168,9 @@
             "left center right"
             ". down .";
         background-color: #1e1e1e;
-        border: 2px solid var(--color-border);
+        border: var(--border-thickness) solid #9f96d8;
         box-sizing: border-box;
         overflow: hidden;
-        margin-top: -35px;
     }
 
     .triangle {
@@ -131,7 +183,7 @@
 
     .up {
         grid-area: up;
-        border-width: 0 50px 50px 50px;
+        border-width: 0 37px 37px 37px;
         border-color: transparent transparent var(--triangle-color) transparent;
         top: 0;
         left: 50%;
@@ -140,7 +192,7 @@
 
     .down {
         grid-area: down;
-        border-width: 50px 50px 0 50px;
+        border-width: 37px 37px 0 37px;
         border-color: var(--triangle-color) transparent transparent transparent;
         bottom: 0;
         left: 50%;
@@ -149,7 +201,7 @@
 
     .left {
         grid-area: left;
-        border-width: 50px 50px 50px 0;
+        border-width: 37px 37px 37px 0;
         border-color: transparent var(--triangle-color) transparent transparent;
         left: 0;
         top: 50%;
@@ -158,7 +210,7 @@
 
     .right {
         grid-area: right;
-        border-width: 50px 0 50px 50px;
+        border-width: 37px 0 37px 37px;
         border-color: transparent transparent transparent var(--triangle-color);
         right: 0;
         top: 50%;
@@ -179,7 +231,7 @@
 
     .tooltip {
         position: absolute;
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: rgba(0, 0, 0, 0.9);
         color: white;
         padding: 5px 8px;
         border-radius: 4px;
@@ -189,5 +241,36 @@
         transform: translate(-50%, -100%);
         top: -10px;
         left: 50%;
+        z-index: 10;
+    }
+
+    .color-legend {
+        width: 200px;
+        margin-top: 10px;
+        font-family: Arial, sans-serif;
+        color: #ffffff;
+        font-size: 0.5em;
+    }
+
+    .gradient-bar {
+        height: 15px;
+        width: 200px;
+        border-radius: 3px;
+        margin-bottom: 5px;
+    }
+
+    .labels {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Press Start 2P";
+    }
+
+    .legend-title {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        font-family: "Press Start 2P";
+        font-weight: normal;
+        font-size: 10px;
     }
 </style>
