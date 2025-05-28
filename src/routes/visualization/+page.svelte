@@ -10,6 +10,7 @@
     import ChangeGrid from "$lib/ChangeGrid.svelte";
     import Icon from "$lib/Icons.svelte";
     import QCellActions from "$lib/QCellActions.svelte";
+    import QValuesChart from "$lib/QValuesChart.svelte";
 
     //Grid Params
     let world_width = 5;
@@ -81,8 +82,6 @@
     // Variáveis para a célula que o usuário vai inspecionar
     let inspectedRow = null;
     let inspectedCol = null;
-
-    $: console.log(inspectedCol);
 
     // Função para obter os Q-valores de uma célula específica
     function getCellQValues(row, col, qTable) {
@@ -352,17 +351,27 @@
                 speedIndex={currentSpeedIndex}
                 playing={playing}
             />
-
-            {#if inspectedRow != null && inspectedCol != null}
-                <QCellActions
-                    qValuesForCell={qValuesForInspectedCell}
-                    globalMaxAbsQValue={100}
-                    inspectedRow={inspectedRow}
-                    inspectedCol={inspectedCol}
-                ></QCellActions>
-            {/if}
         </div>
     </div>
+</div>
+
+<div class="details-panel">
+    {#if inspectedRow != null && inspectedCol != null}
+        <QCellActions
+            qValuesForCell={qValuesForInspectedCell}
+            globalMaxAbsQValue={100}
+            inspectedRow={inspectedRow}
+            inspectedCol={inspectedCol}
+        />
+
+        <QValuesChart
+            allQTables={q_tables_data}
+            {inspectedRow}
+            {inspectedCol}
+            width={650}
+            height={250}
+        />
+    {/if}
 </div>
 
 <style>
@@ -405,6 +414,17 @@
         gap: 30px;
         width: 100%;
         align-items: center;
+    }
+
+    .details-panel {
+        align-items: center;
+        margin-top: -50px;
+        margin-bottom: 20px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        display: flex;
+        gap: 50px;
     }
 
     .btn-change {
