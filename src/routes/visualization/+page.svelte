@@ -50,6 +50,17 @@
 
     // Function to initialize or re-run Q-learning
     function initializeQLearning() {
+    console.log( world_width,
+            world_height,
+            start,
+            goal,
+            holes,
+            alpha,
+            gamma,
+            epsilon,
+            epsilon_decay,
+            num_episodes,
+            max_steps,)
         const { agent_positions, q_tables, success_rates } = q_learning({
             world_width,
             world_height,

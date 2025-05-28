@@ -157,6 +157,12 @@
         tempHoles = tempHoles.filter(
             (hole) => !(hole[0] === tempGoal[0] && hole[1] === tempGoal[1]),
         );
+        
+        tempHoles = tempHoles.filter(
+            (hole) => (hole[0] < tempWorldHeight && hole[1] < tempWorldWidth),
+        );
+        console.log(tempWorldHeight, tempWorldWidth)
+        console.log(tempHoles)
         if (tempWorldWidth < 2 || tempWorldHeight < 2) {
             errorMessage = "Grid size must be at least 2x2.";
             return;

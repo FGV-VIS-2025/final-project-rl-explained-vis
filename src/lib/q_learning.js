@@ -28,8 +28,10 @@ export function q_learning({
     grid[start[0]][start[1]] = 'S';
     grid[goal[0]][goal[1]] = 'G';
 
+    console.log(holes)
     // Colocando os buracos
     for (const [r, c] of holes) {
+        
         if ((r !== start[0] || c !== start[1]) && (r !== goal[0] || c !== goal[1])) {
             grid[r][c] = 'H';
         }
