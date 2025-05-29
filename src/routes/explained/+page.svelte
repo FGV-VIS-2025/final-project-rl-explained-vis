@@ -36,28 +36,25 @@
   <!-- Primeiro container - sempre visível -->
   <div class="demo-container">
     <div class="boy-container">
-      <img src="/menino.png" alt="Boy playing" class="boy-icon" />
+      <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
     </div>
 
     <div class="game-container">
       <div class="game-board">
         {#each gameBoard as row, i}
           {#each row as cell, j}
-            <div class="game-cell" class:red-cell={cell === 2 && currentStep === 0}>
-              {#if cell === 1 && currentStep === 0}
-                <img src="/coin.png" alt="Coin" class="coin-icon" />
-              {/if}
-            </div>
+          <div class="game-cell" class:red-cell={cell === 2}>
+            {#if i === 0 && j === 0}
+              <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+            {/if}
+            {#if cell === 1}
+              <img src="/coin.png" alt="Moeda" class="coin-icon" />
+            {/if}
+          </div>
           {/each}
         {/each}
       </div>
     </div>
-  </div>
-
-  <!-- Botões de controle - sempre visíveis quando estamos no passo 0 -->
-  <div class="button-container">
-    <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
-    <button on:click={resetDemo}>Restart</button>
   </div>
 
   <!-- Conteúdo do passo 1 - aparece depois do primeiro clique -->
@@ -66,7 +63,7 @@
 
     <div class="demo-container">
       <div class="boy-container">
-        <img src="/menino.png" alt="Boy playing" class="boy-icon" />
+        <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
         <div class="reward-indicator">+1</div>
       </div>
 
@@ -75,11 +72,14 @@
           {#each gameBoard as row, i}
             {#each row as cell, j}
               <div class="game-cell" class:red-cell={cell === 2}>
-                {#if cell === 1}
-                  <img src="/coin.png" alt="Coin" class="coin-icon" />
-                {/if}
                 {#if i === 0 && j === 1}
-                  <div class="arrow">←</div>
+                    <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                {/if}
+                {#if cell === 1 && (i !== 0 && j !== 1)}
+                  <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                {/if}
+                {#if i === 0 && j === 0}
+                  <div class="arrow">→</div>
                 {/if}
               </div>
             {/each}
@@ -87,15 +87,15 @@
         </div>
       </div>
     </div>
-  {/if}
+    {/if}
 
-  <!-- Conteúdo do passo 2 - aparece depois do segundo clique -->
-  {#if currentStep >= 2}
+    {#if currentStep >= 2}
+
     <p>But then, he presses the right button again and he falls into a hole. He just died, so that's a -1 reward.</p>
 
     <div class="demo-container">
       <div class="boy-container">
-        <img src="/menino.png" alt="Boy playing" class="boy-icon" />
+        <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
         <div class="death-indicator">-1</div>
       </div>
 
@@ -104,8 +104,14 @@
           {#each gameBoard as row, i}
             {#each row as cell, j}
               <div class="game-cell" class:red-cell={cell === 2}>
+                {#if i === 0 && j === 2}
+                    <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                {/if}
+                {#if cell === 1 && (i !== 0 && j !== 1)}
+                  <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                {/if}
                 {#if i === 0 && j === 1}
-                  <div class="arrow down-arrow">↓</div>
+                    <div class="arrow">→</div>
                 {/if}
               </div>
             {/each}
@@ -113,10 +119,7 @@
         </div>
       </div>
     </div>
-  {/if}
 
-  <!-- Conteúdo do passo 3 - aparece depois do terceiro clique -->
-  {#if currentStep >= 3}
     <p>By interacting with his environment through trial and error, your little brother understands that he needs to get coins in this environment but avoid the enemies. Without any supervision, the child will get better and better at playing the game.</p>
 
     <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
@@ -126,6 +129,12 @@
     <p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
     <p>But how does Reinforcement Learning work exactly?</p>
   {/if}
+
+  <!-- Botões de controle -->
+  <div class="button-container">
+    <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
+    <button on:click={resetDemo}>Restart</button>
+  </div>
 </div>
 
 <style>
