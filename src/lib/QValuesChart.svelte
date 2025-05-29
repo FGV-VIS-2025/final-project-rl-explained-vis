@@ -518,7 +518,7 @@
 
 <style>
     .chart-wrapper {
-        margin-top: 0px;
+        margin-top: -30px;
         text-align: center;
     }
 
