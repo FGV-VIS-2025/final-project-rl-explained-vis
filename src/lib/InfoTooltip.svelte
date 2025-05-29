@@ -1,5 +1,8 @@
 <script>
     let showTooltip = false;
+    export let colorbackground = "#00bcd4";
+    export let size = 20;
+    export let align = "center";
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,13 +15,13 @@
     on:mouseleave={() => (showTooltip = false)}
 >
     <slot>
-        <div class="info-circle">
+        <div class="info-circle" style="background-color: {colorbackground}; height: {size}px; width: {size}px">
             <span class="info-question-mark">?</span>
         </div>
     </slot>
 
     {#if showTooltip}
-        <div class="tooltip-box">
+        <div class="tooltip-box {align === 'left' ? 'align-left' : ''}">
             <slot name="tooltipContent">
                 Nenhuma informação disponível.
             </slot>
@@ -36,10 +39,7 @@
     }
 
     .info-circle {
-        width: 20px;
-        height: 20px;
         border-radius: 50%;
-        background-color: #00bcd4;
         color: #000000;
         font-weight: normal;
         display: flex;
@@ -84,6 +84,12 @@
         font-weight: normal;
     }
 
+    .tooltip-box.align-left {
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+    }
+
     .tooltip-box::after {
         content: '';
         position: absolute;
@@ -94,6 +100,10 @@
         border-style: solid;
         border-color: #333 transparent transparent transparent;
     }
+    .tooltip-box.align-left::after {
+    left: 100%;
+    transform: translateX(-150%);
+}
 
     @keyframes fadeIn {
         from { opacity: 0; }

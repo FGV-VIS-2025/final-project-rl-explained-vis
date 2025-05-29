@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import InfoTooltip from './InfoTooltip.svelte';
 
     // Props for two-way binding
     export let alpha;
@@ -80,7 +81,8 @@
     function unShowParamSetter() {
         showParamRL = false;
     }
-    
+    let colorbackground = "#9a5bf4"
+
 </script>
 
 <div class="overlay">
@@ -101,7 +103,15 @@
 
         <div class="param-grid">
             <div class="param-group">
-                <label for="alpha">Alpha (Taxa de Aprendizagem):</label>
+                <div class = "info-container">
+                <label class="label-name" for="alpha">Alpha (Learning Rate):</label>
+                <InfoTooltip colorbackground={colorbackground} size=20>
+                    <div slot = "tooltipContent">
+                        Controls how much the agent updates <br> its knowledge after each move.
+                    </div>
+                </InfoTooltip>
+                </div>
+                
                 <div class="slider-wrapper">
                     <span class="slider-value" style="--value: {tempAlpha};"
                         >{tempAlpha.toFixed(3)}</span
@@ -118,7 +128,14 @@
             </div>
 
             <div class="param-group">
-                <label for="gamma">Gamma (Fator de Desconto):</label>
+                <div class = "info-container">
+                <label class="label-name" for="gamma">Gamma (Discount Factor)</label>
+                <InfoTooltip colorbackground={colorbackground} size=20>
+                    <div slot = "tooltipContent">
+                        Determines how much the agent values <br> future rewards over immediate ones.
+                    </div>
+                </InfoTooltip>
+                </div>
                 <div class="slider-wrapper">
                     <span class="slider-value" style="--value: {tempGamma};"
                         >{tempGamma.toFixed(3)}</span
@@ -135,7 +152,14 @@
             </div>
 
             <div class="param-group">
-                <label for="epsilon">Epsilon (Exploração):</label>
+                <div class = "info-container">
+                <label class="label-name" for="epsilon">Epsilon (Exploration)</label>
+                <InfoTooltip colorbackground={colorbackground} size=20 align="left">
+                    <div slot = "tooltipContent">
+                        Sets how often the agent explores random <br> paths instead of the best-known ones.
+                    </div>
+                </InfoTooltip>
+                </div>
                 <div class="slider-wrapper">
                     <span class="slider-value" style="--value: {tempEpsilon};"
                         >{tempEpsilon.toFixed(3)}</span
@@ -152,7 +176,14 @@
             </div>
 
             <div class="param-group">
-                <label for="epsilon_decay">Epsilon Decay:</label>
+                <div class = "info-container">
+                <label class="label-name" for="epsilon_decay">Epsilon Decay:</label>
+                <InfoTooltip colorbackground={colorbackground} size=20>
+                    <div slot = "tooltipContent">
+                        Gradually reduces exploration across <br> episodes to favor learned strategies.
+                    </div>
+                </InfoTooltip>
+                </div>
                 <div class="slider-wrapper">
                     <span
                         class="slider-value"
@@ -171,7 +202,14 @@
             </div>
 
             <div class="param-group">
-                <label for="num_episodes">Número de Episódios:</label>
+                <div class = "info-container">
+                <label class="label-name" for="num_episodes">Number of Episodes:</label>
+                <InfoTooltip colorbackground={colorbackground} size=20>
+                    <div slot = "tooltipContent">
+                        Defines how many times the agent <br> will train in the grid environment.
+                    </div>
+                </InfoTooltip>
+                </div>
                 <div class="slider-wrapper">
                     <span
                         class="slider-value"
@@ -190,7 +228,14 @@
             </div>
 
             <div class="param-group">
-                <label for="max_steps">Máximo de Passos por Episódio:</label>
+                <div class = "info-container">
+                <label class="max_steps" for="epsilon_decay">Max Steps per Episode:</label>
+                <InfoTooltip colorbackground={colorbackground} size=20 align = left>
+                    <div slot = "tooltipContent">
+                        Limits how many moves the agent <br> can take before the episode ends.
+                    </div>
+                </InfoTooltip>
+                </div>
                 <div class="slider-wrapper">
                     <span class="slider-value" style="--value: {tempMaxSteps};"
                         >{tempMaxSteps}</span
@@ -288,6 +333,19 @@
         text-align: center;
         margin-bottom: 15px;
     }
+
+    .info-container {
+        position: relative;
+          display: flex;
+            align-items: center;
+            justify-content: space-between;
+    }
+
+    .label-name {
+  position: relative;
+  top: 3px;
+  margin-right: 10;
+}
 
 
     .param-group {
