@@ -8,44 +8,40 @@
 
     // Funções para determinar a cor do gradiente
     function getGradientColor(qValue) {
-        if (globalMaxAbsQValue === 0) {
-            return `hsl(0, 0%, 15%)`;
-        }
-
-        const maxQValue = globalMaxAbsQValue;
-        const minQValue = -globalMaxAbsQValue;
-
-        const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
-
-        let hue;
-        let saturation = 100;
-        let lightness;
-
-        const colorNegExtreme = { hue: 10, saturation: 100, lightness: 10 };
-        const colorZero = { hue: 260, saturation: 20, lightness: 15 };
-        const colorPosExtreme = { hue: 190, saturation: 100, lightness: 70 };
-
-        if (normalizedValue <= 0.5) {
-            const localNorm = normalizedValue / 0.5;
-
-            hue = colorNegExtreme.hue + (colorZero.hue - colorNegExtreme.hue) * localNorm;
-            saturation = colorNegExtreme.saturation + (colorZero.saturation - colorNegExtreme.saturation) * localNorm;
-            lightness = colorNegExtreme.lightness + (colorZero.lightness - colorNegExtreme.lightness) * localNorm;
-
-        } else {
-            const localNorm = (normalizedValue - 0.5) / 0.5;
-
-            hue = colorZero.hue + (colorPosExtreme.hue - colorZero.hue) * localNorm;
-            saturation = colorZero.saturation + (colorPosExtreme.saturation - colorZero.saturation) * localNorm;
-            lightness = colorZero.lightness + (colorPosExtreme.lightness - colorZero.lightness) * localNorm;
-        }
-
-        hue = Math.round(hue);
-        saturation = Math.round(saturation);
-        lightness = Math.round(lightness);
-
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    if (globalMaxAbsQValue === 0) {
+        return `rgb(230, 230, 230)`; // fallback: light gray
     }
+
+    const maxQValue = globalMaxAbsQValue;
+    const minQValue = -globalMaxAbsQValue;
+    const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
+
+    // "Blues" palette from dark to light
+    const blues = [
+        [8, 81, 156],     // dark blue
+        [49, 130, 189],
+        [107, 174, 214],
+        [158, 202, 225],
+        [198, 219, 239],
+        [239, 243, 255]   // very light blue
+    ];
+
+    const scaled = normalizedValue * (blues.length - 1);
+    const i = Math.floor(scaled);
+    const t = scaled - i;
+
+    const i1 = Math.min(i + 1, blues.length - 1);
+
+    const r = Math.round(blues[i][0] + (blues[i1][0] - blues[i][0]) * t);
+    const g = Math.round(blues[i][1] + (blues[i1][1] - blues[i][1]) * t);
+    const b = Math.round(blues[i][2] + (blues[i1][2] - blues[i][2]) * t);
+
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+
+
+
 
     // Calcula as cores para cada triângulo
     $: upColor = qValuesForCell ? getGradientColor(qValuesForCell.up) : 'transparent';

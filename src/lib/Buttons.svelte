@@ -127,6 +127,12 @@
 </div>
 
 <style>
+    .controls {
+  display: flex;
+  justify-content: space-between; /* separa os dois lados, um em cada extremidade */
+  align-items: center; /* alinha verticalmente ao centro */
+  flex-wrap: wrap; /* para melhorar em telas pequenas */
+}
     .btn-change {
         padding: 6px 12px;
         cursor: pointer;
@@ -168,8 +174,7 @@
         align-items: center;
         gap: 0.5rem;
         padding-top: 1rem;
-        padding-right: 4rem;
-        padding-left: 4rem;
+        padding-left: 1rem;
         padding-bottom: 1rem;
     }
 

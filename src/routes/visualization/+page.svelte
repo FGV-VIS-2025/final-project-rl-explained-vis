@@ -219,9 +219,10 @@
 />
 
 <div class="main-layout">
-    <div class="left-panel">
-        <div class="buttons-change">
-            <ControlsPanel
+    
+   
+    <div class="right-panel">
+        <ControlsPanel
                 bind:showParamGrid
                 bind:showParamRL
                 bind:world_width
@@ -247,8 +248,9 @@
                 {togglePlaySpeed}
                 on:goToEpisode={goToEpisode}
             />
-        </div>
-        <div class="grid-display-wrapper-env">
+        <div class="grids-and-chart-wrapper">
+            <div class="grids-wrapper">
+                 <div class="grid-display-wrapper-env">
             <EnvironmentGrid
                 {world_width}
                 {world_height}
@@ -260,10 +262,6 @@
                 bind:inspectedCol
             />
         </div>
-    </div>
-    <div class="right-panel">
-        <div class="grids-and-chart-wrapper">
-            <div class="grids-wrapper">
                 <div class="grid-display-wrapper">
                     {#if currentQTable}
                         <QTableArrows
@@ -333,35 +331,21 @@
 
 <style>
     .main-layout {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px;
-        font-family: Arial, sans-serif;
-        background-color: #1e1e1e;
-        color: #ffffff;
-        min-height: 100vh;
-        gap: 30px;
-    }
-
-    .left-panel {
-        flex: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 100px;
-    }
+    display: flex;
+    justify-content: center; /* Centraliza todos os itens */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #ffffff;
+    min-height: 100vh;
+    gap: 30px;
+}
 
 
 
-    .right-panel {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        border-radius: 8px;
-        gap: 15px;
-    }
+
+
+
 
     .grid-display-wrapper-env {
         align-items: center;
@@ -400,5 +384,9 @@
         align-items: center;
         text-align: center;
         width: fit-content;
+    }
+
+    .details-panel {
+        margin-top: 10px;
     }
 </style>
