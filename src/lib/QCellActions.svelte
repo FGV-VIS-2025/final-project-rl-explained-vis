@@ -80,7 +80,7 @@
 </script>
 
 <div class="q-cell-actions-wrapper">
-    <h3>Q-Values for cell ({inspectedRow},{inspectedCol})
+    <h3>Q-Values for Cell ({inspectedRow},{inspectedCol})
         <InfoTooltip>
             <div slot="tooltipContent">
                 This cell shows the Q-value for each<br>

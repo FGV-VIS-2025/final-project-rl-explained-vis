@@ -370,6 +370,9 @@
             {inspectedCol}
             width={650}
             height={250}
+            bind:currentEpisode={currentEpisode}
+            playing={playing}
+            speedIndex={currentSpeedIndex}
         />
     {/if}
 </div>

@@ -7,6 +7,9 @@
     export let inspectedCol = null;
     export let width = 650;
     export let height = 250;
+    export let currentEpisode = 0; // Adicionado para controlar a exibição dos dados
+    export let playing = false; // Adicionado para controlar o clique em velocidade alta
+    export let speedIndex = 0; // Adicionado para controlar o clique em velocidade alta
 
     let svgContainer;
 
@@ -16,35 +19,113 @@
         left: [],
         right: []
     };
+    
+    let minValue;
+    let maxValue;
 
-    // Reatividade para recalcular os Q-valores quando inspectedRow, inspectedCol ou allQTables mudam
+    // Elementos de interatividade
+    let focusLine;
+    let focusCircles = {}; // Objeto para armazenar os círculos de foco por ação
+    let tooltip;
+    let tooltipBg;
+    let tooltipTextEpisode;
+    let tooltipTextQValues = {}; // Objeto para armazenar os textos dos Q-values no tooltip
+    let overlayRect;
+
+    let interactiveElementsCreated = false;
+
+    $: if (allQTables && inspectedRow && inspectedCol) {
+        calculateGlobalQValueExtremes(allQTables, inspectedRow, inspectedCol);
+        console.log(minValue, maxValue);
+    }
+
+    // Função reativa para recalcular os Q-valores e redesenhar o gráfico
     $: {
         if (allQTables.length > 0 && inspectedRow !== null && inspectedCol !== null) {
-            qValuesOverEpisodes = extractQValuesForCell(allQTables, inspectedRow, inspectedCol);
+            // Limita os dados ao currentEpisode
+            const dataToDraw = allQTables.slice(0, currentEpisode + 1);
+            qValuesOverEpisodes = extractQValuesForCell(dataToDraw, inspectedRow, inspectedCol);
             if (svgContainer) {
                 const svg = d3.select(svgContainer);
                 drawChart(svg, width, height, qValuesOverEpisodes);
+
+                if (!interactiveElementsCreated) {
+                    createInteractiveElements(svg, width, height);
+                    interactiveElementsCreated = true;
+                }
+                
+                // Eleva os elementos interativos para garantir que estejam acima das linhas
+                if (focusLine && overlayRect) {
+                    focusLine.raise();
+                    for (const action in focusCircles) {
+                        focusCircles[action].raise();
+                    }
+                    tooltip.raise();
+                    overlayRect.raise();
+                }
             }
         }
     }
 
-    function extractQValuesForCell(allQTablesData, row, col) {
+    function calculateGlobalQValueExtremes(allQTables, row, col) {
+        minValue = Infinity;
+        maxValue = -Infinity;
+
+        if (!allQTables || allQTables.length === 0 || row === null || col === null) {
+            return { minValue: 0, maxValue: 0 };
+        }
+
+        allQTables.forEach(episodeQTables => {
+            const finalQTable = episodeQTables[episodeQTables.length - 1];
+            const stateKey = `${row},${col}`;
+
+            if (finalQTable && finalQTable[stateKey]) {
+                const cellQValues = finalQTable[stateKey];
+
+                Object.values(cellQValues).forEach(qValue => {
+                    if (typeof qValue === 'number' && !isNaN(qValue)) {
+                        if (qValue > maxValue) {
+                            maxValue = qValue;
+                        }
+                        if (qValue < minValue) {
+                            minValue = qValue;
+                        }
+                    }
+                });
+            }
+        });
+
+        if (minValue === Infinity || minValue === -Infinity) minValue = 0;
+        if (maxValue === -Infinity || maxValue === Infinity) maxValue = 0;
+
+        // Add a small buffer if min and max are the same to avoid domain issues
+        if (minValue === maxValue) {
+            minValue -= 0.1; // Or some small value
+            maxValue += 0.1; // Or some small value
+        }
+    }
+
+    function extractQValuesForCell(qTablesData, row, col) {
         const qValues = {
             up: [],
             down: [],
             left: [],
             right: []
         };
-
-        allQTablesData.forEach(episodeQTables => {
-            // Pega o último Q-table de cada episódio
+    
+        qTablesData.forEach(episodeQTables => {
+            // Pegar o último Q-table de cada episódio, que representa o estado final do aprendizado naquele episódio
             const finalQTable = episodeQTables[episodeQTables.length - 1];
             const stateKey = `${row},${col}`;
+
             if (finalQTable && finalQTable[stateKey]) {
-                qValues.up.push(finalQTable[stateKey].up);
-                qValues.down.push(finalQTable[stateKey].down);
-                qValues.left.push(finalQTable[stateKey].left);
-                qValues.right.push(finalQTable[stateKey].right);
+                const cellQValues = finalQTable[stateKey];
+
+                qValues.up.push(cellQValues.up);
+                qValues.down.push(cellQValues.down);
+                qValues.left.push(cellQValues.left);
+                qValues.right.push(cellQValues.right);
+
             } else {
                 // Se não houver dados para a célula, adiciona 0 para manter o comprimento do array
                 qValues.up.push(0);
@@ -56,14 +137,95 @@
         return qValues;
     }
 
+    function createInteractiveElements(svg, w, h) {
+        const margin = { top: 30, right: 60, bottom: 50, left: 70 };
+        const actions = ['up', 'down', 'left', 'right'];
+        const colors = {
+            up: "cyan",
+            down: "lime",
+            left: "orange",
+            right: "magenta"
+        };
+
+        // Linha de foco vertical
+        focusLine = svg.append("line")
+            .attr("class", "focus-line")
+            .attr("y1", margin.top)
+            .attr("y2", h - margin.bottom)
+            .attr("stroke", "white") // Cor branca para a linha de foco
+            .attr("stroke-width", 1.5)
+            .attr("opacity", 0);
+
+        // Círculos de foco para cada linha
+        actions.forEach(action => {
+            focusCircles[action] = svg.append("circle")
+                .attr("class", `focus-circle ${action}-focus-circle`)
+                .attr("r", 5)
+                .attr("fill", colors[action]) // Cor do círculo de acordo com a linha
+                .attr("stroke", "white")
+                .attr("stroke-width", 1.5)
+                .attr("opacity", 0);
+        });
+
+        // Tooltip group
+        tooltip = svg.append("g")
+            .attr("class", "tooltip")
+            .attr("opacity", 0);
+
+        tooltipBg = tooltip.append("rect")
+            .attr("width", 90) // Aumentado para acomodar mais texto
+            .attr("height", 80) // Aumentado para acomodar mais texto
+            .attr("fill", "rgba(0, 0, 0, 0.9)")
+            .attr("rx", 5)
+            .attr("ry", 5);
+
+        tooltipTextEpisode = tooltip.append("text")
+            .attr("x", 10)
+            .attr("y", 16)
+            .style("fill", "white")
+            .style("font-size", "0.9em");
+
+        // Textos para os Q-values no tooltip
+        actions.forEach((action, i) => {
+            tooltipTextQValues[action] = tooltip.append("text")
+                .attr("x", 10)
+                .attr("y", 31 + (i * 13)) // Ajusta a posição Y para cada Q-value
+                .style("fill", colors[action])
+                .style("font-size", "0.8em");
+        });
+
+        // Retângulo invisível para capturar eventos do mouse
+        overlayRect = svg.append("rect")
+            .attr("class", "overlay")
+            .attr("width", w - margin.left - margin.right)
+            .attr("height", h - margin.top - margin.bottom)
+            .attr("x", margin.left)
+            .attr("y", margin.top)
+            .attr("fill", "none")
+            .attr("pointer-events", "all")
+            .on("mouseout", () => {
+                focusLine.transition().duration(50).attr("opacity", 0);
+                for (const action in focusCircles) {
+                    focusCircles[action].transition().duration(50).attr("opacity", 0);
+                }
+                tooltip.transition().duration(50).attr("opacity", 0);
+            })
+            .on("mousemove", mousemove)
+            .on("click", clickHandler);
+    }
+
     function drawChart(svg, w, h, data) {
         const margin = { top: 30, right: 60, bottom: 50, left: 70 };
+        const actions = ['up', 'down', 'left', 'right'];
+        const colors = {
+            up: "cyan",
+            down: "lime",
+            left: "orange",
+            right: "magenta"
+        };
 
-        svg.attr("width", w)
-           .attr("height", h);
-
-        // Remove elementos que serão redesenhados a cada atualização
-        svg.selectAll(".chart-line, .axis-label, .x-axis-group, .y-axis-group, .legend").remove();
+        // Remover elementos que serão redesenhados a cada atualização
+        svg.selectAll(".chart-line, .last-point-circle, .last-point-line, .q-value-label, .axis-label, .x-axis-group, .y-axis-group, .legend, .current-episode-line").remove();
 
         const allValues = [
             ...data.up,
@@ -77,9 +239,10 @@
             .domain([0, allQTables.length > 0 ? allQTables.length - 1 : 0])
             .range([margin.left, w - margin.right]);
 
+        const yPadding = (maxValue - minValue) * 0.1; // 10% de padding
         const y = d3
             .scaleLinear()
-            .domain(d3.extent(allValues))
+            .domain([minValue - yPadding, maxValue + yPadding])
             .nice()
             .range([h - margin.bottom, margin.top]);
 
@@ -128,16 +291,9 @@
             .style("fill", "#ffffff")
             .text("Q-Value");
 
-        const colors = {
-            up: "cyan",
-            down: "lime",
-            left: "orange",
-            right: "magenta"
-        };
-
-        const actions = ['up', 'down', 'left', 'right'];
-
+        // Desenha as linhas do gráfico e os círculos do último ponto
         actions.forEach(action => {
+            // Linha
             svg.append("path")
                 .datum(data[action])
                 .attr("class", `chart-line ${action}-line`)
@@ -145,7 +301,46 @@
                 .attr("stroke", colors[action])
                 .attr("stroke-width", 2)
                 .attr("d", line);
+
+            // Círculo no último ponto (apenas se houver dados)
+            if (data[action].length > 0) {
+                const lastDataPoint = data[action][data[action].length - 1];
+                const lastEpisodeIndex = data[action].length - 1;
+
+                svg.append("circle")
+                    .attr("class", `last-point-circle ${action}-last-point-circle`)
+                    .attr("cx", x(lastEpisodeIndex))
+                    .attr("cy", y(lastDataPoint))
+                    .attr("r", 5)
+                    .attr("fill", colors[action])
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 1.5);
+                
+                // Texto do Q-Value do último ponto (opcional, adicionei para clareza)
+                // svg.append("text")
+                //     .attr("class", "q-value-label")
+                //     .attr("x", x(lastEpisodeIndex) + 8)
+                //     .attr("y", y(lastDataPoint) + 3)
+                //     .attr("text-anchor", "start")
+                //     .style("fill", colors[action])
+                //     .style("font-size", "0.7em")
+                //     .text(`${action.charAt(0).toUpperCase()}: ${lastDataPoint.toFixed(1)}`);
+            }
         });
+
+        // Linha vertical transparente no episódio atual (se houver dados)
+        if (allQTables.length > 0) {
+            const currentEpisodeX = x(currentEpisode);
+            svg.append("line")
+                .attr("class", "current-episode-line")
+                .attr("x1", currentEpisodeX)
+                .attr("y1", margin.top)
+                .attr("x2", currentEpisodeX)
+                .attr("y2", h - margin.bottom)
+                .attr("stroke", "white") // Cor da linha do episódio atual
+                .attr("stroke-width", 2)
+                .attr("opacity", 0.2); // Transparência
+        }
 
         // Legenda
         const legend = svg.append("g")
@@ -171,6 +366,103 @@
                 .text(action.charAt(0).toUpperCase() + action.slice(1));
         });
     }
+
+    function mousemove(event) {
+        const margin = { top: 30, right: 60, bottom: 50, left: 70 };
+        const actions = ['up', 'down', 'left', 'right'];
+
+        const x = d3.scaleLinear()
+            .domain([0, allQTables.length > 0 ? allQTables.length - 1 : 0])
+            .range([margin.left, width - margin.right]);
+
+        const y = d3.scaleLinear()
+            .domain(d3.extent([
+                ...qValuesOverEpisodes.up,
+                ...qValuesOverEpisodes.down,
+                ...qValuesOverEpisodes.left,
+                ...qValuesOverEpisodes.right
+            ]))
+            .nice()
+            .range([height - margin.bottom, margin.top]);
+
+        const x0 = x.invert(d3.pointer(event)[0]);
+        const i = Math.round(x0);
+
+        if (!focusLine || !tooltip || !overlayRect) return; // Garante que os elementos existem
+
+        // Esconde os elementos se o mouse estiver fora da área relevante
+        if (i < 0 || i >= allQTables.length || i > currentEpisode) { // Só mostra até o currentEpisode
+            focusLine.transition().duration(50).attr("opacity", 0);
+            for (const action in focusCircles) {
+                focusCircles[action].transition().duration(50).attr("opacity", 0);
+            }
+            tooltip.transition().duration(50).attr("opacity", 0);
+            return;
+        }
+
+        // Atualiza a posição da linha de foco
+        focusLine.attr("x1", x(i)).attr("x2", x(i));
+
+        // Atualiza a posição dos círculos de foco e o texto do tooltip
+        actions.forEach(action => {
+            if (qValuesOverEpisodes[action][i] !== undefined) {
+                focusCircles[action].attr("cx", x(i)).attr("cy", y(qValuesOverEpisodes[action][i]));
+                tooltipTextQValues[action].text(`${action.charAt(0).toUpperCase()}: ${qValuesOverEpisodes[action][i].toFixed(2)}`);
+            }
+        });
+
+        // Calcula a posição do tooltip
+        const tooltipX = x(i) + 15;
+        // Pega a média dos Q-values para posicionar o tooltip de forma mais centralizada
+        const avgQValue = d3.mean(actions.map(action => qValuesOverEpisodes[action][i]));
+        const tooltipY = (avgQValue !== undefined && !isNaN(avgQValue)) ? y(avgQValue) - 50 : y(0) - 50; // Ajusta a posição Y
+
+        const tooltipWidth = 130;
+        const adjustedTooltipX = (tooltipX + tooltipWidth > width - margin.right) ? (x(i) - tooltipWidth + 15) : tooltipX;
+
+        tooltip.attr("transform", `translate(${adjustedTooltipX},${tooltipY})`);
+        tooltipTextEpisode.text(`Episode: ${i}`);
+        
+        // Exibe os elementos
+        focusLine.raise().attr("opacity", 0.15);
+        for (const action in focusCircles) {
+            focusCircles[action].raise().attr("opacity", 0.5);
+        }
+        tooltip.raise().attr("opacity", 1);
+        overlayRect.raise(); // Garante que o overlay ainda está por cima
+    }
+
+    // Função para atualizar o episódio atual ao clicar no gráfico
+    function clickHandler(event) {
+        // Se estiver muito rápido, desativa o clique
+        if (playing && speedIndex >= 2) return;
+
+        const margin = { top: 30, right: 60, bottom: 50, left: 70 };
+        const x = d3.scaleLinear()
+            .domain([0, allQTables.length > 0 ? allQTables.length - 1 : 0])
+            .range([margin.left, width - margin.right]);
+
+        const x0 = x.invert(d3.pointer(event)[0]);
+        const clickedEpisode = Math.round(x0);
+
+        if (clickedEpisode < 0 || clickedEpisode >= allQTables.length) {
+            return;
+        }
+        
+        currentEpisode = clickedEpisode;
+
+        // Oculta os elementos de foco após o clique
+        if (focusLine && tooltip) {
+            focusLine.attr("opacity", 0);
+            for (const action in focusCircles) {
+                focusCircles[action].attr("opacity", 0);
+            }
+            tooltip.attr("opacity", 0);
+        }
+        if (overlayRect) {
+            overlayRect.raise();
+        }
+    }
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -192,7 +484,7 @@
 
 <style>
     .chart-wrapper {
-        margin-top: 0px;
+        margin-top: 20px;
         text-align: center;
     }
 
@@ -209,6 +501,8 @@
         border: 1px solid #3318e9;
         background-color: #0d0d0d;
         border-radius: 8px;
+        width: 675px;
+        height: 250px;
     }
 
     :global(.axis-label) {
@@ -222,4 +516,38 @@
         font-weight: normal;
         font-size: 0.7em;
     }
+
+    :global(.tooltip) {
+        pointer-events: none;
+    }
+
+    :global(.tooltip text) {
+        font-family: "VT323";
+        font-weight: normal;
+        font-size: 0.9em;
+    }
+
+    /* :global(.last-point-circle) {
+        /* Estilo padrão para os círculos nos últimos pontos */
+    /* }
+
+    :global(.current-episode-line) { */
+        /* Estilo para a linha vertical do episódio atual */
+    /* } */
+
+    :global(.q-value-label) {
+        font-family: "VT323";
+        font-weight: normal;
+        font-size: 1.0em;
+    }
+
+    /* Estilos para os elementos de foco (se houver, podem ser adaptados) */
+    :global(.focus-line) {
+        /* color set in JS */
+        stroke-dasharray: 4 2; /* Linha tracejada para distinção */
+    }
+
+    /* :global(.focus-circle) { */
+        /* Estilo dos círculos de foco */
+    /* } */
 </style>
