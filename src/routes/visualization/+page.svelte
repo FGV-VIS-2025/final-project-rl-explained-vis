@@ -218,7 +218,7 @@
     <div class="left-panel">
         <div class="buttons-change">
             <button class="btn-change" on:click={showParamSetter}>
-                Parâmetros Grid
+                Grid Parameters
             </button>
             {#if showParamGrid}
                 <ChangeGrid
@@ -233,7 +233,7 @@
             {/if}
 
             <button class="btn-change" on:click={showRLSetter}>
-                Parâmetros RL
+                RL Parameters
             </button>
             {#if showParamRL}
                 <ChangeParams
