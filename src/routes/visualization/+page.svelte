@@ -11,6 +11,7 @@
     import Icon from "$lib/Icons.svelte";
     import QCellActions from "$lib/QCellActions.svelte";
     import QValuesChart from "$lib/QValuesChart.svelte";
+    import ControlsPanel from "$lib/Buttons.svelte";
 
     //Grid Params
     let world_width = 5;
@@ -51,7 +52,6 @@
 
     // Function to initialize or re-run Q-learning
     function initializeQLearning() {
- 
         const { agent_positions, q_tables, success_rates } = q_learning({
             world_width,
             world_height,
@@ -91,7 +91,11 @@
     }
 
     // Q-valores da célula inspecionada, reativos à currentQTable e inspectedRow/inspectedCol
-    $: qValuesForInspectedCell = getCellQValues(inspectedRow, inspectedCol, currentQTable);
+    $: qValuesForInspectedCell = getCellQValues(
+        inspectedRow,
+        inspectedCol,
+        currentQTable,
+    );
 
     // Derived state for current agent position
     $: currentAgentPosition =
@@ -217,82 +221,32 @@
 <div class="main-layout">
     <div class="left-panel">
         <div class="buttons-change">
-            <button class="btn-change" on:click={showParamSetter}>
-                Grid Parameters
-            </button>
-            {#if showParamGrid}
-                <ChangeGrid
-                    on:configUpdated={initializeQLearning}
-                    bind:showconfig={showParamGrid}
-                    bind:world_width
-                    bind:world_height
-                    bind:hole_positions={holes}
-                    bind:start_position={start}
-                    bind:goal_position={goal}
-                />
-            {/if}
-
-            <button class="btn-change" on:click={showRLSetter}>
-                RL Parameters
-            </button>
-            {#if showParamRL}
-                <ChangeParams
-                    on:paramsUpdated={initializeQLearning}
-                    bind:alpha
-                    bind:gamma
-                    bind:epsilon
-                    bind:epsilon_decay
-                    bind:num_episodes
-                    bind:max_steps
-                    bind:showParamRL
-                />
-            {/if}
-        </div>
-        <div class="player-controls">
-            <button class="play-btn" on:click={togglePlaySpeed}
-                >{playSpeedText}</button
-            >
-            <!-- Botão de reset -->
-            <button on:click={initializeQLearning} title="Reset">
-                <Icon {width_icon} name="reset" color="white"></Icon>
-            </button>
-
-            <!-- Botão anterior -->
-            <button on:click={prevStep} title="Previous Step">
-                <Icon {width_icon} name="previous"></Icon>
-            </button>
-
-            <!-- Botão play/pause -->
-            <button on:click={togglePlay} title={playing ? "Pause" : "Play"}>
-                {#if playing}
-                    <Icon {width_icon} name="pause"></Icon>
-                {:else}
-                    <Icon {width_icon} name="play"></Icon>
-                {/if}
-            </button>
-
-            <!-- Botão próximo -->
-            <button on:click={nextStep} title="Next Step">
-                <Icon {width_icon} name="next"></Icon>
-            </button>
-
-            <!-- Episode Slider -->
-            <div class="episode-slider">
-                <label for="episodeSlider">
-                    Ep: {currentEpisode + 1}/{agent_positions_data.length}
-                </label>
-                <input
-                    type="range"
-                    id="episodeSlider"
-                    min="0"
-                    max={agent_positions_data.length > 0
-                        ? agent_positions_data.length - 1
-                        : 0}
-                    bind:value={currentEpisode}
-                    on:input={goToEpisode}
-                    disabled={agent_positions_data.length === 0}
-                />
-            </div>
+            <ControlsPanel
+                bind:showParamGrid
+                bind:showParamRL
+                bind:world_width
+                bind:world_height
+                bind:holes
+                bind:start
+                bind:goal
+                bind:alpha
+                bind:gamma
+                bind:epsilon
+                bind:epsilon_decay
+                bind:num_episodes
+                bind:max_steps
+                {playSpeedText}
+                bind:playing
+                {width_icon}
+                bind:currentEpisode
+                {agent_positions_data}
+                {initializeQLearning}
+                {prevStep}
+                {nextStep}
+                {togglePlay}
+                {togglePlaySpeed}
+                on:goToEpisode={goToEpisode}
+            />
         </div>
         <div class="grid-display-wrapper-env">
             <EnvironmentGrid
@@ -349,7 +303,7 @@
                 width={650}
                 height={250}
                 speedIndex={currentSpeedIndex}
-                playing={playing}
+                {playing}
             />
         </div>
     </div>
@@ -360,8 +314,8 @@
         <QCellActions
             qValuesForCell={qValuesForInspectedCell}
             globalMaxAbsQValue={100}
-            inspectedRow={inspectedRow}
-            inspectedCol={inspectedCol}
+            {inspectedRow}
+            {inspectedCol}
         />
 
         <QValuesChart
@@ -370,8 +324,8 @@
             {inspectedCol}
             width={650}
             height={250}
-            bind:currentEpisode={currentEpisode}
-            playing={playing}
+            bind:currentEpisode
+            {playing}
             speedIndex={currentSpeedIndex}
         />
     {/if}
@@ -396,6 +350,8 @@
         align-items: center;
         margin-top: 100px;
     }
+
+
 
     .right-panel {
         flex: 1;
@@ -430,34 +386,6 @@
         gap: 50px;
     }
 
-    .btn-change {
-        padding: 6px 12px;
-        cursor: pointer;
-        background-color: #9a5bf4; /* tom roxo da imagem */
-        color: white;
-        border: 2px solid black;
-        border-radius: 0; /* estilo quadrado */
-        font-family: "Press Start 2P", monospace; /* estilo pixel retro */
-        font-size: 10px;
-        text-transform: none;
-        letter-spacing: 1px;
-        display: inline-block;
-        text-align: center;
-    }
-
-    .btn-change:hover {
-        background-color: #0056b3;
-    }
-    .episode-slider {
-        font-family: "Press Start 2P", monospace;
-        font-size: 0.8em;
-    }
-
-    label {
-        margin-top: 10px;
-        font-weight: bold;
-    }
-
     .grids-wrapper {
         display: flex;
         flex-wrap: wrap;
@@ -472,119 +400,5 @@
         align-items: center;
         text-align: center;
         width: fit-content;
-    }
-
-    .player-controls {
-        display: flex;
-        font-size: 0.8rem;
-        align-items: center;
-        gap: 0.5rem;
-        padding-top: 1rem;
-        padding-right: 4rem;
-        padding-left: 4rem;
-        padding-bottom: 1rem;
-    }
-
-    .player-controls button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.25rem;
-    }
-
-    .episode-slider {
-        flex-grow: 1;
-    }
-
-    .play-btn {
-        font-family: "Press Start 2P", monospace;
-        color: #ffffff;
-    }
-    .episode-slider input[type="range"] {
-        -webkit-appearance: none; /* Remove o estilo padrão do navegador para Webkit */
-        appearance: none; /* Estilo padrão */
-        width: 100%;
-        height: 6px;
-        background: transparent; /* Torna o fundo do input transparente para que a barra de progresso personalizada seja visível */
-        border-radius: 3px;
-        outline: none;
-        margin-top: 8px;
-    }
-
-    /* Estilo para a barra de progresso (o "track") */
-    .episode-slider input[type="range"]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 6px;
-        background: #9a5bf4; /* A cor que você quer para a barra */
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .episode-slider input[type="range"]::-moz-range-track {
-        width: 100%;
-        height: 6px;
-        background: #9a5bf4; /* A cor que você quer para a barra */
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    .episode-slider input[type="range"]::-ms-track {
-        width: 100%;
-        height: 6px;
-        background: transparent; /* Necessário para MS Edge/IE para o track */
-        border-color: transparent;
-        color: transparent;
-        cursor: pointer;
-    }
-
-    .episode-slider input[type="range"]::-ms-fill-lower {
-        background: #9a5bf4; /* Cor da parte "preenchida" para MS Edge/IE */
-        border-radius: 3px;
-    }
-
-    .episode-slider input[type="range"]::-ms-fill-upper {
-        background: #ccc; /* Cor da parte "não preenchida" para MS Edge/IE */
-        border-radius: 3px;
-    }
-
-    /* Estilo para o "polegar" (o "thumb") */
-    .episode-slider input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none; /* Remove o estilo padrão do navegador para Webkit */
-        height: 18px; /* Tamanho do thumb */
-        width: 18px; /* Tamanho do thumb */
-        border-radius: 50%; /* Para torná-lo redondo */
-        background: #ffffff; /* Cor do thumb (verde para contraste) */
-        cursor: pointer;
-        margin-top: -6px; /* Ajuste para centralizar o thumb na track */
-        box-shadow:
-            1px 1px 1px #000000,
-            0px 0px 1px #0d0d0d; /* Sombra opcional */
-    }
-
-    .episode-slider input[type="range"]::-moz-range-thumb {
-        height: 18px;
-        width: 18px;
-        border-radius: 50%;
-        background: #ffffff;
-        cursor: pointer;
-        box-shadow:
-            1px 1px 1px #ffffff,
-            0px 0px 1px #0d0d0d;
-    }
-
-    .episode-slider input[type="range"]::-ms-thumb {
-        height: 18px;
-        width: 18px;
-        border-radius: 50%;
-        background: #ffffff;
-        cursor: pointer;
-        margin-top: 0px; /* IE/Edge lidam com a posição do thumb de forma diferente */
-        box-shadow:
-            1px 1px 1px #ffffff,
-            0px 0px 1px #0d0d0d;
-    }
-
-    input[type="range"] {
-        width: 100%;
     }
 </style>
