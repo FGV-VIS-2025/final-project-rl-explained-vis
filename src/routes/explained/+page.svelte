@@ -21,49 +21,52 @@
 </script>
 
 <svelte:head>
-  <title>O que é Reinforcement Learning?</title>
+  <title>What is Reinforcement Learning?</title>
 </svelte:head>
 
 <div class="container">
-  <h1>A ideia por trás do Reinforcement Learning</h1>
+  <h1>The Idea Behind Reinforcement Learning</h1>
 
-  <p>A ideia por trás do Reinforcement Learning é que um agente (uma IA) aprenderá com o ambiente interagindo com ele (por tentativa e erro) e recebendo recompensas (negativas ou positivas) como feedback por realizar ações.</p>
+  <p>The idea behind Reinforcement Learning is that an agent (an AI) will learn from the environment by interacting with it (through trial and error) and receiving rewards (negative or positive) as feedback for performing actions.</p>
 
-  <p>Aprender com interações com o ambiente vem de nossas experiências naturais.</p>
+  <p>Learning from interactions with the environment comes from our natural experiences.</p>
 
-  <p>Por exemplo, imagine colocar seu irmão mais novo na frente de um videogame que ele nunca jogou, dar a ele um controle e deixá-lo sozinho.</p>
+  <p>For instance, imagine putting your little brother in front of a video game he never played, giving him a controller, and leaving him alone.</p>
 
   <!-- Primeiro container - sempre visível -->
   <div class="demo-container">
     <div class="boy-container">
-      <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+      <img src="/menino.png" alt="Boy playing" class="boy-icon" />
     </div>
 
     <div class="game-container">
       <div class="game-board">
         {#each gameBoard as row, i}
           {#each row as cell, j}
-          <div class="game-cell" class:red-cell={cell === 2}>
-            {#if i === 0 && j === 0}
-              <img src="/avatar.png" alt="Avatar" class="avatar-icon"/>
-            {/if}
-            {#if cell === 1}
-              <img src="/coin.png" alt="Moeda" class="coin-icon" />
-            {/if}
-          </div>
+            <div class="game-cell" class:red-cell={cell === 2 && currentStep === 0}>
+              {#if cell === 1 && currentStep === 0}
+                <img src="/coin.png" alt="Coin" class="coin-icon" />
+              {/if}
+            </div>
           {/each}
         {/each}
       </div>
     </div>
   </div>
 
+  <!-- Botões de controle - sempre visíveis quando estamos no passo 0 -->
+  <div class="button-container">
+    <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
+    <button on:click={resetDemo}>Restart</button>
+  </div>
+
   <!-- Conteúdo do passo 1 - aparece depois do primeiro clique -->
   {#if currentStep >= 1}
-    <p>Seu irmão vai interagir com o ambiente (o videogame) pressionando o botão certo (ação). Ele conseguiu uma moeda, isso é uma recompensa +1. É positivo, ele acabou de entender que neste jogo ele deve pegar as moedas.</p>
+    <p>Your brother will interact with the environment (the video game) by pressing the right button (action). He got a coin, that's a +1 reward. It's positive, he just understood that in this game he must get the coins.</p>
 
     <div class="demo-container">
       <div class="boy-container">
-        <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+        <img src="/menino.png" alt="Boy playing" class="boy-icon" />
         <div class="reward-indicator">+1</div>
       </div>
 
@@ -72,14 +75,11 @@
           {#each gameBoard as row, i}
             {#each row as cell, j}
               <div class="game-cell" class:red-cell={cell === 2}>
+                {#if cell === 1}
+                  <img src="/coin.png" alt="Coin" class="coin-icon" />
+                {/if}
                 {#if i === 0 && j === 1}
-                    <img src="/avatar.png" alt="Avatar" class="avatar-icon"/>
-                {/if}
-                {#if cell === 1 && (i !== 0 && j !== 1)}
-                  <img src="/coin.png" alt="Moeda" class="coin-icon" />
-                {/if}
-                {#if i === 0 && j === 0}
-                  <div class="arrow">→</div>
+                  <div class="arrow">←</div>
                 {/if}
               </div>
             {/each}
@@ -87,15 +87,15 @@
         </div>
       </div>
     </div>
-    {/if}
+  {/if}
 
-    {#if currentStep >= 2}
-
-    <p>Mas então, ele pressiona o botão direito novamente e cai em um buraco. Ele acabou de morrer, então essa é uma recompensa -1.</p>
+  <!-- Conteúdo do passo 2 - aparece depois do segundo clique -->
+  {#if currentStep >= 2}
+    <p>But then, he presses the right button again and he falls into a hole. He just died, so that's a -1 reward.</p>
 
     <div class="demo-container">
       <div class="boy-container">
-        <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+        <img src="/menino.png" alt="Boy playing" class="boy-icon" />
         <div class="death-indicator">-1</div>
       </div>
 
@@ -104,14 +104,8 @@
           {#each gameBoard as row, i}
             {#each row as cell, j}
               <div class="game-cell" class:red-cell={cell === 2}>
-                {#if i === 0 && j === 2}
-                    <img src="/avatar.png" alt="Avatar" class="avatar-icon"/>
-                {/if}
-                {#if cell === 1 && (i !== 0 && j !== 1)}
-                  <img src="/coin.png" alt="Moeda" class="coin-icon" />
-                {/if}
                 {#if i === 0 && j === 1}
-                    <div class="arrow">→</div>
+                  <div class="arrow down-arrow">↓</div>
                 {/if}
               </div>
             {/each}
@@ -119,22 +113,19 @@
         </div>
       </div>
     </div>
-
-    <p>Ao interagir com o ambiente através de tentativa e erro, seu irmão mais novo entende que precisa pegar moedas neste ambiente, mas evitar os inimigos. Sem qualquer supervisão, a criança ficará cada vez melhor em jogar o jogo.</p>
-
-    <p>É assim que humanos e animais aprendem, através da interação. O Reinforcement Learning é apenas uma abordagem computacional de aprendizado a partir de ações.</p>
-
-    <h2>Uma definição formal</h2>
-    <p>Podemos agora fazer uma definição formal:</p>
-    <p>Reinforcement Learning é um framework para resolver tarefas de controle (também chamadas de problemas de decisão) construindo agentes que aprendem com o ambiente interagindo com ele através de tentativa e erro e recebendo recompensas (positivas ou negativas) como único feedback.</p>
-    <p>Mas como funciona o Reinforcement Learning?</p>
   {/if}
 
-  <!-- Botões de controle -->
-  <div class="button-container">
-    <button on:click={nextStep} disabled={currentStep >= 3}>Próximo Passo</button>
-    <button on:click={resetDemo}>Recomeçar</button>
-  </div>
+  <!-- Conteúdo do passo 3 - aparece depois do terceiro clique -->
+  {#if currentStep >= 3}
+    <p>By interacting with his environment through trial and error, your little brother understands that he needs to get coins in this environment but avoid the enemies. Without any supervision, the child will get better and better at playing the game.</p>
+
+    <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
+
+    <h2>A Formal Definition</h2>
+    <p>We can now make a formal definition:</p>
+    <p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
+    <p>But how does Reinforcement Learning work exactly?</p>
+  {/if}
 </div>
 
 <style>
