@@ -8,40 +8,44 @@
 
     // Funções para determinar a cor do gradiente
     function getGradientColor(qValue) {
-    if (globalMaxAbsQValue === 0) {
-        return `rgb(230, 230, 230)`; // fallback: light gray
+        if (globalMaxAbsQValue === 0) {
+            return `hsl(0, 0%, 15%)`;
+        }
+
+        const maxQValue = globalMaxAbsQValue;
+        const minQValue = -globalMaxAbsQValue;
+
+        const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
+
+        let hue;
+        let saturation = 100;
+        let lightness;
+
+        const colorNegExtreme = { hue: 10, saturation: 100, lightness: 10 };
+        const colorZero = { hue: 260, saturation: 20, lightness: 15 };
+        const colorPosExtreme = { hue: 190, saturation: 100, lightness: 70 };
+
+        if (normalizedValue <= 0.5) {
+            const localNorm = normalizedValue / 0.5;
+
+            hue = colorNegExtreme.hue + (colorZero.hue - colorNegExtreme.hue) * localNorm;
+            saturation = colorNegExtreme.saturation + (colorZero.saturation - colorNegExtreme.saturation) * localNorm;
+            lightness = colorNegExtreme.lightness + (colorZero.lightness - colorNegExtreme.lightness) * localNorm;
+
+        } else {
+            const localNorm = (normalizedValue - 0.5) / 0.5;
+
+            hue = colorZero.hue + (colorPosExtreme.hue - colorZero.hue) * localNorm;
+            saturation = colorZero.saturation + (colorPosExtreme.saturation - colorZero.saturation) * localNorm;
+            lightness = colorZero.lightness + (colorPosExtreme.lightness - colorZero.lightness) * localNorm;
+        }
+
+        hue = Math.round(hue);
+        saturation = Math.round(saturation);
+        lightness = Math.round(lightness);
+
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
-
-    const maxQValue = globalMaxAbsQValue;
-    const minQValue = -globalMaxAbsQValue;
-    const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
-
-    // "Blues" palette from dark to light
-    const blues = [
-        [8, 81, 156],     // dark blue
-        [49, 130, 189],
-        [107, 174, 214],
-        [158, 202, 225],
-        [198, 219, 239],
-        [239, 243, 255]   // very light blue
-    ];
-
-    const scaled = normalizedValue * (blues.length - 1);
-    const i = Math.floor(scaled);
-    const t = scaled - i;
-
-    const i1 = Math.min(i + 1, blues.length - 1);
-
-    const r = Math.round(blues[i][0] + (blues[i1][0] - blues[i][0]) * t);
-    const g = Math.round(blues[i][1] + (blues[i1][1] - blues[i][1]) * t);
-    const b = Math.round(blues[i][2] + (blues[i1][2] - blues[i][2]) * t);
-
-    return `rgb(${r}, ${g}, ${b})`;
-}
-
-
-
-
 
     // Calcula as cores para cada triângulo
     $: upColor = qValuesForCell ? getGradientColor(qValuesForCell.up) : 'transparent';
@@ -160,9 +164,9 @@
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr;
         grid-template-areas:
-            "up"
-            "left center"
-            "down";
+            ". up ."
+            "left center right"
+            ". down .";
         background-color: #1e1e1e;
         border: var(--border-thickness) solid #9f96d8;
         box-sizing: border-box;
@@ -175,16 +179,12 @@
         height: 0;
         border-style: solid;
         z-index: 1;
-        --border-color: #555; /* Cor da borda */
-        --border-thickness: 2px; /* Espessura da borda */
     }
 
     .up {
         grid-area: up;
-        border-width: 0 calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) calc(var(--cell-size) / 4);
-        border-color: transparent transparent var(--up-color) transparent;
-        border-left-color: var(--border-color);
-        border-right-color: var(--border-color);
+        border-width: 0 37px 37px 37px;
+        border-color: transparent transparent var(--triangle-color) transparent;
         top: 0;
         left: 50%;
         transform: translateX(-50%);
@@ -192,10 +192,8 @@
 
     .down {
         grid-area: down;
-        border-width: calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) 0 calc(var(--cell-size) / 4);
-        border-color: var(--down-color) transparent transparent transparent;
-        border-left-color: var(--border-color);
-        border-right-color: var(--border-color);
+        border-width: 37px 37px 0 37px;
+        border-color: var(--triangle-color) transparent transparent transparent;
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
@@ -203,10 +201,8 @@
 
     .left {
         grid-area: left;
-        border-width: calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) 0;
-        border-color: transparent var(--left-color) transparent transparent;
-        border-top-color: var(--border-color);
-        border-bottom-color: var(--border-color);
+        border-width: 37px 37px 37px 0;
+        border-color: transparent var(--triangle-color) transparent transparent;
         left: 0;
         top: 50%;
         transform: translateY(-50%);
@@ -214,14 +210,17 @@
 
     .right {
         grid-area: right;
-        border-width: calc(var(--cell-size) / 4) 0 calc(var(--cell-size) / 4) calc(var(--cell-size) / 4);
-        border-color: transparent transparent transparent var(--right-color);
-        border-top-color: var(--border-color);
-        border-bottom-color: var(--border-color);
+        border-width: 37px 0 37px 37px;
+        border-color: transparent transparent transparent var(--triangle-color);
         right: 0;
         top: 50%;
         transform: translateY(-50%);
     }
+
+    .up { --triangle-color: var(--up-color); }
+    .down { --triangle-color: var(--down-color); }
+    .left { --triangle-color: var(--left-color); }
+    .right { --triangle-color: var(--right-color); }
 
     .q-cell-actions-container {
         --up-color: var(--upColor, transparent);
