@@ -164,9 +164,9 @@
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 1fr 1fr;
         grid-template-areas:
-            ". up ."
-            "left center right"
-            ". down .";
+            "up"
+            "left center"
+            "down";
         background-color: #1e1e1e;
         border: var(--border-thickness) solid #9f96d8;
         box-sizing: border-box;
@@ -179,12 +179,16 @@
         height: 0;
         border-style: solid;
         z-index: 1;
+        --border-color: #555; /* Cor da borda */
+        --border-thickness: 2px; /* Espessura da borda */
     }
 
     .up {
         grid-area: up;
-        border-width: 0 37px 37px 37px;
-        border-color: transparent transparent var(--triangle-color) transparent;
+        border-width: 0 calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) calc(var(--cell-size) / 4);
+        border-color: transparent transparent var(--up-color) transparent;
+        border-left-color: var(--border-color);
+        border-right-color: var(--border-color);
         top: 0;
         left: 50%;
         transform: translateX(-50%);
@@ -192,8 +196,10 @@
 
     .down {
         grid-area: down;
-        border-width: 37px 37px 0 37px;
-        border-color: var(--triangle-color) transparent transparent transparent;
+        border-width: calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) 0 calc(var(--cell-size) / 4);
+        border-color: var(--down-color) transparent transparent transparent;
+        border-left-color: var(--border-color);
+        border-right-color: var(--border-color);
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
@@ -201,8 +207,10 @@
 
     .left {
         grid-area: left;
-        border-width: 37px 37px 37px 0;
-        border-color: transparent var(--triangle-color) transparent transparent;
+        border-width: calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) calc(var(--cell-size) / 4) 0;
+        border-color: transparent var(--left-color) transparent transparent;
+        border-top-color: var(--border-color);
+        border-bottom-color: var(--border-color);
         left: 0;
         top: 50%;
         transform: translateY(-50%);
@@ -210,17 +218,14 @@
 
     .right {
         grid-area: right;
-        border-width: 37px 0 37px 37px;
-        border-color: transparent transparent transparent var(--triangle-color);
+        border-width: calc(var(--cell-size) / 4) 0 calc(var(--cell-size) / 4) calc(var(--cell-size) / 4);
+        border-color: transparent transparent transparent var(--right-color);
+        border-top-color: var(--border-color);
+        border-bottom-color: var(--border-color);
         right: 0;
         top: 50%;
         transform: translateY(-50%);
     }
-
-    .up { --triangle-color: var(--up-color); }
-    .down { --triangle-color: var(--down-color); }
-    .left { --triangle-color: var(--left-color); }
-    .right { --triangle-color: var(--right-color); }
 
     .q-cell-actions-container {
         --up-color: var(--upColor, transparent);
