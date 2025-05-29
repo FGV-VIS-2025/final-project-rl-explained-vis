@@ -88,7 +88,7 @@
 <div class="overlay">
     <div class="change-params-container">
         <div class="header-section">
-            <h2>Configuração de Parâmetros do Q-Learning</h2>
+            <h2>Q-Learning Parameters Configuration</h2>
             <button
                 class="close-button"
                 on:click={unShowParamSetter}
@@ -254,9 +254,9 @@
 
         <div class="action-buttons">
             <button on:click={resetParameters} class="reset-button"
-                >Reiniciar</button
+                >Reset</button
             >
-            <button on:click={applyParameters}>Aplicar Parâmetros</button>
+            <button on:click={applyParameters}>Apply Parameters</button>
         </div>
     </div>
 </div>
