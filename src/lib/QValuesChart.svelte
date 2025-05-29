@@ -316,14 +316,14 @@
                     .attr("stroke", "white")
                     .attr("stroke-width", 1.5);
                 
-                // Texto do Q-Value do último ponto (opcional, adicionei para clareza)
+                // Texto do Q-Value do último ponto
                 // svg.append("text")
                 //     .attr("class", "q-value-label")
-                //     .attr("x", x(lastEpisodeIndex) + 8)
-                //     .attr("y", y(lastDataPoint) + 3)
+                //     .attr("x", x(lastEpisodeIndex) + 10)
+                //     .attr("y", y(lastDataPoint) + 4)
                 //     .attr("text-anchor", "start")
                 //     .style("fill", colors[action])
-                //     .style("font-size", "0.7em")
+                //     .style("font-size", "0.9em")
                 //     .text(`${action.charAt(0).toUpperCase()}: ${lastDataPoint.toFixed(1)}`);
             }
         });
@@ -358,7 +358,7 @@
 
             legendRow.append("text")
                 .attr("x", 15)
-                .attr("y", 9)
+                .attr("y", 7)
                 .attr("dy", "0.35em")
                 .style("fill", "white")
                 .style("font-size", "10px")
@@ -371,17 +371,21 @@
         const margin = { top: 30, right: 60, bottom: 50, left: 70 };
         const actions = ['up', 'down', 'left', 'right'];
 
+        const colors = {
+            up: "cyan",
+            down: "lime",
+            left: "orange",
+            right: "magenta"
+        };
+
         const x = d3.scaleLinear()
             .domain([0, allQTables.length > 0 ? allQTables.length - 1 : 0])
             .range([margin.left, width - margin.right]);
 
-        const y = d3.scaleLinear()
-            .domain(d3.extent([
-                ...qValuesOverEpisodes.up,
-                ...qValuesOverEpisodes.down,
-                ...qValuesOverEpisodes.left,
-                ...qValuesOverEpisodes.right
-            ]))
+        const yPadding = (maxValue - minValue) * 0.1;
+        const y = d3
+            .scaleLinear()
+            .domain([minValue - yPadding, maxValue + yPadding])
             .nice()
             .range([height - margin.bottom, margin.top]);
 
@@ -403,11 +407,41 @@
         // Atualiza a posição da linha de foco
         focusLine.attr("x1", x(i)).attr("x2", x(i));
 
-        // Atualiza a posição dos círculos de foco e o texto do tooltip
+        const currentQValues = [];
         actions.forEach(action => {
-            if (qValuesOverEpisodes[action][i] !== undefined) {
-                focusCircles[action].attr("cx", x(i)).attr("cy", y(qValuesOverEpisodes[action][i]));
-                tooltipTextQValues[action].text(`${action.charAt(0).toUpperCase()}: ${qValuesOverEpisodes[action][i].toFixed(2)}`);
+            const qValue = qValuesOverEpisodes[action][i];
+            // Adiciona apenas se for um número válido, para evitar NaNs
+            if (typeof qValue === 'number' && !isNaN(qValue)) {
+                currentQValues.push({ action: action, value: qValue });
+            } else {
+                focusCircles[action].attr("opacity", 0);
+            }
+        });
+
+        currentQValues.sort((a, b) => b.value - a.value);
+
+        actions.forEach(action => {
+            const qValue = qValuesOverEpisodes[action][i];
+            if (typeof qValue === 'number' && !isNaN(qValue)) {
+                focusCircles[action].attr("cx", x(i)).attr("cy", y(qValue)).attr("opacity", 0.5);
+            } else {
+                focusCircles[action].attr("opacity", 0);
+            }
+        });
+
+        tooltipTextEpisode.text(`Episode: ${i}`);
+
+        currentQValues.forEach((item, index) => {
+            tooltipTextQValues[item.action]
+                .attr("x", 10) // Mantém a posição X
+                .attr("y", 31 + (index * 17)) // Ajusta a posição Y para cada Q-value ordenado
+                .style("fill", colors[item.action]) // Mantém a cor original da ação
+                .text(`${item.action.charAt(0).toUpperCase()}: ${item.value.toFixed(2)}`);
+        });
+
+        actions.forEach(action => {
+            if (!currentQValues.some(item => item.action === action)) {
+                tooltipTextQValues[action].text(''); // Limpa o texto se não estiver na lista ordenada
             }
         });
 
@@ -470,7 +504,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
 <div class="chart-wrapper">
-    <h3>Q-Values Over Episodes for Cell ({inspectedRow}, {inspectedCol})
+    <h3>Q-Values Over Episodes for Cell ({inspectedRow},{inspectedCol})
         <InfoTooltip>
             <div slot="tooltipContent">
                 This chart displays the Q-values for each action<br>
@@ -484,7 +518,7 @@
 
 <style>
     .chart-wrapper {
-        margin-top: 20px;
+        margin-top: 0px;
         text-align: center;
     }
 
