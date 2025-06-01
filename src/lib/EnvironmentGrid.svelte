@@ -112,7 +112,7 @@
                     >
                         {#if isAgent}
                             <img
-                                src="{base}/pacman.png"
+                                src= "/pacman.png"
                                 alt="Agent"
                                 style="width: 24px; height: 24px; transform: rotate({agentDirection}deg); transition: transform 0.2s ease;"
                             />

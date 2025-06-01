@@ -12,6 +12,7 @@
     import QCellActions from "$lib/QCellActions.svelte";
     import QValuesChart from "$lib/QValuesChart.svelte";
     import ControlsPanel from "$lib/Buttons.svelte";
+    import { base } from '$app/paths';
 
     //Grid Params
     let world_width = 5;
