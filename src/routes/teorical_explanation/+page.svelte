@@ -255,7 +255,7 @@
 
   <div class="button-container column">
     <button class="large-button">
-      <a href="/q_learn" style="text-decoration: none; color: inherit;">How it learn?</a>
+      <a href="{base + "/q_learn"}" style="text-decoration: none; color: inherit;">How it learn?</a>
     </button>
     <button class="small-button" on:click={returnToExplained}>Voltar</button>
   </div>

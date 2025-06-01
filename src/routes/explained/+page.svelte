@@ -149,7 +149,7 @@
   <!-- Primeiro container - sempre visível -->
   <div class="demo-container">
     <div class="boy-container">
-      <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
+      <img src={base + "/menino.png"}"alt="Menino jogando" class="boy-icon" />
     </div>
 
     <div class="game-container">
@@ -187,7 +187,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src={base +"/menino.png"} alt="Menino jogando" class="boy-icon" />
         </div>
 
         <div class="game-container">
@@ -230,7 +230,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src={base + "/menino.png"}"alt="Menino jogando" class="boy-icon" />
           <div class="death-indicator">-1</div>
         </div>
 
@@ -274,7 +274,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src={base + "/menino.png"}"alt="Menino jogando" class="boy-icon" />
           {#if showReward}
             <div class="reward-indicator">+1</div>
           {/if}
@@ -320,8 +320,8 @@
       <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
 
       <div class="button-container column">
-        <button class="large-button" on:click={() => goto(`${base}/teorical_explanation`)}>
-          A Formal Definition
+        <button class="large-button">
+          <a href="{base + "/teorical_explanation"}" style="text-decoration: none; color: inherit;">A Formal Definition</a>
         </button>
         <button on:click={resetDemo} class="small-button">Restart</button>
       </div>
