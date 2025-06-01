@@ -1,9 +1,10 @@
 <script>
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
   function returnToExplained() {
-    goto("/explained");
+    goto(`${base}/explained`);
   }
 
   let currentSection = 'agent';
@@ -22,11 +23,11 @@
 </script>
 
 <svelte:head>
-  <title>Reinforcement Learning - Formal Definition</title>
+  <title>Formal Definition</title>
 </svelte:head>
 
 <div class="container">
-  <h1>Reinforcement Learning: A Formal Definition</h1>
+  <h1>A Formal Definition</h1>
 
   <nav class="section-nav">
     <ul>
@@ -252,8 +253,11 @@
     </div>
   </section>
 
-  <div class="button-container">
-    <button class="return-button" on:click={returnToExplained}>Voltar</button>
+  <div class="button-container column">
+    <button class="large-button">
+      <a href="/q_learn" style="text-decoration: none; color: inherit;">How it learn?</a>
+    </button>
+    <button class="small-button" on:click={returnToExplained}>Voltar</button>
   </div>
 </div>
 
@@ -667,18 +671,45 @@
     margin-bottom: 2em;
   }
 
-  .return-button {
+  .button-container.column {
+    flex-direction: column;
+    gap: 1em;
+    margin: 2em auto;
+  }
+
+  .large-button {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    margin: 0 auto;
     font-family: 'Press Start 2P', cursive;
     background-color: #333;
     color: white;
     border: 2px solid white;
-    padding: 15px 30px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 1rem;
   }
 
-  .return-button:hover {
+  .large-button:hover {
+    background-color: #555;
+  }
+
+  .small-button {
+    width: auto;
+    max-width: 120px;
+    padding: 8px 15px;
+    font-size: 0.7rem;
+    margin: 0 auto;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #333;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .small-button:hover {
     background-color: #555;
   }
 

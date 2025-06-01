@@ -138,7 +138,7 @@
 </svelte:head>
 
 <div class="container">
-  <h1>The Idea Behind Reinforcement Learning</h1>
+  <h1>The Idea Behind</h1>
 
   <p>The idea behind Reinforcement Learning is that an agent (an AI) will learn from the environment by interacting with it (through trial and error) and receiving rewards (negative or positive) as feedback for performing actions.</p>
 
@@ -447,8 +447,8 @@
       <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
 
       <div class="button-container column">
-        <button class="large-button">
-          <a href="/teorical_explanation" style="text-decoration: none; color: inherit;">A Formal Definition</a>
+        <button class="large-button" on:click={() => goto(`${base}/teorical_explanation`)}>
+          A Formal Definition
         </button>
         <button on:click={resetDemo} class="small-button">Restart</button>
       </div>
