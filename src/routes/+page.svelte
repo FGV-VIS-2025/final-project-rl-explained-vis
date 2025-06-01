@@ -1,14 +1,14 @@
 <script>
     import { goto } from '$app/navigation';
+    import { base } from '$app/paths';
 
     function handleFirstAction() {
-      goto("/explained");
+    goto(`${base}/explained`); // Prepend the base path
+  }
 
-    }
-
-    function handleSecondAction() {
-        goto("/visualization");
-    }
+  function handleSecondAction() {
+    goto(`${base}/visualization`); // Prepend the base path
+  }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
