@@ -8,6 +8,7 @@
     export let inspectedRow;
     export let inspectedCol;
 
+    import { base } from '$app/paths';
     import { afterUpdate } from "svelte";
 
     // ... seus exports e funções anteriores ...
@@ -46,8 +47,8 @@
     // Função para obter o conteúdo da célula
     function getCellContent(row, col) {
         const type = getCellType(row, col);
-        if (type === "goal") return "/coin.png";
-        if (type === "hole") return "/fantasma.png";
+        if (type === "goal") return `${base}/coin.png`;
+        if (type === "hole") return `${base}/fantasma.png`;
         return "";
     }
 
@@ -112,7 +113,7 @@
                     >
                         {#if isAgent}
                             <img
-                                src= "/pacman.png"
+                                src= {base + "/pacman.png"}
                                 alt="Agent"
                                 style="width: 24px; height: 24px; transform: rotate({agentDirection}deg); transition: transform 0.2s ease;"
                             />

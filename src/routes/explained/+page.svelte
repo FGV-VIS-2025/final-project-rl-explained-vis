@@ -196,13 +196,13 @@
               {#each row as cell, j}
                 <div class="game-cell">
                   {#if i === 0 && j === 1}
-                      <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                      <img src={base + "/pacman.png"} alt="Avatar" class="avatar-icon"/>
                   {/if}
                   {#if cell === 1}
-                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                    <img src={base + "/coin.png"} alt="Moeda" class="coin-icon" />
                   {/if}
                   {#if cell === 2}
-                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                    <img src={base + "/fantasma.png"} alt="Fantasma" class="ghost-icon" />
                   {/if}
                   {#if i === 0 && j === 0}
                     <div class="arrow">→</div>
@@ -240,13 +240,13 @@
               {#each row as cell, j}
                 <div class="game-cell">
                   {#if i === 0 && j === 2}
-                      <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                      <img src={base + "/pacman.png"} alt="Avatar" class="avatar-icon"/>
                   {/if}
                   {#if cell === 1}
-                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                    <img src={base + "/coin.png"} alt="Moeda" class="coin-icon" />
                   {/if}
                   {#if cell === 2}
-                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                    <img src={base + "/fantasma.png"} alt="Fantasma" class="ghost-icon" />
                   {/if}
                   {#if i === 0 && j === 1}
                     <div class="arrow">→</div>
@@ -286,13 +286,13 @@
               {#each row as cell, j}
                 <div class="game-cell">
                   {#if i === pacmanPosition.y && j === pacmanPosition.x}
-                    <img src="/pacman.png" alt="Avatar" class="avatar-icon" style="transform: rotate({pacmanRotation}deg);"/>
+                    <img src={base + "/pacman.png"} alt="Avatar" class="avatar-icon" style="transform: rotate({pacmanRotation}deg);"/>
                   {/if}
                   {#if cell === 1 && !(i === pacmanPosition.y && j === pacmanPosition.x)}
-                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                    <img src={base + "/coin.png"} alt="Moeda" class="coin-icon" />
                   {/if}
                   {#if cell === 2}
-                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                    <img src={base + "/fantasma.png"} alt="Fantasma" class="ghost-icon" />
                   {/if}
 
                   <!-- Setas indicando o movimento -->

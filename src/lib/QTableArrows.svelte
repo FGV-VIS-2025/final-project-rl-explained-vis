@@ -94,13 +94,13 @@
                 >
                     {#if getCellType(r,c) === 'goal'}
                         <img
-                                src=/coin.png
-                                alt="Hole"
+                                src={base + "/coin.png"}
+                                alt="Coin"
                                 style="width: 24px; height: 24px;"
                             />
                     {:else if getCellType(r,c) === 'hole'}
                         <img
-                                src=/fantasma.png
+                                src={base + "/fantasma.png"}
                                 alt="Hole"
                                 style="width: 24px; height: 24px;"
                             />

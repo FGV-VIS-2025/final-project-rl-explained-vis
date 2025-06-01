@@ -7,6 +7,7 @@
     export let goal;
     export let holes;
     export let maxAbsVal;
+    import { base } from '$app/paths';
 
     import InfoTooltip from "./InfoTooltip.svelte";
 
@@ -145,13 +146,13 @@
                 >
                     {#if getCellType(r,c) === 'goal'}
                         <img
-                                src=/coin.png
+                                src={base + "/coin.png"}
                                 alt="Coin"
                                 style="width: 24px; height: 24px;"
                             />
                     {:else if getCellType(r,c) === 'hole'}
                         <img
-                                src=/fantasma.png
+                                src={base + "/fantasma.png"}
                                 alt="Hole"
                                 style="width: 24px; height: 24px;"
                             />

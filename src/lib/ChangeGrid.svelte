@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
+    import { base } from '$app/paths';
 
     export let world_width;
     export let world_height;
@@ -307,13 +308,13 @@
                                     S{/if}
                                     {#if isGoal(r, c)}
                                     <img
-                                    src=/coin.png
+                                    src={base + "/coin.png"}
                                     alt="Hole"
                                     style="width: 24px; height: 24px;"/>
                             {/if}
                                     {#if isHole(r, c)}
                                     <img
-      src=/fantasma.png
+      src={base + "/fantasma.png"}
       alt="Ghost"
       style="width: 24px; height: 24px;"
     />
