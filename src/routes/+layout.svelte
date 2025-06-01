@@ -3,7 +3,7 @@
   import { base } from '$app/paths';
   function returnStart()
   {
-    goto(base)
+    goto(`${base}/`);
   }
 </script>
 
@@ -15,7 +15,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
 <header>
-<h1 on:click={returnStart} role="button" tabindex="0" style="cursor: pointer;">Reinforcement Learning</h1>
+<h1 on:click|preventDefault={returnStart} role="button" tabindex="0" style="cursor: pointer;">
+  Reinforcement Learning
+</h1>
 </header>
 
 <slot></slot>
