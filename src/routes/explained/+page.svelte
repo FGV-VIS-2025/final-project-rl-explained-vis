@@ -4,6 +4,11 @@
 
   let currentStep = 0;
 
+  // Referências para os elementos de cada passo
+  let step1Element;
+  let step2Element;
+  let step3Element;
+
   let gameBoard = [
     [0, 0, 2],
     [0, 0, 0],
@@ -24,6 +29,28 @@
       if (currentStep === 3) {
         startPacmanAnimation();
       }
+
+      // Rola a página para mostrar o novo conteúdo
+      setTimeout(() => {
+        const elementToScrollTo = getElementForStep(currentStep);
+        if (elementToScrollTo) {
+          elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }
+
+  // Função para obter o elemento correspondente ao passo atual
+  function getElementForStep(step) {
+    switch(step) {
+      case 1:
+        return step1Element;
+      case 2:
+        return step2Element;
+      case 3:
+        return step3Element;
+      default:
+        return null;
     }
   }
 
@@ -34,6 +61,9 @@
     animationStep = 0;
     showReward = false;
     pacmanRotation = 0;
+
+    // Rola a página de volta para o topo
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function startPacmanAnimation() {
@@ -269,14 +299,161 @@
     </div>
   {/if}
 
-  <!-- Botões de controle -->
-  {#if currentStep < 3}
+  <!-- Botões de controle iniciais -->
+  {#if currentStep < 1}
     <div class="button-container">
       <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
       <button on:click={resetDemo}>Restart</button>
     </div>
   {/if}
 
+  <!-- Conteúdo do passo 1 - aparece depois do primeiro clique -->
+  {#if currentStep >= 1}
+    <div bind:this={step1Element} class="step-content">
+      <p>Your brother will interact with the environment (the video game) by pressing buttons (actions). At first, he doesn't know what to do, so he tries moving to the right.</p>
+
+      <div class="demo-container">
+        <div class="boy-container">
+          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+        </div>
+
+        <div class="game-container">
+          <div class="game-board">
+            {#each gameBoard as row, i}
+              {#each row as cell, j}
+                <div class="game-cell">
+                  {#if i === 0 && j === 1}
+                      <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                  {/if}
+                  {#if cell === 1}
+                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                  {/if}
+                  {#if cell === 2}
+                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                  {/if}
+                  {#if i === 0 && j === 0}
+                    <div class="arrow">→</div>
+                  {/if}
+                </div>
+              {/each}
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de controle após o passo 1 -->
+      {#if currentStep === 1}
+        <div class="button-container">
+          <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
+          <button on:click={resetDemo}>Restart</button>
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  {#if currentStep >= 2}
+    <div bind:this={step2Element} class="step-content">
+      <p>But then, he moves right again and encounters a ghost. He just died, so that's a -1 reward. He learns that encountering ghosts is bad and should be avoided.</p>
+
+      <div class="demo-container">
+        <div class="boy-container">
+          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+          <div class="death-indicator">-1</div>
+        </div>
+
+        <div class="game-container">
+          <div class="game-board">
+            {#each gameBoard as row, i}
+              {#each row as cell, j}
+                <div class="game-cell">
+                  {#if i === 0 && j === 2}
+                      <img src="/pacman.png" alt="Avatar" class="avatar-icon"/>
+                  {/if}
+                  {#if cell === 1}
+                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                  {/if}
+                  {#if cell === 2}
+                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                  {/if}
+                  {#if i === 0 && j === 1}
+                    <div class="arrow">→</div>
+                  {/if}
+                </div>
+              {/each}
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de controle após o passo 2 -->
+      {#if currentStep === 2}
+        <div class="button-container">
+          <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
+          <button on:click={resetDemo}>Restart</button>
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  {#if currentStep >= 3}
+    <div bind:this={step3Element} class="step-content">
+      <p>He continues playing, avoiding ghosts, until he reaches a coin for the first time. He gets a +1 reward! Now he understands that in this game he must avoid ghosts and collect coins.</p>
+
+      <div class="demo-container">
+        <div class="boy-container">
+          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+          {#if showReward}
+            <div class="reward-indicator">+1</div>
+          {/if}
+        </div>
+
+        <div class="game-container">
+          <div class="game-board">
+            {#each gameBoard as row, i}
+              {#each row as cell, j}
+                <div class="game-cell">
+                  {#if i === pacmanPosition.y && j === pacmanPosition.x}
+                    <img src="/pacman.png" alt="Avatar" class="avatar-icon" style="transform: rotate({pacmanRotation}deg);"/>
+                  {/if}
+                  {#if cell === 1 && !(i === pacmanPosition.y && j === pacmanPosition.x)}
+                    <img src="/coin.png" alt="Moeda" class="coin-icon" />
+                  {/if}
+                  {#if cell === 2}
+                    <img src="/fantasma.png" alt="Fantasma" class="ghost-icon" />
+                  {/if}
+
+                  <!-- Setas indicando o movimento -->
+                  {#if animationStep >= 1 && i === 0 && j === 0}
+                    <div class="arrow down-arrow">→</div>
+                  {/if}
+                  {#if animationStep >= 2 && i === 1 && j === 0}
+                    <div class="arrow">→</div>
+                  {/if}
+                  {#if animationStep >= 3 && i === 1 && j === 1}
+                    <div class="arrow">→</div>
+                  {/if}
+                  {#if animationStep >= 4 && i === 1 && j === 2}
+                    <div class="arrow down-arrow">→</div>
+                  {/if}
+                </div>
+              {/each}
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <p>By interacting with his environment through trial and error, your little brother understands that he needs to avoid ghosts and collect coins in this environment. Without any supervision, the child will get better and better at playing the game.</p>
+
+      <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
+
+      <div class="button-container column">
+        <button class="large-button">
+          <a href="/teorical_explanation" style="text-decoration: none; color: inherit;">A Formal Definition</a>
+        </button>
+        <button on:click={resetDemo} class="small-button">Restart</button>
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -307,6 +484,17 @@
     line-height: 1.6;
     margin-bottom: 1.5em;
     text-align: justify;
+  }
+
+  .step-content {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .demo-container {
