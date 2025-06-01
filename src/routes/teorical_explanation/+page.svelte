@@ -110,7 +110,7 @@
           </ul>
         </div>
 
-        <p>No nosso exemplo, temos um ambiente determinístico onde o Pacman se move em um grid. Se ele encontrar um fantasma (representado por células vermelhas), ele morre. O ambiente é determinístico porque cada ação sempre leva ao mesmo resultado, sem aleatoriedade.</p>
+        <p>In our example, we have a deterministic environment where Pacman moves in a grid. If he encounters a ghost, he dies. The environment is deterministic because the ghosts and the coin are always in the same position.</p>
       </div>
 
       <div class="visual-content">
@@ -134,15 +134,15 @@
         <div class="environment-legend">
           <div class="legend-item">
             <img src="/pacman.png" alt="Pacman" class="small-agent">
-            <span>Agente</span>
+            <span>Agent</span>
           </div>
           <div class="legend-item">
             <img src="/coin.png" alt="Moeda" class="coin-icon">
-            <span>Objetivo</span>
+            <span>Goal</span>
           </div>
           <div class="legend-item">
             <img src="/fantasma.png" alt="Fantasma" class="ghost-icon">
-            <span>Perigo</span>
+            <span>Danger</span>
           </div>
         </div>
       </div>
@@ -159,15 +159,13 @@
         <div class="key-points">
           <h3>Types of Rewards:</h3>
           <ul>
-            <li><strong>Positive:</strong> Encourages the behavior that led to this outcome</li>
-            <li><strong>Negative:</strong> Discourages the behavior (also called penalties)</li>
+            <li><strong>Positive:</strong> Encourages the behaviors that lead to this outcome</li>
+            <li><strong>Negative:</strong> Discourages the behaviors that lead to this outcome (also called penalties)</li>
             <li><strong>Zero:</strong> Neutral feedback, neither encouraging nor discouraging</li>
-            <li><strong>Sparse:</strong> Rewards given infrequently, only at key moments</li>
-            <li><strong>Dense:</strong> Frequent rewards providing constant guidance</li>
           </ul>
         </div>
 
-        <p>The reward signal must be carefully designed to align with the desired behavior. Poor reward design can lead to unintended consequences where the agent finds ways to "game the system."</p>
+        <p>The reward signal must be carefully designed to align with the desired behavior. </p>
       </div>
 
       <div class="visual-content">
@@ -175,23 +173,19 @@
           <div class="reward-timeline">
             <div class="timeline-point negative">
               <div class="reward-value">-1</div>
-              <div class="reward-label">Cada Passo</div>
-            </div>
-            <div class="timeline-point negative">
-              <div class="reward-value">-100</div>
-              <div class="reward-label">Fantasma</div>
+              <div class="reward-label">Each Step</div>
             </div>
             <div class="timeline-point positive">
               <div class="reward-value">+100</div>
-              <div class="reward-label">Moeda</div>
+              <div class="reward-label">Coin</div>
             </div>
           </div>
           <div class="cumulative-reward">
-            <div class="cumulative-label">Recompensa Acumulada</div>
+            <div class="cumulative-label">Cumulative Reward</div>
             <div class="cumulative-value" id="cumulative-value">+97</div>
             <div class="reward-explanation">
-              <p>Pacman recebe -1 por cada passo que dá, incentivando-o a encontrar o caminho mais curto.</p>
-              <p>Recebe +100 quando pega uma moeda, e -100 se encontrar um fantasma.</p>
+              <p>Pacman receives -1 for each step taken, encouraging it to find the shortest path.</p>
+              <p>Gets +100 when collecting a coin, and the game ends if it encounters a ghost.</p>
             </div>
           </div>
         </div>
