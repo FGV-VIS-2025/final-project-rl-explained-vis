@@ -124,17 +124,22 @@
 
     <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
 
-    <h2>A Formal Definition</h2>
-    <p>We can now make a formal definition:</p>
-    <p>Reinforcement learning is a framework for solving control tasks (also called decision problems) by building agents that learn from the environment by interacting with it through trial and error and receiving rewards (positive or negative) as unique feedback.</p>
-    <p>But how does Reinforcement Learning work exactly?</p>
+    <div class="button-container column">
+      <button class="large-button">
+        <a href="/teorical_explanation" style="text-decoration: none; color: inherit;">A Formal Definition</a>
+      </button>
+      <button on:click={resetDemo} class="small-button">Restart</button>
+    </div>
   {/if}
 
   <!-- Botões de controle -->
-  <div class="button-container">
-    <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
-    <button on:click={resetDemo}>Restart</button>
-  </div>
+  {#if currentStep < 2}
+    <div class="button-container">
+      <button on:click={nextStep} disabled={currentStep >= 3}>Next Step</button>
+      <button on:click={resetDemo}>Restart</button>
+    </div>
+  {/if}
+
 </div>
 
 <style>
@@ -293,6 +298,28 @@
   button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .button-container.column {
+    flex-direction: column;
+    gap: 1em;
+    margin: 2em auto;
+  }
+
+  .large-button {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    margin: 0 auto;
+  }
+
+  .small-button {
+    width: auto;
+    max-width: 120px;
+    padding: 8px 15px;
+    font-size: 0.7rem;
+    margin: 0 auto;
   }
 
   @keyframes pulse {
