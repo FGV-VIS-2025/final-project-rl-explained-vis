@@ -219,49 +219,47 @@
 />
 
 <div class="main-layout">
-    
-   
     <div class="right-panel">
         <ControlsPanel
-                bind:showParamGrid
-                bind:showParamRL
-                bind:world_width
-                bind:world_height
-                bind:holes
-                bind:start
-                bind:goal
-                bind:alpha
-                bind:gamma
-                bind:epsilon
-                bind:epsilon_decay
-                bind:num_episodes
-                bind:max_steps
-                {playSpeedText}
-                bind:playing
-                {width_icon}
-                bind:currentEpisode
-                {agent_positions_data}
-                {initializeQLearning}
-                {prevStep}
-                {nextStep}
-                {togglePlay}
-                {togglePlaySpeed}
-                on:goToEpisode={goToEpisode}
-            />
+            bind:showParamGrid
+            bind:showParamRL
+            bind:world_width
+            bind:world_height
+            bind:holes
+            bind:start
+            bind:goal
+            bind:alpha
+            bind:gamma
+            bind:epsilon
+            bind:epsilon_decay
+            bind:num_episodes
+            bind:max_steps
+            {playSpeedText}
+            bind:playing
+            {width_icon}
+            bind:currentEpisode
+            {agent_positions_data}
+            {initializeQLearning}
+            {prevStep}
+            {nextStep}
+            {togglePlay}
+            {togglePlaySpeed}
+            on:goToEpisode={goToEpisode}
+        />
         <div class="grids-and-chart-wrapper">
             <div class="grids-wrapper">
-                 <div class="grid-display-wrapper-env">
-            <EnvironmentGrid
-                {world_width}
-                {world_height}
-                {start}
-                {goal}
-                bind:holes
-                {currentAgentPosition}
-                bind:inspectedRow
-                bind:inspectedCol
-            />
-        </div>
+                <div class="grid-display-wrapper-env">
+                    <EnvironmentGrid
+                        {world_width}
+                        {world_height}
+                        {start}
+                        {goal}
+                        bind:holes
+                        {currentAgentPosition}
+                        bind:inspectedRow
+                        bind:inspectedCol
+                    />
+                </div>
                 <div class="grid-display-wrapper">
                     {#if currentQTable}
                         <QTableArrows
@@ -331,21 +329,15 @@
 
 <style>
     .main-layout {
-    display: flex;
-    justify-content: center; /* Centraliza todos os itens */
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #1e1e1e;
-    color: #ffffff;
-    min-height: 100vh;
-    gap: 30px;
-}
-
-
-
-
-
-
+        display: flex;
+        justify-content: center; /* Centraliza todos os itens */
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: #ffffff;
+        min-height: 100vh;
+        gap: 30px;
+    }
 
     .grid-display-wrapper-env {
         align-items: center;
