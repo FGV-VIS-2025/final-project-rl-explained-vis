@@ -149,7 +149,7 @@
   <!-- Primeiro container - sempre visível -->
   <div class="demo-container">
     <div class="boy-container">
-      <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+      <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
     </div>
 
     <div class="game-container">
@@ -187,7 +187,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
         </div>
 
         <div class="game-container">
@@ -230,7 +230,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
           <div class="death-indicator">-1</div>
         </div>
 
@@ -274,7 +274,7 @@
 
       <div class="demo-container">
         <div class="boy-container">
-          <img src="/menino.png" alt="Menino jogando" class="boy-icon" />
+          <img src="${base}/menino.png" alt="Menino jogando" class="boy-icon" />
           {#if showReward}
             <div class="reward-indicator">+1</div>
           {/if}
