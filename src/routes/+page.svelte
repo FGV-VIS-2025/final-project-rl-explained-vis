@@ -3,9 +3,9 @@
 
     function handleFirstAction() {
       goto("/explained");
-      
+
     }
-    
+
     function handleSecondAction() {
         goto("/visualization");
     }
@@ -15,18 +15,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Press+Start+2P&display=swap" rel="stylesheet">
   <div class="center-box">
     <div class="text-box">
-        Reinforcement Learning é uma subárea do aprendizado de máquina, a qual difere. 
-        Com o objetivo de desmistificar o que é tal aprendizado, decidimos mostrar como esse aprendizado ocorre. 
-        Aqui você conseguirá tanto aprender de um jeito dinâmico o que é o  reinforcement learning
-        quanto entender interativamente como ele funciona, podendo brincar com um toy model e contorlando os parâmentros. 
+        Reinforcement Learning is a subfield of machine learning that differs from others.
+        With the goal of demystifying what this learning is, we decided to show how this learning occurs.
+        Here you will be able to both learn dynamically what reinforcement learning is
+        and understand interactively how it works, being able to play with a toy model and control its parameters.
     </div>
 
     <div class="button-group">
-      <button class= "btn-handle" on:click={handleFirstAction}>O que é Reinforcement Learning?</button>
-      <button class= "btn-handle" on:click={handleSecondAction}>Aprender interativamente</button>
+      <button class= "btn-handle" on:click={handleFirstAction}>What is Reinforcement Learning?</button>
+      <button class= "btn-handle" on:click={handleSecondAction}>Learn Interactively</button>
     </div>
   </div>
-  
+
   <style>
     /* Centraliza tudo no meio da tela */
     .btn-handle {
@@ -54,7 +54,7 @@
       min-height: 40vh;
       min-width: 60vw;
     }
-    
+
     .text-box {
         font-family: "Lato", sans-serif;
         text-align: justify;
@@ -68,13 +68,12 @@
       font-size: 2rem;
       margin-bottom: 20px;
     } */
-  
+
     .button-group {
       display: flex;
       gap: 15px;
       justify-content: center;
     }
-  
+
 
   </style>
-  
