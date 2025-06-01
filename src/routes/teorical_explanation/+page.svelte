@@ -153,7 +153,7 @@
   <section class="section" data-section="rewards">
     <div class="section-container">
       <div class="text-content">
-        <h2>Rewards & Feedback</h2>
+        <h2>Rewards</h2>
         <p>The <strong>reward signal</strong> is the primary way the environment communicates with the agent about the quality of its actions. It's the foundation of learning in RL.</p>
 
         <div class="key-points">
@@ -175,17 +175,20 @@
               <div class="reward-value">-1</div>
               <div class="reward-label">Each Step</div>
             </div>
+            <div class="timeline-point negative">
+              <div class="reward-value">-100</div>
+              <div class="reward-label">Ghost</div>
+            </div>
             <div class="timeline-point positive">
               <div class="reward-value">+100</div>
               <div class="reward-label">Coin</div>
             </div>
           </div>
           <div class="cumulative-reward">
-            <div class="cumulative-label">Cumulative Reward</div>
-            <div class="cumulative-value" id="cumulative-value">+97</div>
             <div class="reward-explanation">
               <p>Pacman receives -1 for each step taken, encouraging it to find the shortest path.</p>
-              <p>Gets +100 when collecting a coin, and the game ends if it encounters a ghost.</p>
+              <p>Gets +100 when collecting a coin, -100 when hitting a ghost.</p>
+              <p>The game ends when either a coin is collected, a ghost is hit or a limit number of steps is reached.</p>
             </div>
           </div>
         </div>
@@ -198,8 +201,8 @@
   <section class="section" data-section="policy">
     <div class="section-container">
       <div class="text-content">
-        <h2>Policy - What the Agent Learns</h2>
-        <p>A <strong>policy</strong> is the agent's strategy or behavior function that maps states to actions. It represents what the agent has learned about how to behave in different situations.</p>
+        <h2>Policy</h2>
+        <p>A <strong>policy</strong> is the agent's function that maps states to actions. It represents what the agent has learned about how to behave in different situations.</p>
 
         <div class="key-points">
           <h3>Types of Policies:</h3>
@@ -211,14 +214,14 @@
           </ul>
         </div>
 
-        <p>The goal of reinforcement learning is to find an optimal policy - one that maximizes the expected cumulative reward over time. The agent learns this policy through trial and error, gradually improving its decision-making as it gains more experience.</p>
+        <p>The goal of reinforcement learning is to find an optimal policy that maximizes the expected cumulative reward over time. The agent updates its policy after each game, gradually improving its decision-making as it gains more experience.</p>
 
         <div class="formula">
           <h4>Policy Notation:</h4>
-          <code>π(a|s) = probability of taking action a in state s</code>
+          <code>π(→|s) = probability of taking action → in state s</code>
         </div>
 
-        <p>No nosso exemplo do Pacman, a política aprendida indica a melhor direção a seguir em cada posição do grid. Com o tempo, o agente aprende a evitar os fantasmas e a encontrar o caminho mais curto até as moedas.</p>
+        <p>In our example, the learned policy indicates the best direction to follow in each grid position.</p>
       </div>
 
       <div class="visual-content">
@@ -241,8 +244,8 @@
             </div>
           </div>
           <div class="policy-explanation">
-            <p>As setas representam a melhor ação a tomar em cada estado, indicando a direção que o agente deve seguir.</p>
-            <p>Esta política mostra como o agente deve navegar pelo ambiente para maximizar sua recompensa acumulada.</p>
+            <p>The arrows represent the most likely actions the agent has learned so far for each state.</p>
+            <p>The "?" indicate that the agent hasn't yet learned a specific policy for that grid cell.</p>
           </div>
         </div>
       </div>
