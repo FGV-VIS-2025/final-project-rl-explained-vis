@@ -22,11 +22,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="hero">
-    <h1>Reinforcement Learning</h1>
-    <h2>Learn · Visualize · Explore</h2>
-</div>
-
 <div class="main-container">
     <div class="visualization-showcase">
         <div class="showcase-content">
@@ -90,14 +85,6 @@
 </div>
 
 <style>
-    .hero {
-        background: linear-gradient(135deg, #7b42f6 0%, #b01eff 100%);
-        padding: 3rem 2rem;
-        text-align: center;
-        color: white;
-        margin-bottom: 2rem;
-    }
-
     /* Letra média */
     h2 {
         font-family: 'Press Start 2P', monospace;
@@ -137,6 +124,7 @@
         margin-bottom: 2rem;
         text-align: center;
     }
+
     /* Muda espaço do paragrafo*/
     .showcase-content p {
         font-size: 1.2rem;

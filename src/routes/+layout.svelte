@@ -14,11 +14,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
-<header>
-<h1 on:click|preventDefault={returnStart} role="button" tabindex="0" style="cursor: pointer;">
-  Reinforcement Learning
-</h1>
-</header>
+<div class="header" on:click={returnStart} role="button" tabindex="0">
+  <h1>Reinforcement Learning</h1>
+  <h2>Learn · Visualize · Explore</h2>
+</div>
 
 <slot></slot>
 
@@ -30,15 +29,16 @@
         background-color: #1e1e1e;
         color: white;
         font-family: "Press Start 2P";
-
     }
 
-    header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .header {
+        background: linear-gradient(135deg, #7b42f6 0%, #b01eff 100%);
+        padding: 1rem 2rem;
+        text-align: center;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 1.5rem;
     }
-
 
     h1 {
         font-family: "Press Start 2P", sans-serif;
@@ -48,18 +48,23 @@
         white-space: nowrap;
         overflow: hidden;
         border-right: 2px solid white;
-        width: 0; 
+        width: 0;
+        margin: 0 auto;
         animation: typing 3s steps(22, end) forwards,
                    blink 0.7s step-end infinite,
                    shake 2s infinite;
     }
 
-
-
+    h2 {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 0.8rem;
+        margin-top: 0.8rem;
+        margin-bottom: 0;
+    }
 
     @keyframes typing {
       from { width: 0 }
-      to { width: 22ch } /* 26 characters in "Reinforcement Learning" */
+      to { width: 22ch } /* 22 characters in "Reinforcement Learning" */
     }
 
     @keyframes blink {
