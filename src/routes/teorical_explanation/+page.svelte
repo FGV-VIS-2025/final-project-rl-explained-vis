@@ -117,18 +117,18 @@
         <div class="environment-grid">
           <div class="grid-row">
             <div class="grid-cell"><img src="/pacman.png" alt="Pacman" class="small-agent"></div>
-            <div class="grid-cell"><img src="/coin.png" alt="Coin" class="coin-icon"></div>
-            <div class="grid-cell danger-cell"></div>
-          </div>
-          <div class="grid-row">
-            <div class="grid-cell"></div>
-            <div class="grid-cell"></div>
+            <div class="grid-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
             <div class="grid-cell"></div>
           </div>
           <div class="grid-row">
-            <div class="grid-cell"><img src="/coin.png" alt="Coin" class="coin-icon"></div>
-            <div class="grid-cell danger-cell"></div>
-            <div class="grid-cell"><img src="/coin.png" alt="Coin" class="coin-icon"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+            <div class="grid-cell"></div>
+          </div>
+          <div class="grid-row">
+            <div class="grid-cell"></div>
+            <div class="grid-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+            <div class="grid-cell"><img src="/coin.png" alt="Moeda" class="coin-icon"></div>
           </div>
         </div>
         <div class="environment-legend">
@@ -137,11 +137,11 @@
             <span>Agente</span>
           </div>
           <div class="legend-item">
-            <img src="/coin.png" alt="Coin" class="coin-icon">
-            <span>Recompensa</span>
+            <img src="/coin.png" alt="Moeda" class="coin-icon">
+            <span>Objetivo</span>
           </div>
           <div class="legend-item">
-            <div class="small-danger-cell"></div>
+            <img src="/fantasma.png" alt="Fantasma" class="ghost-icon">
             <span>Perigo</span>
           </div>
         </div>
@@ -199,7 +199,8 @@
     </div>
   </section>
 
-  <!-- Section 4: Policy -->
+
+  <!-- Section 5: Policy -->
   <section class="section" data-section="policy">
     <div class="section-container">
       <div class="text-content">
@@ -230,24 +231,24 @@
         <div class="policy-visualization">
           <div class="policy-grid">
             <div class="policy-row">
+              <div class="policy-cell"><img src="/pacman.png" alt="Pacman" class="small-agent"></div>
+              <div class="policy-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+              <div class="policy-cell"><span class="policy-question">?</span></div>
+            </div>
+            <div class="policy-row">
               <div class="policy-cell"><span class="policy-arrow right">→</span></div>
               <div class="policy-cell"><span class="policy-arrow right">→</span></div>
               <div class="policy-cell"><span class="policy-arrow down">↓</span></div>
             </div>
             <div class="policy-row">
-              <div class="policy-cell"><span class="policy-arrow down">↓</span></div>
-              <div class="policy-cell"><span class="policy-arrow right">→</span></div>
-              <div class="policy-cell"><span class="policy-arrow down">↓</span></div>
-            </div>
-            <div class="policy-row">
-              <div class="policy-cell"><span class="policy-arrow right">→</span></div>
-              <div class="policy-cell"><span class="policy-arrow right">→</span></div>
-              <div class="policy-cell goal-cell">G</div>
+              <div class="policy-cell"><span class="policy-question">?</span></div>
+              <div class="policy-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+              <div class="policy-cell"><img src="/coin.png" alt="Moeda" class="coin-icon"></div>
             </div>
           </div>
           <div class="policy-explanation">
-            <p>As setas representam a melhor ação a tomar em cada estado, conforme aprendido pelo agente.</p>
-            <p>Esta política foi aprendida após muitas interações com o ambiente, tentativa e erro, e maximização da recompensa acumulada.</p>
+            <p>As setas representam a melhor ação a tomar em cada estado, indicando a direção que o agente deve seguir.</p>
+            <p>Esta política mostra como o agente deve navegar pelo ambiente para maximizar sua recompensa acumulada.</p>
           </div>
         </div>
       </div>
@@ -592,6 +593,9 @@
   .policy-visualization {
     width: 100%;
     max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .policy-grid {
@@ -599,11 +603,13 @@
     flex-direction: column;
     gap: 5px;
     margin-bottom: 20px;
+    align-items: center;
   }
 
   .policy-row {
     display: flex;
     gap: 5px;
+    justify-content: center;
   }
 
   .policy-cell {
@@ -622,6 +628,12 @@
     color: #ffcc00;
   }
 
+  .policy-question {
+    font-size: 1.5rem;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+
   .goal-cell {
     background-color: #4caf50;
     color: white;
@@ -629,15 +641,25 @@
     font-size: 1.5rem;
   }
 
+  .ghost-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+  }
+
   .policy-explanation {
     background-color: #333;
     padding: 15px;
     border-radius: 8px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
   }
 
   .policy-explanation p {
     font-size: 0.9rem;
     margin-bottom: 0.5em;
+    text-align: center;
   }
 
   /* Button Container */
@@ -672,5 +694,80 @@
     .visual-content {
       margin-top: 2em;
     }
+  }
+
+  /* Q-values Visualization */
+  .qvalues-visualization {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .qvalues-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+  }
+
+  .qvalues-row {
+    display: flex;
+    gap: 5px;
+  }
+
+  .qvalues-cell {
+    width: 60px;
+    height: 60px;
+    background-color: #000033;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .qvalues-cell.medium-value {
+    background-color: #0055aa;
+  }
+
+  .qvalues-cell.high-value {
+    background-color: #00aaff;
+  }
+
+  .qvalues-cell.highest-value {
+    background-color: #55ffff;
+  }
+
+  .qvalues-legend {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .qvalue-scale {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .scale-gradient {
+    flex-grow: 1;
+    height: 20px;
+    margin: 0 10px;
+    background: linear-gradient(to right, #000033, #0055aa, #00aaff, #55ffff);
+    border-radius: 4px;
+  }
+
+  .scale-label {
+    font-size: 0.8rem;
+  }
+
+  .scale-label.high {
+    color: #55ffff;
+  }
+
+  .qvalues-legend p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
   }
 </style>
