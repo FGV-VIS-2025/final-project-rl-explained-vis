@@ -5,6 +5,7 @@
     export let start;
     export let goal;
     export let holes;
+    import { base } from '$app/paths';
 
     import InfoTooltip from "./InfoTooltip.svelte";
 

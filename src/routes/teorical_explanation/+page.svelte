@@ -59,7 +59,7 @@
 
       <div class="visual-content">
         <div class="agent-visualization">
-          <img src="/pacman.png" alt="Pacman Agent" class="agent-image">
+          <img src="{base}/pacman.png" alt="Pacman Agent" class="agent-image">
           <div class="actions-container">
             <h3>Available Actions</h3>
             <div class="action-grid">
@@ -74,7 +74,7 @@
                 <span class="action-label">Left</span>
               </div>
               <div class="action-cell agent-cell">
-                <img src="/pacman.png" alt="Pacman" class="small-agent">
+                <img src="{base}/pacman.png" alt="Pacman" class="small-agent">
               </div>
               <div class="action-cell action-right">
                 <span class="action-arrow">→</span>
@@ -116,8 +116,8 @@
       <div class="visual-content">
         <div class="environment-grid">
           <div class="grid-row">
-            <div class="grid-cell"><img src="/pacman.png" alt="Pacman" class="small-agent"></div>
-            <div class="grid-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+            <div class="grid-cell"><img src="{base}/pacman.png" alt="Pacman" class="small-agent"></div>
+            <div class="grid-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
             <div class="grid-cell"></div>
           </div>
           <div class="grid-row">
@@ -127,21 +127,21 @@
           </div>
           <div class="grid-row">
             <div class="grid-cell"></div>
-            <div class="grid-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
-            <div class="grid-cell"><img src="/coin.png" alt="Moeda" class="coin-icon"></div>
+            <div class="grid-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+            <div class="grid-cell"><img src="{base}/coin.png" alt="Moeda" class="coin-icon"></div>
           </div>
         </div>
         <div class="environment-legend">
           <div class="legend-item">
-            <img src="/pacman.png" alt="Pacman" class="small-agent">
+            <img src="{base}/pacman.png" alt="Pacman" class="small-agent">
             <span>Agent</span>
           </div>
           <div class="legend-item">
-            <img src="/coin.png" alt="Moeda" class="coin-icon">
+            <img src="{base}/coin.png" alt="Moeda" class="coin-icon">
             <span>Goal</span>
           </div>
           <div class="legend-item">
-            <img src="/fantasma.png" alt="Fantasma" class="ghost-icon">
+            <img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon">
             <span>Danger</span>
           </div>
         </div>
@@ -228,8 +228,8 @@
         <div class="policy-visualization">
           <div class="policy-grid">
             <div class="policy-row">
-              <div class="policy-cell"><img src="/pacman.png" alt="Pacman" class="small-agent"></div>
-              <div class="policy-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+              <div class="policy-cell"><img src="{base}/pacman.png" alt="Pacman" class="small-agent"></div>
+              <div class="policy-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
               <div class="policy-cell"><span class="policy-question">?</span></div>
             </div>
             <div class="policy-row">
@@ -239,8 +239,8 @@
             </div>
             <div class="policy-row">
               <div class="policy-cell"><span class="policy-question">?</span></div>
-              <div class="policy-cell"><img src="/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
-              <div class="policy-cell"><img src="/coin.png" alt="Moeda" class="coin-icon"></div>
+              <div class="policy-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
+              <div class="policy-cell"><img src="{base}/coin.png" alt="Moeda" class="coin-icon"></div>
             </div>
           </div>
           <div class="policy-explanation">
