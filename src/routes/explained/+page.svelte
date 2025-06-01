@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { base } from '$app/paths';
 
   let currentStep = 0;
 
@@ -227,7 +228,7 @@
             {#each row as cell, j}
               <div class="game-cell">
                 {#if i === pacmanPosition.y && j === pacmanPosition.x}
-                  <img src="/pacman.png" alt="Avatar" class="avatar-icon" style="transform: rotate({pacmanRotation}deg);"/>
+                  <img src="{base}/pacman.png" alt="Avatar" class="avatar-icon" style="transform: rotate({pacmanRotation}deg);"/>
                 {/if}
                 {#if cell === 1 && !(i === pacmanPosition.y && j === pacmanPosition.x)}
                   <img src="/coin.png" alt="Moeda" class="coin-icon" />
