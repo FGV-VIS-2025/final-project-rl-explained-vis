@@ -302,6 +302,7 @@
     width: 100%; /* Ensure the grid takes full available width to allow centering */
     max-width: 900px; /* Optional: set a max-width for the grid itself */
     margin: 0 auto; /* This is crucial for centering the grid horizontally */
+    font-size: 20px;    
 }
    .header-section {
         display: flex; /* Transforma a div em um container flex */

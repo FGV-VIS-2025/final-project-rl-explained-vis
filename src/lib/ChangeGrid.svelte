@@ -245,10 +245,11 @@
 
         <div class="controls-and-grid">
             <div class="grid-size-inputs-text">
-                <p class="texto-exp">Clique abaixo para aumentar o grid. Clique no grid para adicionar e tirar buracos</p>
+                <p class="texto-exp">
+                    Click below to enlarge the grid. Click on the grid to add and remove monsters.</p>
                 <div class="grid-size-inputs">
-    <label for="width">Largura:</label>
-    <label for="height">Altura:</label>
+    <label for="width">Width:</label>
+    <label for="height">Height:</label>
 
     <input
         type="number"

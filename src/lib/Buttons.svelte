@@ -192,6 +192,7 @@
     .play-btn {
         font-family: "Press Start 2P", monospace;
         color: #ffffff;
+        min-width: 50px;
     }
     .episode-slider input[type="range"] {
         -webkit-appearance: none; /* Remove o estilo padrão do navegador para Webkit */

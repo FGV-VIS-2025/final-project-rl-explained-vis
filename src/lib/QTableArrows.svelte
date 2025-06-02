@@ -133,7 +133,7 @@
     }
 
     .arrows {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
     }
 
     .q-grid {
