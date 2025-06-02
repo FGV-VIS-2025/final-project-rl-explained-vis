@@ -5,6 +5,18 @@
   {
     goto(`${base}/`);
   }
+
+  function gotoLearn(){
+    goto(`${base}/explained/`)
+  }
+
+  function gotoExplore(){
+    goto(`${base}/q_learn`)
+  }
+
+  function gotoVis(){
+    goto(`${base}/visualization`)
+  }
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +28,12 @@
 
 <div class="header" on:click={returnStart} role="button" tabindex="0">
   <h1>Reinforcement Learning</h1>
-  <h2>Learn · Visualize · Explore</h2>
+  <h2> <span class="clickable-word" on:click|stopPropagation={gotoLearn}>Learn</span>
+  ·
+  <span class="clickable-word" on:click|stopPropagation={gotoVis}>Visualize</span>
+  ·
+  <span class="clickable-word" on:click|stopPropagation={gotoExplore}>Explore</span></h2>
+
 </div>
 
 <slot></slot>

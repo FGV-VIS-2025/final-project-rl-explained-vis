@@ -185,7 +185,7 @@
 
     /* Botões das explicações */
     .btn-secondary {
-        background-color: #444;
+        background-color: #9a5bf4;
         color: white;
         font-family: 'Press Start 2P', monospace;
         font-size: 0.8rem;
@@ -196,7 +196,7 @@
     }
 
     .btn-secondary:hover {
-        background-color: #555;
+        background-color: #b278ff;
     }
 
     /* Autores */

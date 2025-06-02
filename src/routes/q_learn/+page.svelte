@@ -444,27 +444,7 @@
         outline: none;
     }
 
-    .status {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-        padding: 1rem;
-        background-color: #333;
-        border-radius: 8px;
-        border: 2px solid #666;
-    }
-
-    .status-item {
-        padding: 0.5rem;
-        background-color: #222;
-        border-radius: 6px;
-        border: 1px solid #555;
-    }
-
-    .status-item.description {
-        grid-column: 1 / -1;
-    }
+   
 
     .visualization {
         display: grid;
@@ -633,33 +613,9 @@
         background: rgba(100, 100, 100, 0.3);
     }
 
-    .learning-explanation {
-    background-color: #333;
-        border-radius: 8px;
-        padding: 2rem;
-        border: 2px solid #666;
-    }
 
-    .learning-insights {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-    }
 
-    .insight {
-        background-color: #222;
-        padding: 1.5rem;
-        border-radius: 8px;
-        border: 1px solid #555;
-    }
-
-    .insight h4 {
-        margin-bottom: 1rem;
-        color: white;
-    }
-
-    ul, ol {
+    ul {
         padding-left: 2rem;
     }
 
