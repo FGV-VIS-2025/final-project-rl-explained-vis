@@ -155,6 +155,7 @@
     function updateCurrentState() {
         if (currentIteration === 0) {
             currentState = { agentPosition: { x: 0, y: 0 }, lastAction: '', lastReward: 0 };
+            initializeQTable();
         } else {
             const iteration = allIterations[currentIteration - 1];
             currentState = iteration;
