@@ -48,14 +48,14 @@
             .attr("class", "focus-line")
             .attr("y1", margin.top)
             .attr("y2", h - margin.bottom)
-            .attr("stroke", "blue")
+            .attr("stroke", "#6B5FE8")
             .attr("stroke-width", 1.5)
             .attr("opacity", 0);
 
         focusCircle = svg.append("circle")
             .attr("class", "focus-circle")
             .attr("r", 5)
-            .attr("fill", "blue")
+            .attr("fill", "#6B5FE8")
             .attr("stroke", "white")
             .attr("stroke-width", 1.5)
             .attr("opacity", 0);
@@ -180,7 +180,7 @@
             .datum(data)
             .attr("class", "chart-line")
             .attr("fill", "none")
-            .attr("stroke", "blue")
+            .attr("stroke", "#6B5FE8")
             .attr("stroke-width", 2)
             .attr("d", line);
 
@@ -197,7 +197,7 @@
                 .attr("cx", circleX)
                 .attr("cy", circleY)
                 .attr("r", 5)
-                .attr("fill", "blue")
+                .attr("fill", "#6B5FE8")
                 .attr("stroke", "white")
                 .attr("stroke-width", 1.5);
 
@@ -208,7 +208,7 @@
                 .attr("y1", margin.top)
                 .attr("x2", circleX)
                 .attr("y2", h - margin.bottom)
-                .attr("stroke", "blue")
+                .attr("stroke", "#6B5FE8")
                 .attr("stroke-width", 2)
                 .attr("opacity", 0.2);
 

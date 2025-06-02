@@ -306,7 +306,11 @@
                                     on:focus={() => handleMouseEnter(r, c)}
                                 >
                                     {#if isStart(r, c)}
-                                    S{/if}
+                                    <img
+                                    src={base + "/pacman.png"}
+                                    alt="Hole"
+                                    style="width: 24px; height: 24px;"/>
+                                    {/if}
                                     {#if isGoal(r, c)}
                                     <img
                                     src={base + "/coin.png"}
@@ -346,7 +350,7 @@
         --color-border: #454b5e;
         --color-hole:#000000;
         --color-goal: #000000;
-        --color-start: #4caf50;
+        --color-start: #000000;
         --size-border: 1px;
     }
     /* Overlay Styles */
@@ -419,6 +423,8 @@
 }
 
     .error-message {
+        margin-top: 1em;
+        font-family: "Press Start 2P";
         color: #d32f2f;
         margin-bottom: 15px;
         font-weight: bold;
