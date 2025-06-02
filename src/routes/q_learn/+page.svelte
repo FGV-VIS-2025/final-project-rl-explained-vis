@@ -350,6 +350,12 @@
     </div>
 </div>
 
+<div class="button-container column">
+    <button class="large-button">
+      <a href="{base + "/visualization"}" style="text-decoration: none; color: inherit;">Explore the Iterative Visualization</a>
+    </button>
+</div>
+
 <style>
   .container {
         max-width: 800px;
@@ -670,5 +676,33 @@
         line-height: 1.6;
         margin-bottom: 1.5em;
         text-align: justify;
+  }
+
+  /* Button Container */
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .button-container.column {
+    flex-direction: column;
+    gap: 1em;
+    margin-top: 0;
+  }
+
+  .large-button {
+    width: 100%;
+    max-width: 800px;
+    padding: 15px 20px;
+    font-size: 1.2rem;
+    margin: 0 auto;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #333;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
 </style>
