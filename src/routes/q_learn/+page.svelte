@@ -191,62 +191,62 @@
 </svelte:head>
 
 <div class="container">
-    <h1>Q-Learning Explicado</h1>
+    <h1>Q-Learning Explained</h1>
 
     <div class="intro-section">
-        <h2>O que é Q-Learning?</h2>
         <p>
-            Q-Learning é um algoritmo de <strong>aprendizado por reforço</strong> que ensina um agente
-            a tomar decisões ótimas em um ambiente através de tentativa e erro, sem conhecimento prévio do ambiente.
+            Q-Learning is a <strong>reinforcement learning</strong> algorithm that teaches an agent
+            to make optimal decisions in an environment. Key aspects of its approach include:
         </p>
-
-        <h3>Como Funciona:</h3>
-        <p>
-            O agente aprende interagindo com o ambiente e recebendo <strong>recompensas</strong> (positivas ou negativas) como feedback.
-            Uma <strong>Q-Table</strong> armazena o valor esperado de cada ação em cada estado, sendo atualizada com a experiência.
-        </p>
-
-        <h3>Componentes Fundamentais:</h3>
         <ul>
-            <li><strong>Estado (S):</strong> Posição atual do agente no ambiente</li>
-            <li><strong>Ação (A):</strong> Movimento que o agente pode fazer (↑ ↓ ← →)</li>
-            <li><strong>Recompensa (R):</strong> Feedback do ambiente (+10 objetivo, -10 fantasma, -0.1 movimento)</li>
-            <li><strong>Q-Value Q(s,a):</strong> Valor esperado de executar ação 'a' no estado 's'</li>
-      </ul>
+            <li>It finds the optimal policy indirectly by training a value or action-value function that will tell us the value of each state or each state-action pair.</li>
+            <li>It updates its action-value function at each step instead of at the end of the episode.</li>
+        </ul>
+
+        <h3>How it Works:</h3>
+        <p>The agent learns by interacting with the environment and receiving <strong>rewards</strong> (positive or negative) as feedback. Q-Learning is the algorithm used to iteratively refine a special function called the Q-function. </p>
+        <p>Internally, our Q-function is encoded by a  <strong> Q-table</strong>, a table where each cell corresponds to a state-action pair value. A Q-Table stores the expected value of each action in each state, being updated with experience.</p>
+
+        <h3>How the Q-Table is updated:</h3>
+        <ul>
+            <li><strong>State (S):</strong> The agent's current position in the environment</li>
+            <li><strong>Action (A):</strong> The movement the agent can make (↑ ↓ ← →)</li>
+            <li><strong>Reward (R):</strong> Feedback from the environment (+10 goal, -10 ghost, -0.1 move)</li>
+            <li><strong>Q-Value Q(s,a):</strong> The expected value of performing action 'a' in state 's'</li>
+        </ul>
 
         <div class="formula-section">
-            <h3>Fórmula do Q-Learning (Equação de Bellman):</h3>
+            <h3>Q-Learning Formula (Bellman Equation):</h3>
             <div class="formula">
                 Q(s,a) ← Q(s,a) + α[r + γ max Q(s',a') - Q(s,a)]
             </div>
             <div class="formula-explanation">
-                <p><strong>α (alpha):</strong> Taxa de aprendizado (0.3) - quanto aprender com cada experiência</p>
-                <p><strong>γ (gamma):</strong> Fator de desconto (0.9) - importância de recompensas futuras</p>
-                <p><strong>r:</strong> Recompensa imediata recebida</p>
-                <p><strong>max Q(s',a'):</strong> Maior Q-value possível no próximo estado</p>
+                <p><strong>α (alpha):</strong>  how much to learn from each experience</p>
+                <p><strong>γ (gamma):</strong>  importance of future rewards</p>
+                <p><strong>r:</strong> Immediate reward received</p>
+                <p><strong>max Q(s',a'):</strong> Maximum possible Q-value in the next state</p>
             </div>
-    </div>
+        </div>
 
-        <h3>Pergunta importante sobre Q-Learning:</h3>
         <p>
-            As células da tabela Q que não recebem recompensa direta são atualizadas considerando
-            tanto a <strong>recompensa imediata</strong> quanto o <strong>valor Q máximo do próximo estado</strong>.
-            Isso permite que o conhecimento se "propague" - estados próximos ao objetivo ganham valores
-            altos mesmo sem recompensa direta, criando um "mapa" para o sucesso.
+            In other words, the Q-table cells are updated considering
+            both the <strong>immediate reward</strong> and the <strong>maximum value of the next state</strong>.
+            This allows knowledge to "propagate", that means, states close to the goal gain
+            high values even without direct reward, creating a "map" to success.
         </p>
     </div>
 
     <div class="demo-section">
-        <h2>Demonstração: {predefinedSequence.length} Iterações de Aprendizado</h2>
+        <h2>See it in Action</h2>
         <p>
-            Navegue pelas iterações para ver como o Pacman aprende através de tentativa e erro.
-            O agente explora o ambiente, encontra perigos (fantasma), descobre recompensas (moeda)
-            e gradualmente desenvolve uma estratégia.
+            Navigate through the iterations (scroll the slider below) to see how Pacman learns through trial and error.
+            The agent explores the environment, encounters dangers (ghosts), discovers rewards (coins),
+            and gradually develops a strategy. In this example, the <strong> α (alpha) was set to 0.3</strong> and the <strong> γ (gamma) was set to 0.9</strong>.
         </p>
 
         <!-- Controle de iteração -->
         <div class="iteration-control">
-            <label>Iteração: <span class="iteration-value">{currentIteration}</span> de {maxIterations}</label>
+            <label>Interaction: <span class="iteration-value">{currentIteration}</span> de {maxIterations}</label>
             <input
                 type="range"
                 bind:value={currentIteration}
@@ -259,123 +259,95 @@
 
         <!-- Visualização -->
         <div class="visualization">
-            <!-- Grid do ambiente -->
             <div class="environment">
-                <h3>Ambiente (Grid 3x3)</h3>
-                <div class="game-board">
-                    {#each gameBoard as row, y}
-                        {#each row as cell, x}
-                            <div class="game-cell" class:agent={currentState.agentPosition.x === x && currentState.agentPosition.y === y}>
-                                {#if currentState.agentPosition.x === x && currentState.agentPosition.y === y}
-                                    <img src="{base}/pacman.png" alt="Agente" class="agent-icon"/>
-                                {/if}
-                                {#if cell === 1}
-                                    <img src="{base}/coin.png" alt="Objetivo" class="coin-icon" />
-                                {/if}
-                                {#if cell === 2}
-                                    <img src="{base}/fantasma.png" alt="Obstáculo" class="ghost-icon" />
-                                {/if}
-                                <div class="cell-coordinate">({x},{y})</div>
-                            </div>
-                        {/each}
-                    {/each}
+              <h3>Environment (3x3 Grid)</h3>
+              <div class="game-board">
+                {#each gameBoard as row, y}
+                  {#each row as cell, x}
+                    <div class="game-cell" class:agent={currentState.agentPosition.x === x && currentState.agentPosition.y === y}>
+                      {#if currentState.agentPosition.x === x && currentState.agentPosition.y === y}
+                        <img src="{base}/pacman.png" alt="Agent" class="agent-icon"/>
+                      {/if}
+                      {#if cell === 1}
+                        <img src="{base}/coin.png" alt="Coin" class="coin-icon" />
+                      {/if}
+                      {#if cell === 2}
+                        <img src="{base}/fantasma.png" alt="Ghost" class="ghost-icon" />
+                      {/if}
+                      <div class="cell-coordinate">({x},{y})</div>
+                    </div>
+                  {/each}
+                {/each}
+              </div>
+              <div class="legend">
+                <div class="legend-item">
+                  <img src="{base}/pacman.png" alt="Agent" class="legend-icon">
+                  <span>Pacman (Agent)</span>
                 </div>
-                <div class="legend">
-                    <div class="legend-item">
-                        <img src="{base}/pacman.png" alt="Agente" class="legend-icon">
-                        <span>Pacman (Agente)</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="{base}/coin.png" alt="Objetivo" class="legend-icon">
-                        <span>Moeda (+100)</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="{base}/fantasma.png" alt="Obstáculo" class="legend-icon">
-                        <span>Fantasma (-100)</span>
-                    </div>
+                <div class="legend-item">
+                  <img src="{base}/coin.png" alt="Coin" class="legend-icon">
+                  <span>Coin (+100)</span>
                 </div>
-      </div>
+                <div class="legend-item">
+                  <img src="{base}/fantasma.png" alt="Ghost" class="legend-icon">
+                  <span>Ghost (-100)</span>
+                </div>
+              </div>
+            </div>
 
-            <!-- Tabela Q -->
             <div class="qtable">
-                <h3>Tabela Q - Valores de Ação-Estado</h3>
-                <p class="qtable-desc">Cada célula mostra o valor esperado de executar uma ação em um estado:</p>
-          <table>
-            <thead>
-              <tr>
-                            <th>Estado (x,y)</th>
-                            <th>↑ Up</th>
-                            <th>↓ Down</th>
-                            <th>← Left</th>
-                            <th>→ Right</th>
-              </tr>
-            </thead>
-            <tbody>
-                        {#each Object.entries(qTable) as [state, actions]}
-                            <tr class:current-state={state === `${currentState.agentPosition.x},${currentState.agentPosition.y}`}>
-                                <td class="state-cell">({state})</td>
-                                <td class="q-value" style="background-color: {getQValueColor(actions.up)}">
-                                    {actions.up.toFixed(2)}
-                                </td>
-                                <td class="q-value" style="background-color: {getQValueColor(actions.down)}">
-                                    {actions.down.toFixed(2)}
-                                </td>
-                                <td class="q-value" style="background-color: {getQValueColor(actions.left)}">
-                                    {actions.left.toFixed(2)}
-                                </td>
-                                <td class="q-value" style="background-color: {getQValueColor(actions.right)}">
-                                    {actions.right.toFixed(2)}
-                                </td>
-              </tr>
-                        {/each}
-            </tbody>
-          </table>
+              <h3>Q-Table - State-Action Values</h3>
+              <p class="qtable-desc">Each cell shows the expected value of performing an action in a state:</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>State (x,y)</th>
+                    <th>↑ Up</th>
+                    <th>↓ Down</th>
+                    <th>← Left</th>
+                    <th>→ Right</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {#each Object.entries(qTable) as [state, actions]}
+                    <tr class:current-state={state === `${currentState.agentPosition.x},${currentState.agentPosition.y}`}>
+                      <td class="state-cell">({state})</td>
+                      <td class="q-value" style="background-color: {getQValueColor(actions.up)}">
+                        {actions.up.toFixed(2)}
+                      </td>
+                      <td class="q-value" style="background-color: {getQValueColor(actions.down)}">
+                        {actions.down.toFixed(2)}
+                      </td>
+                      <td class="q-value" style="background-color: {getQValueColor(actions.left)}">
+                        {actions.left.toFixed(2)}
+                      </td>
+                      <td class="q-value" style="background-color: {getQValueColor(actions.right)}">
+                        {actions.right.toFixed(2)}
+                      </td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
 
-                <div class="qtable-legend">
-                    <div class="color-legend">
-                        <div class="color-item">
-                            <div class="color-box positive"></div>
-                            <span>Valores Positivos (Boas ações)</span>
-                        </div>
-                        <div class="color-item">
-                            <div class="color-box negative"></div>
-                            <span>Valores Negativos (Ações perigosas)</span>
-                        </div>
-                        <div class="color-item">
-                            <div class="color-box neutral"></div>
-                            <span>Valores Neutros (Não explorados)</span>
-        </div>
-      </div>
-    </div>
-    </div>
-        </div>
-
-        <!-- Explicação final -->
-        <div class="learning-explanation">
-            <h3>O que Observamos:</h3>
-            <div class="learning-insights">
-                <div class="insight">
-                    <h4>Atualização da Q-Table</h4>
-                    <p>A cada passo, a fórmula de Bellman atualiza os valores baseado na recompensa recebida e nas possibilidades futuras.</p>
+              <div class="qtable-legend">
+                <div class="color-legend">
+                  <div class="color-item">
+                    <div class="color-box positive"></div>
+                    <span>Positive Values (Good actions)</span>
+                  </div>
+                  <div class="color-item">
+                    <div class="color-box negative"></div>
+                    <span>Negative Values (Dangerous actions)</span>
+                  </div>
+                  <div class="color-item">
+                    <div class="color-box neutral"></div>
+                    <span>Neutral Values (Unexplored)</span>
+                  </div>
                 </div>
-
-                <div class="insight">
-                    <h4>Valores Negativos</h4>
-                    <p>Quando o Pacman bate no fantasma, os Q-values das ações que levam a essa situação ficam negativos, ensinando-o a evitar esses caminhos.</p>
-                </div>
-
-                <div class="insight">
-                    <h4>Valores Positivos</h4>
-                    <p>Quando encontra a moeda, os Q-values das ações que levam ao objetivo ficam positivos, criando um "mapa" do caminho para o sucesso.</p>
-                </div>
-
-                <div class="insight">
-                    <h4>Propagação de Conhecimento</h4>
-                    <p>Com mais iterações, os valores se propagam pelo ambiente - estados próximos ao objetivo ganham valores altos, criando uma "atração" para o objetivo.</p>
+              </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <style>
