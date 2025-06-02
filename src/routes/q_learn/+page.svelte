@@ -1,80 +1,85 @@
 <script>
-    import { onMount } from 'svelte';
-    import { base } from '$app/paths';
+  import { onMount } from 'svelte';
+  import { base } from '$app/paths';
 
     // Estados do exemplo (grid 3x3)
     let gameBoard = [
         [0, 0, 0],
         [0, 2, 0], // fantasma no meio
-        [0, 0, 1]  // objetivo no canto inferior direito
+        [0, 0, 1]  // coin no canto inferior direito
     ];
 
-    // Parâmetros fixos do Q-Learning
+    // Parâmetros do Q-Learning
     const alpha = 0.3;  // taxa de aprendizado
     const gamma = 0.9;  // fator de desconto
 
-    // Tabela Q - 9 estados (0,0 até 2,2) x 4 ações (up, down, left, right)
+    // Tabela Q
     let qTable = {};
+
+    // Sequência predefinida de ações
+    const predefinedSequence = [
+        // Fantasma
+        { from: { x: 0, y: 0 }, action: 'right' },
+        { from: { x: 1, y: 0 }, action: 'down' },
+        { from: { x: 1, y: 1 }, action: 'none' },
+
+        // Moeda
+        { from: { x: 0, y: 0 }, action: 'down' },
+        { from: { x: 0, y: 1 }, action: 'down' },
+        { from: { x: 0, y: 2 }, action: 'right' },
+        { from: { x: 1, y: 2 }, action: 'right' },
+        { from: { x: 2, y: 2 }, action: 'none' },
+
+        // Fantasma
+        { from: { x: 0, y: 0 }, action: 'down' },
+        { from: { x: 0, y: 1 }, action: 'right' },
+        { from: { x: 1, y: 1 }, action: 'none' },
+
+        // Moeda
+        { from: { x: 0, y: 0 }, action: 'right' },
+        { from: { x: 1, y: 0 }, action: 'right' },
+        { from: { x: 2, y: 0 }, action: 'down' },
+        { from: { x: 2, y: 1 }, action: 'down' },
+        { from: { x: 2, y: 2 }, action: 'none' },
+
+        // Moeda
+        { from: { x: 0, y: 0 }, action: 'down' },
+        { from: { x: 0, y: 1 }, action: 'down' },
+        { from: { x: 0, y: 2 }, action: 'right' },
+        { from: { x: 1, y: 2 }, action: 'right' },
+        { from: { x: 2, y: 2 }, action: 'none' },
+
+        // Fantasma
+        { from: { x: 0, y: 0 }, action: 'right' },
+        { from: { x: 1, y: 0 }, action: 'down' },
+        { from: { x: 0, y: 0 }, action: 'right' },
+        { from: { x: 1, y: 0 }, action: 'down' },
+        { from: { x: 1, y: 1 }, action: 'none' },
+
+        // Moeda
+        { from: { x: 0, y: 0 }, action: 'right' },
+        { from: { x: 1, y: 0 }, action: 'right' },
+        { from: { x: 2, y: 0 }, action: 'down' },
+        { from: { x: 2, y: 1 }, action: 'down' },
+        { from: { x: 2, y: 2 }, action: 'none' },
+
+        // Moeda
+        { from: { x: 0, y: 0 }, action: 'down' },
+        { from: { x: 0, y: 1 }, action: 'down' },
+        { from: { x: 0, y: 2 }, action: 'right' },
+        { from: { x: 1, y: 2 }, action: 'right' },
+        { from: { x: 2, y: 2 }, action: 'none' }
+    ];
 
     // Controle de iterações
     let currentIteration = 0;
-    let maxIterations = 30;
+    let maxIterations = predefinedSequence.length - 1;
 
-    // Histórico completo de todas as 30 iterações
+    // Histórico completo de todas as iterações
     let allIterations = [];
 
     // Estado atual baseado na iteração selecionada
     let currentState = { agentPosition: { x: 0, y: 0 }, lastAction: '', lastReward: 0 };
-
-    // Sequência determinística de 30 iterações (10 episódios de 3 passos cada)
-    const predefinedSequence = [
-        // Episódio 1: Explorando para a direita e encontrando fantasma
-        { from: { x: 0, y: 0 }, action: 'right', description: 'Explorando para direita' },
-        { from: { x: 1, y: 0 }, action: 'down', description: 'Descendo para explorar' },
-        { from: { x: 1, y: 1 }, action: 'left', description: 'BATE NO FANTASMA!' },
-
-        // Episódio 2: Tentando ir direto para baixo
-        { from: { x: 0, y: 0 }, action: 'down', description: 'Tentando caminho diferente' },
-        { from: { x: 0, y: 1 }, action: 'right', description: 'Indo para direita' },
-        { from: { x: 1, y: 1 }, action: 'down', description: 'BATE NO FANTASMA!' },
-
-        // Episódio 3: Descobrindo o caminho correto
-        { from: { x: 0, y: 0 }, action: 'down', description: 'Tentando novamente' },
-        { from: { x: 0, y: 1 }, action: 'down', description: 'Continuando para baixo' },
-        { from: { x: 0, y: 2 }, action: 'right', description: 'Indo para direita' },
-        { from: { x: 1, y: 2 }, action: 'right', description: 'ENCONTRA A MOEDA!' },
-
-        // Episódio 4: Aplicando conhecimento
-        { from: { x: 0, y: 0 }, action: 'down', description: 'Usando experiência anterior' },
-        { from: { x: 0, y: 1 }, action: 'down', description: 'Caminho conhecido' },
-        { from: { x: 0, y: 2 }, action: 'right', description: 'Em direção ao objetivo' },
-        { from: { x: 1, y: 2 }, action: 'right', description: 'MOEDA NOVAMENTE!' },
-
-        // Episódio 5: Explorando outras opções
-        { from: { x: 0, y: 0 }, action: 'right', description: 'Testando outras rotas' },
-        { from: { x: 1, y: 0 }, action: 'right', description: 'Continuando exploração' },
-        { from: { x: 2, y: 0 }, action: 'down', description: 'Descendo pela direita' },
-        { from: { x: 2, y: 1 }, action: 'down', description: 'Chegando ao objetivo' },
-        { from: { x: 2, y: 2 }, action: 'left', description: 'CHEGOU NA MOEDA!' },
-
-        // Episódio 6: Caminho otimizado
-        { from: { x: 0, y: 0 }, action: 'down', description: 'Caminho mais eficiente' },
-        { from: { x: 0, y: 1 }, action: 'down', description: 'Direto para baixo' },
-        { from: { x: 0, y: 2 }, action: 'right', description: 'Duas casas para direita' },
-        { from: { x: 1, y: 2 }, action: 'right', description: 'SUCESSO!' },
-
-        // Episódio 7: Mais uma exploração
-        { from: { x: 0, y: 0 }, action: 'right', description: 'Testando rota superior' },
-        { from: { x: 1, y: 0 }, action: 'right', description: 'Pela parte de cima' },
-        { from: { x: 2, y: 0 }, action: 'down', description: 'Descendo pela lateral' },
-        { from: { x: 2, y: 1 }, action: 'down', description: 'CHEGA NA MOEDA!' },
-
-        // Episódio 8: Aplicando conhecimento consolidado
-        { from: { x: 0, y: 0 }, action: 'down', description: 'Rota conhecida segura' },
-        { from: { x: 0, y: 1 }, action: 'down', description: 'Evitando fantasma' },
-        { from: { x: 0, y: 2 }, action: 'right', description: 'Em direção ao sucesso' },
-        { from: { x: 1, y: 2 }, action: 'right', description: 'SUCESSO GARANTIDO!' }
-    ];
 
     // Inicializar Q-table
     function initializeQTable() {
@@ -94,24 +99,9 @@
 
     // Função para obter recompensa de um estado
     function getReward(x, y) {
-        if (x < 0 || x >= 3 || y < 0 || y >= 3) return -10; // fora do grid
-        if (gameBoard[y][x] === 2) return -10; // fantasma
-        if (gameBoard[y][x] === 1) return +10; // objetivo
-        return -0.1; // movimento normal (pequena penalidade)
-    }
-
-    // Função para executar uma ação
-    function executeAction(x, y, action) {
-        let newX = x, newY = y;
-
-        switch(action) {
-            case 'up': newY = Math.max(0, y - 1); break;
-            case 'down': newY = Math.min(2, y + 1); break;
-            case 'left': newX = Math.max(0, x - 1); break;
-            case 'right': newX = Math.min(2, x + 1); break;
-        }
-
-        return { x: newX, y: newY };
+        if (gameBoard[y][x] === 2) return -100; // fantasma
+        if (gameBoard[y][x] === 1) return +100; // objetivo
+        return -1; // movimento normal (pequena penalidade)
     }
 
     // Atualizar Q-value usando a equação de Bellman
@@ -130,40 +120,34 @@
         initializeQTable();
         allIterations = [];
 
-        let agentPos = { x: 0, y: 0 };
-
         for (let i = 0; i < predefinedSequence.length; i++) {
             const step = predefinedSequence[i];
+            const currentState = `${step.from.x},${step.from.y}`;
 
-            // Garantir que agente está na posição correta
-            agentPos = step.from;
-            const currentState = `${agentPos.x},${agentPos.y}`;
+            // Determinar nova posição: se há próximo step, usar seu 'from', senão manter posição atual
+            let newPosition;
+            if (i + 1 < predefinedSequence.length) {
+                newPosition = predefinedSequence[i + 1].from;
+            } else {
+                // Último step, manter posição atual
+                newPosition = step.from;
+            }
 
-            // Executar ação
-            const newPosition = executeAction(agentPos.x, agentPos.y, step.action);
             const reward = getReward(newPosition.x, newPosition.y);
             const nextState = `${newPosition.x},${newPosition.y}`;
 
-            // Atualizar Q-table
-            updateQValue(currentState, step.action, reward, nextState);
+            // Atualizar Q-table apenas se não for ação 'none'
+            if (step.action !== 'none') {
+                updateQValue(currentState, step.action, reward, nextState);
+            }
 
             // Salvar estado da iteração
             allIterations.push({
                 agentPosition: { ...newPosition },
                 lastAction: step.action,
                 lastReward: reward,
-                description: step.description,
-                qTableSnapshot: JSON.parse(JSON.stringify(qTable)),
-                episodeNumber: Math.floor(i / 3) + 1,
-                stepInEpisode: (i % 3) + 1
+                qTableSnapshot: JSON.parse(JSON.stringify(qTable))
             });
-
-            agentPos = newPosition;
-
-            // Reset para início após cada episódio (quando termina em moeda ou fantasma)
-            if (reward !== -0.1) {
-                agentPos = { x: 0, y: 0 };
-            }
         }
     }
 
@@ -171,7 +155,6 @@
     function updateCurrentState() {
         if (currentIteration === 0) {
             currentState = { agentPosition: { x: 0, y: 0 }, lastAction: '', lastReward: 0 };
-            initializeQTable();
         } else {
             const iteration = allIterations[currentIteration - 1];
             currentState = iteration;
@@ -182,10 +165,10 @@
     // Função para obter cor da célula da Q-table
     function getQValueColor(value) {
         if (value > 0) {
-            const intensity = Math.min(value / 10, 1);
+            const intensity = Math.min(value / 100, 1);
             return `rgba(0, 150, 0, ${0.3 + intensity * 0.4})`;
         } else if (value < 0) {
-            const intensity = Math.min(Math.abs(value) / 10, 1);
+            const intensity = Math.min(Math.abs(value) / 100, 1);
             return `rgba(150, 0, 0, ${0.3 + intensity * 0.4})`;
         } else {
             return 'rgba(100, 100, 100, 0.1)';
@@ -198,6 +181,7 @@
     onMount(() => {
         generateAllIterations();
         updateCurrentState();
+        console.log(allIterations);
     });
 </script>
 
@@ -227,7 +211,7 @@
             <li><strong>Ação (A):</strong> Movimento que o agente pode fazer (↑ ↓ ← →)</li>
             <li><strong>Recompensa (R):</strong> Feedback do ambiente (+10 objetivo, -10 fantasma, -0.1 movimento)</li>
             <li><strong>Q-Value Q(s,a):</strong> Valor esperado de executar ação 'a' no estado 's'</li>
-        </ul>
+      </ul>
 
         <div class="formula-section">
             <h3>Fórmula do Q-Learning (Equação de Bellman):</h3>
@@ -240,7 +224,7 @@
                 <p><strong>r:</strong> Recompensa imediata recebida</p>
                 <p><strong>max Q(s',a'):</strong> Maior Q-value possível no próximo estado</p>
             </div>
-        </div>
+    </div>
 
         <h3>Pergunta importante sobre Q-Learning:</h3>
         <p>
@@ -252,7 +236,7 @@
     </div>
 
     <div class="demo-section">
-        <h2>Demonstração: 30 Iterações de Aprendizado</h2>
+        <h2>Demonstração: {predefinedSequence.length} Iterações de Aprendizado</h2>
         <p>
             Navegue pelas iterações para ver como o Pacman aprende através de tentativa e erro.
             O agente explora o ambiente, encontra perigos (fantasma), descobre recompensas (moeda)
@@ -271,36 +255,6 @@
                 class="iteration-slider"
             />
         </div>
-
-        <!-- Status atual -->
-        {#if currentIteration > 0}
-            <div class="status">
-                <div class="status-item">
-                    <strong>Episódio:</strong> {allIterations[currentIteration - 1]?.episodeNumber || 'N/A'}
-                </div>
-                <div class="status-item">
-                    <strong>Passo:</strong> {allIterations[currentIteration - 1]?.stepInEpisode || 'N/A'}
-                </div>
-                <div class="status-item">
-                    <strong>Posição:</strong> ({currentState.agentPosition.x}, {currentState.agentPosition.y})
-                </div>
-                <div class="status-item">
-                    <strong>Ação:</strong> {currentState.lastAction || 'Nenhuma'}
-                </div>
-                <div class="status-item">
-                    <strong>Recompensa:</strong> {currentState.lastReward}
-                </div>
-                <div class="status-item description">
-                    <strong>Descrição:</strong> {allIterations[currentIteration - 1]?.description || 'Estado inicial'}
-                </div>
-            </div>
-        {:else}
-            <div class="status">
-                <div class="status-item description">
-                    <strong>Estado inicial:</strong> Pacman na posição (0,0), Q-table zerada, pronto para aprender!
-                </div>
-            </div>
-        {/if}
 
         <!-- Visualização -->
         <div class="visualization">
@@ -332,30 +286,30 @@
                     </div>
                     <div class="legend-item">
                         <img src="{base}/coin.png" alt="Objetivo" class="legend-icon">
-                        <span>Moeda (+10)</span>
+                        <span>Moeda (+100)</span>
                     </div>
                     <div class="legend-item">
                         <img src="{base}/fantasma.png" alt="Obstáculo" class="legend-icon">
-                        <span>Fantasma (-10)</span>
+                        <span>Fantasma (-100)</span>
                     </div>
                 </div>
-            </div>
+      </div>
 
             <!-- Tabela Q -->
             <div class="qtable">
                 <h3>Tabela Q - Valores de Ação-Estado</h3>
                 <p class="qtable-desc">Cada célula mostra o valor esperado de executar uma ação em um estado:</p>
-                <table>
-                    <thead>
-                        <tr>
+          <table>
+            <thead>
+              <tr>
                             <th>Estado (x,y)</th>
                             <th>↑ Up</th>
                             <th>↓ Down</th>
                             <th>← Left</th>
                             <th>→ Right</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+              </tr>
+            </thead>
+            <tbody>
                         {#each Object.entries(qTable) as [state, actions]}
                             <tr class:current-state={state === `${currentState.agentPosition.x},${currentState.agentPosition.y}`}>
                                 <td class="state-cell">({state})</td>
@@ -371,10 +325,10 @@
                                 <td class="q-value" style="background-color: {getQValueColor(actions.right)}">
                                     {actions.right.toFixed(2)}
                                 </td>
-                            </tr>
+              </tr>
                         {/each}
-                    </tbody>
-                </table>
+            </tbody>
+          </table>
 
                 <div class="qtable-legend">
                     <div class="color-legend">
@@ -389,10 +343,10 @@
                         <div class="color-item">
                             <div class="color-box neutral"></div>
                             <span>Valores Neutros (Não explorados)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
+      </div>
+    </div>
+    </div>
         </div>
 
         <!-- Explicação final -->
@@ -417,23 +371,23 @@
                 <div class="insight">
                     <h4>Propagação de Conhecimento</h4>
                     <p>Com mais iterações, os valores se propagam pelo ambiente - estados próximos ao objetivo ganham valores altos, criando uma "atração" para o objetivo.</p>
-                </div>
-            </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <style>
-    .container {
+  .container {
         max-width: 800px;
-        margin: 0 auto;
+    margin: 0 auto;
         padding: 20px;
         font-family: 'Lato', sans-serif;
         color: white;
-    }
+  }
 
     h1, h2 {
-        font-family: 'Press Start 2P', cursive;
+    font-family: 'Press Start 2P', cursive;
         margin-top: 2em;
         margin-bottom: 1em;
     }
@@ -473,7 +427,7 @@
         border-radius: 8px;
         padding: 1rem;
         font-family: 'Courier New', monospace;
-        font-size: 1.1rem;
+    font-size: 1.1rem;
         color: white;
         text-align: center;
         margin: 1rem 0;
@@ -495,8 +449,8 @@
     .iteration-control label {
         display: block;
         margin-bottom: 0.5rem;
-        font-weight: bold;
-    }
+    font-weight: bold;
+  }
 
     .iteration-value {
         color: #fff;
@@ -549,7 +503,7 @@
     .environment {
         background-color: #333;
         padding: 1.5rem;
-        border-radius: 8px;
+    border-radius: 8px;
         border: 2px solid #666;
     }
 
@@ -619,28 +573,28 @@
     .qtable {
         background-color: #333;
         padding: 1.5rem;
-        border-radius: 8px;
+    border-radius: 8px;
         border: 2px solid #666;
-        overflow-x: auto;
-    }
+    overflow-x: auto;
+  }
 
     .qtable-desc {
         font-size: 0.9rem;
         color: #ccc;
         margin-bottom: 1rem;
         text-align: center;
-    }
+  }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
+  table {
+    width: 100%;
+    border-collapse: collapse;
         margin-bottom: 1rem;
-    }
+  }
 
-    th, td {
+  th, td {
         padding: 0.5rem;
         text-align: center;
-        border: 1px solid #555;
+    border: 1px solid #555;
     }
 
     th {
@@ -670,11 +624,11 @@
     }
 
     .color-legend {
-        display: flex;
+    display: flex;
         gap: 1rem;
         justify-content: center;
-        flex-wrap: wrap;
-    }
+    flex-wrap: wrap;
+  }
 
     .color-item {
         display: flex;
@@ -701,7 +655,7 @@
     }
 
     .learning-explanation {
-        background-color: #333;
+    background-color: #333;
         border-radius: 8px;
         padding: 2rem;
         border: 2px solid #666;
@@ -743,5 +697,5 @@
         line-height: 1.6;
         margin-bottom: 1.5em;
         text-align: justify;
-    }
+  }
 </style>
