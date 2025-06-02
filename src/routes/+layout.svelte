@@ -30,10 +30,10 @@
   <h1>Reinforcement Learning</h1>
   <h2> <span class="clickable-word" on:click|stopPropagation={gotoLearn}>Learn</span>
   ·
-  <span class="clickable-word" on:click|stopPropagation={gotoExplore}>Explore</span></h2>
+  <span class="clickable-word" on:click|stopPropagation={gotoExplore}>Explore</span>
   ·
   <span class="clickable-word" on:click|stopPropagation={gotoVis}>Visualize</span>
-
+</h2>
 </div>
 
 <slot></slot>
