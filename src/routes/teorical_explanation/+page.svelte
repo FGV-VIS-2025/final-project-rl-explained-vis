@@ -11,10 +11,6 @@
 
   function navigateToSection(section) {
     currentSection = section;
-    const element = document.querySelector(`[data-section="${section}"]`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 
   onMount(() => {
@@ -39,6 +35,7 @@
   </nav>
 
   <!-- Section 1: Agent -->
+  {#if currentSection === 'agent'}
   <section class="section" data-section="agent">
     <div class="section-container">
       <div class="text-content">
@@ -93,8 +90,10 @@
       </div>
     </div>
   </section>
+  {/if}
 
   <!-- Section 2: Environment -->
+  {#if currentSection === 'environment'}
   <section class="section" data-section="environment">
     <div class="section-container">
       <div class="text-content">
@@ -149,8 +148,10 @@
       </div>
     </div>
   </section>
+  {/if}
 
   <!-- Section 3: Rewards -->
+  {#if currentSection === 'rewards'}
   <section class="section" data-section="rewards">
     <div class="section-container">
       <div class="text-content">
@@ -196,9 +197,11 @@
       </div>
     </div>
   </section>
+  {/if}
 
 
   <!-- Section 5: Policy -->
+  {#if currentSection === 'policy'}
   <section class="section" data-section="policy">
     <div class="section-container">
       <div class="text-content">
@@ -252,6 +255,7 @@
       </div>
     </div>
   </section>
+  {/if}
 
   <div class="button-container column">
     <button class="large-button">
