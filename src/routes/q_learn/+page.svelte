@@ -205,7 +205,7 @@
 
         <h3>How it Works:</h3>
         <p>The agent learns by interacting with the environment and receiving <strong>rewards</strong> (positive or negative) as feedback. Q-Learning is the algorithm used to iteratively refine a special function called the Q-function. </p>
-        <p>Internally, our Q-function is encoded by a  <strong> Q-table</strong>, a table where each cell corresponds to a state-action pair value. A Q-Table stores the expected value of each action in each state, being updated with experience.</p>
+        <p>Internally, our Q-function is encoded by a  <strong> Q-table</strong>, a table where each cell corresponds to a state-action pair value. A Q-Table stores the expected value of each action in each state, being updated with experience.</p>
 
         <h3>How the Q-Table is updated:</h3>
         <ul>
@@ -218,13 +218,60 @@
         <div class="formula-section">
             <h3>Q-Learning Formula (Bellman Equation):</h3>
             <div class="formula">
-                Q(s,a) ← Q(s,a) + α[r + γ max Q(s',a') - Q(s,a)]
+                <span class="formula-new">Q(s,a)</span> ← <span class="formula-former">Q(s,a)</span> + <span class="formula-alpha">α</span>[<span class="formula-reward">r</span> + <span class="formula-gamma">γ</span> <span class="formula-max">max Q(s',a')</span> - <span class="formula-former">Q(s,a)</span>]
             </div>
+
             <div class="formula-explanation">
-                <p><strong>α (alpha):</strong>  how much to learn from each experience</p>
-                <p><strong>γ (gamma):</strong>  importance of future rewards</p>
-                <p><strong>r:</strong> Immediate reward received</p>
-                <p><strong>max Q(s',a'):</strong> Maximum possible Q-value in the next state</p>
+            </div>
+
+            <div class="parameters-grid">
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon new-icon"></div>
+                        <span class="param-title param-new">New Q-Value</span>
+                    </div>
+                    <p class="param-description">The updated Q-value estimation after learning from experience</p>
+                </div>
+
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon former-icon"></div>
+                        <span class="param-title param-former">Former Q-Value</span>
+                    </div>
+                    <p class="param-description">The current Q-value estimation before the update</p>
+                </div>
+
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon alpha-icon"></div>
+                        <span class="param-title param-alpha">α (Learning Rate)</span>
+                    </div>
+                    <p class="param-description">Controls how much to learn from each experience (0.0 to 1.0)</p>
+                </div>
+
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon reward-icon"></div>
+                        <span class="param-title param-reward">r (Immediate Reward)</span>
+                    </div>
+                    <p class="param-description">The reward received from the environment for the action taken</p>
+                </div>
+
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon gamma-icon"></div>
+                        <span class="param-title param-gamma">γ (Discount Factor)</span>
+                    </div>
+                    <p class="param-description">Determines the importance of future rewards (0.0 to 1.0)</p>
+                </div>
+
+                <div class="parameter-card">
+                    <div class="param-header">
+                        <div class="param-icon max-icon"></div>
+                        <span class="param-title param-max">max Q(s',a')</span>
+                    </div>
+                    <p class="param-description">The maximum possible Q-value in the next state</p>
+                </div>
             </div>
         </div>
 
@@ -234,6 +281,32 @@
             This allows knowledge to "propagate", that means, states close to the goal gain
             high values even without direct reward, creating a "map" to success.
         </p>
+
+        <h3>Exploration/Exploitation Trade-off</h3>
+        <p>
+            One of the fundamental challenges in reinforcement learning is balancing exploration and exploitation.
+            <strong>Exploration</strong> means trying new actions to discover potentially better strategies, while
+            <strong>exploitation</strong> means using current knowledge to maximize reward.
+        </p>
+
+        <div class="epsilon-explanation-box">
+            <div class="epsilon-left">
+                <h4>Epsilon Parameter (ε)</h4>
+                <p>The epsilon (ε) parameter controls this balance: with probability ε, the agent chooses
+                a random action (exploration), and with probability 1-ε, it chooses the best known action (exploitation).</p>
+            </div>
+            <div class="epsilon-right">
+                <h4>Epsilon Decay</h4>
+                <p>As training progresses, epsilon typically decreases over time, allowing the agent to
+                start by exploring more and gradually become more confident in its learned strategy.</p>
+            </div>
+        </div>
+
+        <div class="epsilon-formula-container">
+            <div class="epsilon-formula">
+                ε = ε₀ × decay_rate^episode
+            </div>
+        </div>
     </div>
 
     <div class="demo-section">
@@ -417,6 +490,37 @@
         color: #ccc;
     }
 
+    /* Formula parameter highlighting */
+    .formula-alpha, .param-alpha {
+        color: #ff6b6b; /* Red - Learning Rate */
+        font-weight: bold;
+    }
+
+    .formula-gamma, .param-gamma {
+        color: #9b59b6; /* Purple - Discounted factor */
+        font-weight: bold;
+    }
+
+    .formula-reward, .param-reward {
+        color: #f39c12; /* Orange - Immediate Reward */
+        font-weight: bold;
+    }
+
+    .formula-max, .param-max {
+        color: #9b59b6; /* Purple - Discounted optimal Q-value of next state */
+        font-weight: bold;
+    }
+
+    .formula-new {
+        color: #2ecc71; /* Green - New Q-value estimation */
+        font-weight: bold;
+    }
+
+    .formula-former {
+        color: #3498db; /* Blue - Former Q-value estimation */
+        font-weight: bold;
+    }
+
     .iteration-control {
         background-color: #333;
         padding: 1rem;
@@ -444,7 +548,7 @@
         outline: none;
     }
 
-   
+
 
     .visualization {
         display: grid;
@@ -660,5 +764,165 @@
     border: 2px solid white;
     cursor: pointer;
     transition: background-color 0.3s;
+  }
+
+  /* Exploration/Exploitation section */
+  .exploration-section {
+    margin: 2rem 0;
+    background-color: #2a2a2a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid #555;
+  }
+
+  .epsilon-formula {
+    background-color: #222;
+    border: 2px solid #555;
+    border-radius: 8px;
+    padding: 0.8rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: #ccc; /* Neutral color */
+    text-align: center;
+    margin: 1rem 0;
+    font-weight: bold;
+    max-width: 300px;
+  }
+
+  h4 {
+    color: #fff;
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+  }
+
+  /* Parameters Grid Layout */
+  .parameters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .parameter-card {
+    background-color: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .parameter-card:hover {
+    border-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .param-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .param-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .new-icon {
+    background-color: #2ecc71; /* Green */
+  }
+
+  .former-icon {
+    background-color: #3498db; /* Blue */
+  }
+
+  .alpha-icon {
+    background-color: #ff6b6b; /* Red */
+  }
+
+  .reward-icon {
+    background-color: #f39c12; /* Orange */
+  }
+
+  .gamma-icon {
+    background-color: #9b59b6; /* Purple */
+  }
+
+  .max-icon {
+    background-color: #9b59b6; /* Purple */
+  }
+
+  .param-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .param-new {
+    color: #2ecc71;
+  }
+
+  .param-former {
+    color: #3498db;
+  }
+
+  .param-description {
+    font-size: 0.8rem;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .parameters-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Epsilon Explanation Box */
+  .epsilon-explanation-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    background-color: #2a2a2a;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid #444;
+    margin: 1.5rem 0;
+  }
+
+  .epsilon-left, .epsilon-right {
+    background-color: #333;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+
+  .epsilon-left h4, .epsilon-right h4 {
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    color: #fff;
+    font-size: 1rem;
+  }
+
+  .epsilon-left p, .epsilon-right p {
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .epsilon-explanation-box {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .epsilon-formula-container {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
   }
 </style>
