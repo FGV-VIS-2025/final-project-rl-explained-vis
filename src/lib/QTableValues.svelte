@@ -8,8 +8,20 @@
     export let holes;
     export let maxAbsVal;
     import { base } from '$app/paths';
+    import { afterUpdate } from 'svelte'; // Import afterUpdate
 
     import InfoTooltip from "./InfoTooltip.svelte";
+
+    // Variável para armazenar a referência ao elemento do grid
+    let qGridElement;
+    // Variável reativa para a altura do grid
+    let qGridHeight = 0;
+
+    afterUpdate(() => {
+        if (qGridElement && qGridElement.offsetHeight !== qGridHeight) {
+            qGridHeight = qGridElement.offsetHeight;
+        }
+    });
 
     // Função para encontrar o valor absoluto máximo entre todas as Q-tables
     function getGlobalMaxAbsoluteQValue(allQTables) {
@@ -38,10 +50,10 @@
 
     // Calcula o valor absoluto máximo global de forma reativa
     $: globalMaxAbsQValue = getGlobalMaxAbsoluteQValue(allQTables);
-    
+
     $: maxQValue = globalMaxAbsQValue;
     $: minQValue = -globalMaxAbsQValue;
-    
+
     // Variáveis reativas para os valores min/max para a legenda
     $: legendMinQValue = -globalMaxAbsQValue.toFixed(0);
     $: legendMaxQValue = globalMaxAbsQValue.toFixed(0);
@@ -84,7 +96,7 @@
 
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
-    
+
     // Gera o gradiente para a legenda (agora vertical)
     $: legendGradient = `linear-gradient(to top,
         ${getGradientColor(-globalMaxAbsQValue)},
@@ -130,7 +142,6 @@
         if (holes.some(hole => hole[0] === row && hole[1] === col)) return 'hole';
         return '';
     }
-
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -149,7 +160,11 @@
                 </div>
             </InfoTooltip>
         </h3>
-        <div class="q-grid" style="grid-template-columns: repeat({world_width}, 1fr);">
+        <div
+            class="q-grid"
+            style="grid-template-columns: repeat({world_width}, 1fr);"
+            bind:this={qGridElement}
+        >
             {#key world_width + world_height + JSON.stringify(holes) + JSON.stringify(start) + JSON.stringify(goal)}
             {#each Array(world_height) as _, r}
                 {#each Array(world_width) as __, c}
@@ -159,16 +174,16 @@
                     >
                         {#if getCellType(r,c) === 'goal'}
                             <img
-                                    src={base + "/coin.png"}
-                                    alt="Coin"
-                                    style="width: 24px; height: 24px;"
-                                />
+                                src={base + "/coin.png"}
+                                alt="Coin"
+                                style="width: 24px; height: 24px;"
+                            />
                         {:else if getCellType(r,c) === 'hole'}
                             <img
-                                    src={base + "/fantasma.png"}
-                                    alt="Hole"
-                                    style="width: 24px; height: 24px;"
-                                />
+                                src={base + "/fantasma.png"}
+                                alt="Hole"
+                                style="width: 24px; height: 24px;"
+                            />
                         {/if}
                     </div>
                 {/each}
@@ -177,14 +192,14 @@
         </div>
     </div>
 
-    <div class="color-legend">
-        <div class="gradient-bar" style="background: {legendGradient};"></div>
+    <div class="color-legend" style="--q-grid-height: {qGridHeight}px;">
+        <div class="gradient-bar" style="background: {legendGradient}; height: {qGridHeight}px;"></div>
         <div class="labels">
             <span>{legendMaxQValue}</span>
             <span>{legendZeroValue}</span>
             <span>{legendMinQValue}</span>
         </div>
-        </div>
+    </div>
 </div>
 
 <style>
@@ -239,41 +254,57 @@
     /* Estilos da Legenda Vertical */
     .color-legend {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 180px;
-        width: 50px;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 10px;
+        width: 80px;
         margin-top: 50px;
         font-family: Arial, sans-serif;
         color: #ffffff;
         font-size: 0.5em;
+        height: var(--q-grid-height, 180px);
     }
 
     .gradient-bar {
         width: 15px;
-        height: 100%;
         border-radius: 3px;
+        flex-shrink: 0;
     }
 
     .labels {
         display: flex;
-        margin-top: -200px;
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
         font-family: "Press Start 2P";
-        margin-left: 20px; /* Espaço entre a barra e os rótulos */
+        margin-top: 0;
+        margin-left: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    .labels span:nth-child(2) {
-        align-self: center;
-    }
-    
-    .labels span:nth-child(1) {
-        align-self: flex-start;
+    .labels span {
+        text-align: right;
+        position: relative;
     }
 
-    .labels span:nth-child(3) {
+    /* Max Value */
+    .labels span:nth-child(1) { 
         align-self: flex-end;
+        top: 0;
+        transform: translateX(-50%);
+    }
+
+    /* Zero Value */
+    .labels span:nth-child(2) { 
+        top: 0%;
+        transform: translateX(-15px);
+    }
+
+    /* Min Value */
+    .labels span:nth-child(3) { 
+        align-self: flex-end;
+        bottom: 0;
+        transform: translateX(-10%);
     }
 </style>

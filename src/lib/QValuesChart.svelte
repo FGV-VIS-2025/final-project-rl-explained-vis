@@ -427,7 +427,7 @@
                 .attr("x", 10)
                 .attr("y", 31 + (index * 12))
                 .style("fill", colors[item.action])
-                .text(`${item.action.charAt(0).toUpperCase()}: ${item.value.toFixed(2)}`);
+                .text(`${item.action.charAt(0).toUpperCase() + item.action.slice(1)}: ${item.value.toFixed(2)}`);
         });
 
         actions.forEach(action => {
