@@ -13,6 +13,7 @@
     import QValuesChart from "$lib/QValuesChart.svelte";
     import ControlsPanel from "$lib/Buttons.svelte";
     import { base } from '$app/paths';
+    import SuggestionTexts from "$lib/SuggestionTexts.svelte";
 
     //Grid Params
     let world_width = 5;
@@ -336,6 +337,16 @@
         </div>
     {/if}
 </div>
+
+<SuggestionTexts
+    alpha={alpha}
+    gamma={gamma}
+    epsilon={epsilon}
+    epsilon_decay={epsilon_decay}
+    n_of_episodes={num_episodes}
+    max_steps={max_steps}
+    final_accuracy={success_rates_data[success_rates_data.length - 1]}
+/>
 
 <style>
     .main-layout {
