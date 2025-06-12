@@ -170,7 +170,7 @@
             .merge(svg.selectAll(".y-axis-label"))
             .attr("text-anchor", "middle")
             .attr("x", - (h / 2) + 15)
-            .attr("y", margin.left - 37)
+            .attr("y", margin.left - 45)
             .attr("transform", "rotate(-90)")
             .style("fill", "#ffffff")
             .text("Success Rate (%)");

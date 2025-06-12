@@ -109,7 +109,7 @@
 
         <div class="episode-slider">
             <label for="episodeSlider">
-                Ep: {currentEpisode + 1}/{agent_positions_data.length}
+                &ensp;Ep: {currentEpisode + 1}/{agent_positions_data.length}
             </label>
             <input
                 type="range"

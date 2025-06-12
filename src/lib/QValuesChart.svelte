@@ -139,10 +139,10 @@
         const margin = { top: 30, right: 60, bottom: 50, left: 70 };
         const actions = ['up', 'down', 'left', 'right'];
         const colors = {
-            up: "cyan",
-            down: "lime",
-            left: "orange",
-            right: "magenta"
+            up: "#007bff",
+            down: "#28a745",
+            left: "#ffc107",
+            right: "#dc3545"
         };
 
         // Linha de foco vertical
@@ -216,14 +216,13 @@
         const margin = { top: 30, right: 60, bottom: 50, left: 70 };
         const actions = ['up', 'down', 'left', 'right'];
         const colors = {
-            up: "cyan",
-            down: "lime",
-            left: "orange",
-            right: "magenta"
+            up: "#007bff",
+            down: "#28a745",
+            left: "#ffc107",
+            right: "#dc3545"
         };
 
-        // Remove elementos que serão redesenhados a cada atualização
-        svg.selectAll(".chart-line, .last-point-circle, .last-point-line, .q-value-label, .axis-label, .x-axis-group, .y-axis-group, .legend, .current-episode-line").remove();
+        svg.selectAll(".chart-line, .last-point-circle, .last-point-line, .q-value-label, .axis-label, .x-axis-group, .y-axis-group, .current-episode-line").remove();
 
         const x = d3
             .scaleLinear()
@@ -277,10 +276,45 @@
             .attr("class", "y axis-label")
             .attr("text-anchor", "middle")
             .attr("x", - (h / 2) + 15)
-            .attr("y", margin.left - 38)
+            .attr("y", margin.left - 45)
             .attr("transform", "rotate(-90)")
             .style("fill", "#ffffff")
             .text("Q-Value");
+
+        // Lógica para ajuste de rótulos
+        const lastPoints = [];
+        actions.forEach(action => {
+            if (data[action].length > 0) {
+                const lastDataPoint = data[action][data[action].length - 1];
+                const lastEpisodeIndex = data[action].length - 1;
+                lastPoints.push({
+                    action: action,
+                    value: lastDataPoint,
+                    x: x(lastEpisodeIndex),
+                    y: y(lastDataPoint)
+                });
+            }
+        });
+
+        // Ordenar os pontos para melhor ajuste
+        lastPoints.sort((a, b) => a.y - b.y);
+
+        // Altura aproximada de cada rótulo
+        const labelHeight = 15;
+        // Espaçamento extra entre os rótulos
+        const paddingBetweenLabels = -3;
+        
+        // Ajusta as posições Y dos rótulos
+        for (let i = 0; i < lastPoints.length; i++) {
+            const currentPoint = lastPoints[i];
+            if (i > 0) {
+                const prevPoint = lastPoints[i - 1];
+                // Se o rótulo atual estiver muito próximo do rótulo anterior, ajusta ele
+                if (currentPoint.y - prevPoint.y < labelHeight + paddingBetweenLabels) {
+                    currentPoint.y = prevPoint.y + labelHeight + paddingBetweenLabels;
+                }
+            }
+        }
 
         // Desenha as linhas do gráfico e os círculos do último ponto
         actions.forEach(action => {
@@ -294,28 +328,26 @@
                 .attr("d", line);
 
             // Círculo no último ponto
-            if (data[action].length > 0) {
-                const lastDataPoint = data[action][data[action].length - 1];
-                const lastEpisodeIndex = data[action].length - 1;
-
+            const lastPointData = lastPoints.find(p => p.action === action);
+            if (lastPointData) {
                 svg.append("circle")
                     .attr("class", `last-point-circle ${action}-last-point-circle`)
-                    .attr("cx", x(lastEpisodeIndex))
-                    .attr("cy", y(lastDataPoint))
+                    .attr("cx", lastPointData.x)
+                    .attr("cy", y(lastPointData.value))
                     .attr("r", 5)
                     .attr("fill", colors[action])
                     .attr("stroke", "white")
                     .attr("stroke-width", 1.5);
                 
                 // Texto do Q-Value do último ponto
-                // svg.append("text")
-                //     .attr("class", "q-value-label")
-                //     .attr("x", x(lastEpisodeIndex) + 10)
-                //     .attr("y", y(lastDataPoint) + 4)
-                //     .attr("text-anchor", "start")
-                //     .style("fill", colors[action])
-                //     .style("font-size", "0.9em")
-                //     .text(`${action.charAt(0).toUpperCase()}: ${lastDataPoint.toFixed(1)}`);
+                svg.append("text")
+                    .attr("class", `q-value-label ${action}-q-value-label`)
+                    .attr("x", lastPointData.x + 10)
+                    .attr("y", lastPointData.y + 4)
+                    .attr("text-anchor", "start")
+                    .style("fill", colors[action])
+                    .style("font-size", "0.9em")
+                    .text(`${action.charAt(0).toUpperCase() + action.slice(1)}: ${lastPointData.value.toFixed(1)}`);
             }
         });
 
@@ -334,28 +366,28 @@
         }
 
         // Legenda
-        const legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", `translate(${w - margin.right + 10}, ${margin.top})`);
+        // const legend = svg.append("g")
+        //     .attr("class", "legend")
+        //     .attr("transform", `translate(${w - margin.right + 10}, ${margin.top})`);
 
-        actions.forEach((action, i) => {
-            const legendRow = legend.append("g")
-                .attr("transform", `translate(0, ${i * 20})`);
+        // actions.forEach((action, i) => {
+        //     const legendRow = legend.append("g")
+        //         .attr("transform", `translate(0, ${i * 20})`);
 
-            legendRow.append("rect")
-                .attr("width", 10)
-                .attr("height", 10)
-                .attr("fill", colors[action]);
+        //     legendRow.append("rect")
+        //         .attr("width", 10)
+        //         .attr("height", 10)
+        //         .attr("fill", colors[action]);
 
-            legendRow.append("text")
-                .attr("x", 15)
-                .attr("y", 7)
-                .attr("dy", "0.35em")
-                .style("fill", "white")
-                .style("font-size", "10px")
-                .style("font-family", "Press Start 2P")
-                .text(action.charAt(0).toUpperCase() + action.slice(1));
-        });
+        //     legendRow.append("text")
+        //         .attr("x", 15)
+        //         .attr("y", 7)
+        //         .attr("dy", "0.35em")
+        //         .style("fill", "white")
+        //         .style("font-size", "10px")
+        //         .style("font-family", "Press Start 2P")
+        //         .text(action.charAt(0).toUpperCase() + action.slice(1));
+        // });
     }
 
     function mousemove(event) {
@@ -363,10 +395,10 @@
         const actions = ['up', 'down', 'left', 'right'];
 
         const colors = {
-            up: "cyan",
-            down: "lime",
-            left: "orange",
-            right: "magenta"
+            up: "#007bff",
+            down: "#28a745",
+            left: "#ffc107",
+            right: "#dc3545"
         };
 
         const x = d3.scaleLinear()

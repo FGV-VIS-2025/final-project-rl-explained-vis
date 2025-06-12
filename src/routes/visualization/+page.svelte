@@ -221,32 +221,34 @@
 
 <div class="main-layout">
     <div class="right-panel">
-        <ControlsPanel
-            bind:showParamGrid
-            bind:showParamRL
-            bind:world_width
-            bind:world_height
-            bind:holes
-            bind:start
-            bind:goal
-            bind:alpha
-            bind:gamma
-            bind:epsilon
-            bind:epsilon_decay
-            bind:num_episodes
-            bind:max_steps
-            {playSpeedText}
-            bind:playing
-            {width_icon}
-            bind:currentEpisode
-            {agent_positions_data}
-            {initializeQLearning}
-            {prevStep}
-            {nextStep}
-            {togglePlay}
-            {togglePlaySpeed}
-            on:goToEpisode={goToEpisode}
-        />
+        <div class="controls-wrapper">
+            <ControlsPanel
+                bind:showParamGrid
+                bind:showParamRL
+                bind:world_width
+                bind:world_height
+                bind:holes
+                bind:start
+                bind:goal
+                bind:alpha
+                bind:gamma
+                bind:epsilon
+                bind:epsilon_decay
+                bind:num_episodes
+                bind:max_steps
+                {playSpeedText}
+                bind:playing
+                {width_icon}
+                bind:currentEpisode
+                {agent_positions_data}
+                {initializeQLearning}
+                {prevStep}
+                {nextStep}
+                {togglePlay}
+                {togglePlaySpeed}
+                on:goToEpisode={goToEpisode}
+            />
+        </div>
         <div class="env-and-chart-wrapper">
             <div class="grid-display-wrapper-env">
                 <EnvironmentGrid
@@ -347,6 +349,11 @@
         gap: 30px;
     }
 
+    /* .controls-wrapper {
+        max-width: 865px;
+        margin-left: 50px;
+    } */
+
     .grid-display-wrapper-env {
         flex-grow: 1;
         display: flex;
@@ -382,7 +389,7 @@
         align-items: flex-start;
         display: flex;
         gap: 50px;
-        min-height: 70vh;
+        min-height: 50vh;
     }
 
     .cell-details-wrapper {
