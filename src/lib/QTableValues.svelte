@@ -9,7 +9,7 @@
     export let maxAbsVal;
     import { base } from '$app/paths';
     import { afterUpdate } from 'svelte'; // Import afterUpdate
-
+    import * as d3 from "d3";
     import InfoTooltip from "./InfoTooltip.svelte";
 
     // Variável para armazenar a referência ao elemento do grid
@@ -51,50 +51,25 @@
     // Calcula o valor absoluto máximo global de forma reativa
     $: globalMaxAbsQValue = getGlobalMaxAbsoluteQValue(allQTables);
 
-    $: maxQValue = globalMaxAbsQValue;
-    $: minQValue = -globalMaxAbsQValue;
-
     // Variáveis reativas para os valores min/max para a legenda
     $: legendMinQValue = -globalMaxAbsQValue.toFixed(0);
     $: legendMaxQValue = globalMaxAbsQValue.toFixed(0);
     $: legendZeroValue = 0;
 
-    // Função para determinar a cor do gradiente
+    const interpolateQValueColor = d3.interpolateRgbBasis(["#ce0303", "#1A1A1A", "#E6E6FA"]);
+
+    // Funções para determinar a cor do gradiente
     function getGradientColor(qValue) {
-        if (maxQValue === 0 && minQValue === 0) {
+        if (globalMaxAbsQValue === 0) {
             return `hsl(0, 0%, 15%)`;
         }
 
+        const maxQValue = globalMaxAbsQValue;
+        const minQValue = -globalMaxAbsQValue;
+
         const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
 
-        let hue;
-        let saturation = 100;
-        let lightness;
-
-        const colorNegExtreme = { hue: 10, saturation: 100, lightness: 10 };
-        const colorZero = { hue: 260, saturation: 20, lightness: 15 };
-        const colorPosExtreme = { hue: 190, saturation: 100, lightness: 70 };
-
-        if (normalizedValue <= 0.5) {
-            const localNorm = normalizedValue / 0.5;
-
-            hue = colorNegExtreme.hue + (colorZero.hue - colorNegExtreme.hue) * localNorm;
-            saturation = colorNegExtreme.saturation + (colorZero.saturation - colorNegExtreme.saturation) * localNorm;
-            lightness = colorNegExtreme.lightness + (colorZero.lightness - colorNegExtreme.lightness) * localNorm;
-
-        } else {
-            const localNorm = (normalizedValue - 0.5) / 0.5;
-
-            hue = colorZero.hue + (colorPosExtreme.hue - colorZero.hue) * localNorm;
-            saturation = colorZero.saturation + (colorPosExtreme.saturation - colorZero.saturation) * localNorm;
-            lightness = colorZero.lightness + (colorPosExtreme.lightness - colorZero.lightness) * localNorm;
-        }
-
-        hue = Math.round(hue);
-        saturation = Math.round(saturation);
-        lightness = Math.round(lightness);
-
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        return interpolateQValueColor(normalizedValue);
     }
 
     // Gera o gradiente para a legenda (agora vertical)

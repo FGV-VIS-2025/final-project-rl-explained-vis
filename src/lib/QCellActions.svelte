@@ -1,10 +1,13 @@
 <script>
     import InfoTooltip from "./InfoTooltip.svelte";
+    import * as d3 from "d3";
 
     export let qValuesForCell;
     export let globalMaxAbsQValue;
     export let inspectedRow;
     export let inspectedCol;
+
+    const interpolateQValueColor = d3.interpolateRgbBasis(["#ce0303", "#1A1A1A", "#E6E6FA"]);
 
     // Funções para determinar a cor do gradiente
     function getGradientColor(qValue) {
@@ -17,34 +20,7 @@
 
         const normalizedValue = (qValue - minQValue) / (maxQValue - minQValue);
 
-        let hue;
-        let saturation = 100;
-        let lightness;
-
-        const colorNegExtreme = { hue: 10, saturation: 100, lightness: 10 };
-        const colorZero = { hue: 260, saturation: 20, lightness: 15 };
-        const colorPosExtreme = { hue: 190, saturation: 100, lightness: 70 };
-
-        if (normalizedValue <= 0.5) {
-            const localNorm = normalizedValue / 0.5;
-
-            hue = colorNegExtreme.hue + (colorZero.hue - colorNegExtreme.hue) * localNorm;
-            saturation = colorNegExtreme.saturation + (colorZero.saturation - colorNegExtreme.saturation) * localNorm;
-            lightness = colorNegExtreme.lightness + (colorZero.lightness - colorNegExtreme.lightness) * localNorm;
-
-        } else {
-            const localNorm = (normalizedValue - 0.5) / 0.5;
-
-            hue = colorZero.hue + (colorPosExtreme.hue - colorZero.hue) * localNorm;
-            saturation = colorZero.saturation + (colorPosExtreme.saturation - colorZero.saturation) * localNorm;
-            lightness = colorZero.lightness + (colorPosExtreme.lightness - colorZero.lightness) * localNorm;
-        }
-
-        hue = Math.round(hue);
-        saturation = Math.round(saturation);
-        lightness = Math.round(lightness);
-
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        return interpolateQValueColor(normalizedValue);
     }
 
     // Calcula as cores para cada triângulo
