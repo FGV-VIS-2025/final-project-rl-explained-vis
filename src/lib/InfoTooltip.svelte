@@ -79,8 +79,8 @@
         z-index: 100;
         opacity: 0;
         animation: fadeIn 0.2s forwards;
-        font-size: 16px;
-        font-family: "VT323";
+        font-size: 14px;
+        font-family: Arial, sans-serif;
         font-weight: normal;
     }
 

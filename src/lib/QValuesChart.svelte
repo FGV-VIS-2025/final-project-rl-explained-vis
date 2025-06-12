@@ -530,11 +530,11 @@
         height: 250px;
     }
 
-    :global(.axis-label) {
+    /* :global(.axis-label) {
         font-size: 0.6em;
         font-weight: normal;
-        font-family: "Press Start 2P";
-    }
+        font-family: Arial, sans-serif;
+    } */
 
     :global(.tick text) {
         font-family: "Press Start 2P";
@@ -546,11 +546,11 @@
         pointer-events: none;
     }
 
-    :global(.tooltip text) {
+    /* :global(.tooltip text) {
         font-family: "VT323";
         font-weight: normal;
         font-size: 0.9em;
-    }
+    } */
 
     :global(.q-value-label) {
         font-family: "VT323";

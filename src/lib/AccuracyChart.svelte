@@ -334,9 +334,9 @@
     }
 
     :global(.axis-label) {
-        font-size: 0.6em;
-        font-weight: normal;
-        font-family: "Press Start 2P";
+        font-size: 0.9em;
+        font-weight: bold;
+        font-family: Arial, sans-serif;
     }
 
     :global(.tooltip) {
@@ -345,9 +345,9 @@
 
     :global(.tick text)
     {
-        font-family: "Press Start 2P";
+        font-family: Arial, sans-serif;
         font-weight: normal;
-        font-size: 0.7em;
+        font-size: 0.1em;
     }
 
     :global(.tooltip text)

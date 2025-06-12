@@ -269,8 +269,8 @@
         margin-top: 10px;
         display: flex;
         justify-content: center;
-        font-family: "Press Start 2P";
-        font-weight: normal;
-        font-size: 10px;
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        font-size: 1.8em;
     }
 </style>
