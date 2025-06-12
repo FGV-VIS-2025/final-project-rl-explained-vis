@@ -523,8 +523,8 @@
 
     svg {
         margin-top: 20px;
-        border: 1px solid #3318e9;
-        background-color: #0d0d0d;
+        /* border: 1px solid #3318e9;
+        background-color: #0d0d0d; */
         border-radius: 8px;
         width: 675px;
         height: 250px;

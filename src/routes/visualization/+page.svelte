@@ -247,51 +247,18 @@
             {togglePlaySpeed}
             on:goToEpisode={goToEpisode}
         />
-        <div class="grids-and-chart-wrapper">
-            <div class="grids-wrapper">
-                <div class="grid-display-wrapper-env">
-                    <EnvironmentGrid
-                        {world_width}
-                        {world_height}
-                        {start}
-                        {goal}
-                        bind:holes
-                        {currentAgentPosition}
-                        bind:inspectedRow
-                        bind:inspectedCol
-                    />
-                </div>
-                <div class="grid-display-wrapper">
-                    {#if currentQTable}
-                        <QTableArrows
-                            qTable={currentQTable}
-                            {world_width}
-                            {world_height}
-                            {start}
-                            {goal}
-                            {holes}
-                        />
-                    {:else}
-                        <p>Carregando visualização da Q-table (Setas)...</p>
-                    {/if}
-                </div>
-
-                <div class="grid-display-wrapper">
-                    {#if currentQTable}
-                        <QTableValues
-                            allQTables={q_tables_data}
-                            qTable={currentQTable}
-                            {world_width}
-                            {world_height}
-                            {start}
-                            {goal}
-                            {holes}
-                            bind:maxAbsVal={globalMaxAbsQValue}
-                        />
-                    {:else}
-                        <p>Carregando visualização da Q-table (Valores)...</p>
-                    {/if}
-                </div>
+        <div class="env-and-chart-wrapper">
+            <div class="grid-display-wrapper-env">
+                <EnvironmentGrid
+                    {world_width}
+                    {world_height}
+                    {start}
+                    {goal}
+                    bind:holes
+                    {currentAgentPosition}
+                    bind:inspectedRow
+                    bind:inspectedCol
+                />
             </div>
 
             <AccuracyChart
@@ -308,23 +275,61 @@
 
 <div class="details-panel">
     {#if inspectedRow != null && inspectedCol != null}
-        <QCellActions
-            qValuesForCell={qValuesForInspectedCell}
-            globalMaxAbsQValue={100}
-            {inspectedRow}
-            {inspectedCol}
-        />
 
-        <QValuesChart
-            allQTables={q_tables_data}
-            {inspectedRow}
-            {inspectedCol}
-            width={650}
-            height={250}
-            bind:currentEpisode
-            {playing}
-            speedIndex={currentSpeedIndex}
-        />
+        <div class="cell-details-wrapper">
+            <QCellActions
+                qValuesForCell={qValuesForInspectedCell}
+                globalMaxAbsQValue={100}
+                {inspectedRow}
+                {inspectedCol}
+            />
+
+            <QValuesChart
+                allQTables={q_tables_data}
+                {inspectedRow}
+                {inspectedCol}
+                width={650}
+                height={250}
+                bind:currentEpisode
+                {playing}
+                speedIndex={currentSpeedIndex}
+            />
+        </div>
+
+    {:else}
+        <div class="qtables-wrapper">
+            <div class="grid-display-wrapper">
+                {#if currentQTable}
+                    <QTableArrows
+                        qTable={currentQTable}
+                        {world_width}
+                        {world_height}
+                        {start}
+                        {goal}
+                        {holes}
+                    />
+                {:else}
+                    <p>Carregando visualização da Q-table (Setas)...</p>
+                {/if}
+            </div>
+
+            <div class="grid-display-wrapper">
+                {#if currentQTable}
+                    <QTableValues
+                        allQTables={q_tables_data}
+                        qTable={currentQTable}
+                        {world_width}
+                        {world_height}
+                        {start}
+                        {goal}
+                        {holes}
+                        bind:maxAbsVal={globalMaxAbsQValue}
+                    />
+                {:else}
+                    <p>Carregando visualização da Q-table (Valores)...</p>
+                {/if}
+            </div>
+        </div>
     {/if}
 </div>
 
@@ -336,7 +341,7 @@
         font-family: Arial, sans-serif;
         background-color: #1e1e1e;
         color: #ffffff;
-        min-height: 100vh;
+        /* min-height: 60vh; */
         gap: 30px;
     }
 
@@ -344,12 +349,13 @@
         align-items: center;
     }
 
-    .grids-and-chart-wrapper {
+    .env-and-chart-wrapper {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         gap: 30px;
         width: 100%;
         align-items: center;
+        /* margin-top: 40px; */
     }
 
     .details-panel {
@@ -361,14 +367,23 @@
         align-items: flex-start;
         display: flex;
         gap: 50px;
+        min-height: 70vh;
     }
 
-    .grids-wrapper {
+    .cell-details-wrapper {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 20px;
-        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+
+    .qtables-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
+        align-items: top;
+        margin-top: -10px;
     }
 
     .grid-display-wrapper {

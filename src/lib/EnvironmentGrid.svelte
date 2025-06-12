@@ -145,6 +145,7 @@
         --size-border: 1px;
     }
     .q-grid-wrapper h3 {
+        /* margin-top: -10%; */
         text-align: center;
         font-family: "Press Start 2P";
         font-weight: normal;

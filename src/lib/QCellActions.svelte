@@ -143,6 +143,7 @@
         flex-direction: column;
         align-items: center;
         gap: 10px;
+        margin-top: -32px;
     }
 
     .q-cell-actions-wrapper h3 {
@@ -150,7 +151,7 @@
         font-family: "Press Start 2P";
         font-weight: normal;
         font-size: 14px;
-        margin-bottom: 5px;
+        margin-bottom: 20px;
     }
 
     .q-cell-actions-container {

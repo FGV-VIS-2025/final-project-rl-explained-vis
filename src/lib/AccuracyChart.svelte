@@ -315,7 +315,7 @@
 
 <style>
     .chart-wrapper {
-        margin-top: -50px;
+        margin-top: 20px;
         text-align: center;
     }
 
@@ -328,7 +328,7 @@
     }
 
     svg {
-        margin-top: 20px;
+        margin-top: 5px;
         background-color: #1e1e1e;
         border-radius: 8px;
     }

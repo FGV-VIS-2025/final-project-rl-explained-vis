@@ -153,6 +153,7 @@
         justify-content: center;
         align-items: center;
         font-size: 1.5em;
+        font-family: Arial, sans-serif;
         font-weight: normal;
         background-color: #000000;
         color: #ffffff;
