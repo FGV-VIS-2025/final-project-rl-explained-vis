@@ -260,15 +260,17 @@
                     bind:inspectedCol
                 />
             </div>
-
-            <AccuracyChart
-                {success_rates_data}
-                bind:currentEpisode
-                width={650}
-                height={250}
-                speedIndex={currentSpeedIndex}
-                {playing}
-            />
+            
+            <div class="accuracy-chart-wrapper">
+                <AccuracyChart
+                    {success_rates_data}
+                    bind:currentEpisode
+                    width={630}
+                    height={250}
+                    speedIndex={currentSpeedIndex}
+                    {playing}
+                />
+            </div>
         </div>
     </div>
 </div>
@@ -346,16 +348,29 @@
     }
 
     .grid-display-wrapper-env {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
         align-items: center;
+        min-width: 395px;
     }
 
     .env-and-chart-wrapper {
         display: flex;
         flex-direction: row;
-        gap: 30px;
+        /* gap: 30px; */
         width: 100%;
         align-items: center;
         /* margin-top: 40px; */
+        box-sizing: border-box;
+        margin-left: -80px;
+    }
+
+    .accuracy-chart-wrapper {
+        width: 56.2%;
+        flex-shrink: 0;
+        flex-grow: 0;
+        margin-top: 20px;
     }
 
     .details-panel {

@@ -325,6 +325,8 @@
         font-weight: normal;
         font-size: 14px;
         font-family: "Press Start 2P";
+        margin-left: 120px;
+        min-width: 400px;
     }
 
     svg {

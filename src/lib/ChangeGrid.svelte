@@ -15,7 +15,7 @@
     let tempWorldWidth = world_width;
     let tempWorldHeight = world_height;
     const MIN_DIMENSION = 2;
-    const MAX_DIMENSION = 10;
+    const MAX_DIMENSION = 7;
     $: {
         if (tempWorldWidth < MIN_DIMENSION) {
             tempWorldWidth = MIN_DIMENSION;
