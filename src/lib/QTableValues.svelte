@@ -284,27 +284,29 @@
     }
 
     .labels span {
-        text-align: right;
+        text-align: left;
         position: relative;
     }
 
     /* Max Value */
     .labels span:nth-child(1) { 
-        align-self: flex-end;
+        align-self: flex-start;
         top: 0;
-        transform: translateX(-50%);
+        left: 0;
+        /* transform: translateX(-50%); */
     }
 
     /* Zero Value */
     .labels span:nth-child(2) { 
         top: 0%;
-        transform: translateX(-15px);
+        /* transform: translateX(-80%); */
     }
 
     /* Min Value */
     .labels span:nth-child(3) { 
-        align-self: flex-end;
+        align-self: flex-start;
         bottom: 0;
-        transform: translateX(-10%);
+        left: 0;    
+        /* transform: translateX(-10%); */
     }
 </style>
