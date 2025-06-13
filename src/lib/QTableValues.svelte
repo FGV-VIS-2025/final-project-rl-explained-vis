@@ -222,9 +222,9 @@
         background-color: #000033;
     }
 
-    .q-grid-cell.goal {
-        background-color: #b782ff;
-    }
+    /* .q-grid-cell.goal {
+        background-color: #000000;
+    } */
 
     /* Estilos da Legenda Vertical */
     .color-legend {
