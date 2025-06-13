@@ -1,11 +1,15 @@
 <script>
     import ChangeGrid from "./ChangeGrid.svelte";
-    import ChangeParams from "./ChangeParams.svelte";
+    import ChangeParams from "././ChangeParams.svelte";
     import Icon from "./Icons.svelte";
+    import { createEventDispatcher } from 'svelte'; // Import event dispatcher
+
+    const dispatch = createEventDispatcher(); // Initialize dispatcher
 
     // Props ou estados internos (você pode passar isso como props também)
     export let showParamGrid = false;
     export let showParamRL = false;
+    // export let showTutorial = false; // <<< REMOVE THIS, it's managed by parent
 
     export let world_width;
     export let world_height;
@@ -26,6 +30,7 @@
 
     export let currentEpisode = 0;
     export let agent_positions_data = [];
+    export let showBtnTutorial = false;
 
     // Eventos que você pode disparar ou funções internas para controlar ações
     export let initializeQLearning = () => {};
@@ -44,10 +49,20 @@
         showParamRL = !showParamRL;
         if (showParamRL) showParamGrid = false;
     }
+
+    // Function to dispatch an event to the parent to open the tutorial
+    function openTutorialFromControls() {
+        dispatch('openTutorial'); // Dispatch custom event
+        // No need to manage showTutorial here, the parent will handle it
+    }
 </script>
 
 <div class="controls">
     <div class="buttons-change">
+        {#if showBtnTutorial}
+        <button class="btn-change" on:click={openTutorialFromControls}> Tutorial
+        </button>
+        {/if}
         <button class="btn-change" on:click={showParamSetter}>
             Grid Parameters
         </button>

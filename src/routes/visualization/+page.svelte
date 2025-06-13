@@ -220,6 +220,7 @@
     }
 
     let width_icon = 19;
+    let showBtnTutorial= true;
 </script>
 
 <svelte:head>
@@ -232,11 +233,8 @@
     rel="stylesheet"
 />
 
-<button class="tutorial-button" on:click={openTutorial}>
-        Tutorial
-    </button>
 
-    <TutorialModal bind:showModal={showTutorial} on:close={closeTutorial} />
+<TutorialModal bind:showModal={showTutorial} on:close={closeTutorial} />
 
 
 <div class="main-layout">
@@ -267,7 +265,8 @@
                 {togglePlay}
                 {togglePlaySpeed}
                 on:goToEpisode={goToEpisode}
-            />
+                on:openTutorial={openTutorial}
+                showBtnTutorial={showBtnTutorial} />
         </div>
         <div class="env-and-chart-wrapper">
             <div class="grid-display-wrapper-env">
