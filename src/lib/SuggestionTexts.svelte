@@ -7,66 +7,159 @@
     export let max_steps = 9;
     export let final_accuracy = 1;
 
-    let texts_ids;
+    let all_problems_text_ids = [];
+    let all_suggestions_text_ids = [];
 
     function defineTexts(alpha, gamma, epsilon, epsilon_decay, final_accuracy) {
-        let current_texts_ids = [];
+        let problems_text_ids = [];
+        let suggestions_text_ids = [];
         let n_texts = 0;
         
-        if (final_accuracy < 10) {
+        if (final_accuracy <= 1) {
+            let problem_found = false;
             if (alpha < 0.01 && n_texts < 3) {
-                current_texts_ids.push("alpha_low");
+                problems_text_ids.push("alpha_low");
                 n_texts += 1;
+                problem_found = true;
             }
             if (gamma < 0.1 && n_texts < 3) {
-                current_texts_ids.push("gamma_low");
+                problems_text_ids.push("gamma_low");
                 n_texts += 1;
+                problem_found = true;
             }
-            if (epsilon > 0.1 && epsilon_decay < 0.001) {
-                current_texts_ids.push("epsilons_combination");
+            if (epsilon > 0.1 && epsilon_decay < 0.001 && n_texts < 3) {
+                problems_text_ids.push("epsilons_combination");
                 n_texts += 1;
+                problem_found = true;
             }
-            // CONSERTAR LÓGICA
-            else {
-                current_texts_ids.push("max_steps_low");
+            if (!problem_found) {
+                problems_text_ids.push("max_steps_low");
                 n_texts += 1;
             }
         }
-        else if (final_accuracy > 10 && final_accuracy < 90) {
+        else if (final_accuracy > 1 && final_accuracy < 90) {
+            let problem_found = false;
             if (epsilon > 0.1 && n_texts < 3) {
-                current_texts_ids.push("epsilon_high");
+                problems_text_ids.push("epsilon_high");
                 n_texts += 1;
+                problem_found = true;
             }
-            else if (epsilon_decay < 0.001 && n_texts < 3) {
-                current_texts_ids.push("epsilon_decay_low");
+            if (epsilon_decay < 0.001 && n_texts < 3) {
+                problems_text_ids.push("epsilon_decay_low");
                 n_texts += 1;
+                problem_found = true;
             }
-            else if (n_texts < 3) {
-                current_texts_ids.push("num_episodes_low");
+            if (!problem_found && n_texts < 3) {
+                problems_text_ids.push("num_episodes_low");
                 n_texts += 1;
             }
         }
         else if (epsilon < 0.01 && n_texts < 3) {
-            current_texts_ids.push("epsilon_low");
+            problems_text_ids.push("epsilon_low");
             n_texts += 1;
         }
         else if (alpha > 0.9 && n_texts < 3) {
-            current_texts_ids.push("alpha_high");
+            problems_text_ids.push("alpha_high");
             n_texts += 1;
         }
         else if (gamma > 0.99 && n_texts < 3) {
-            current_texts_ids.push("gamma_high");
+            problems_text_ids.push("gamma_high");
             n_texts += 1;
         }
 
-        return current_texts_ids;
+        if (n_texts < 3) {
+            let all_ids = ["alpha_low", "gamma_low", "epsilons_combination", "max_steps_low", "epsilon_high",
+                           "epsilon_decay_low", "num_episodes_low", "epsilon_low", "alpha_high", "gamma_high"];
+            let shuffled = all_ids.filter(id => !problems_text_ids.includes(id));
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            suggestions_text_ids = shuffled.slice(0, 3 - n_texts);
+        }
+
+        return {problems: problems_text_ids, suggestions: suggestions_text_ids};
     }
 
-    $: texts_ids = defineTexts(alpha, gamma, epsilon, epsilon_decay, final_accuracy);
+    $: ({problems: all_problems_text_ids, suggestions: all_suggestions_text_ids} = defineTexts(alpha, gamma, epsilon, epsilon_decay, final_accuracy));
 </script>
 
 <ul>
-    {#if texts_ids.length > 0}
-        <li>{texts_ids}</li>
+    {#if all_problems_text_ids}
+        {#if final_accuracy < 90}
+            <h3>Houston, we have a problem...</h3>
+        {:else if all_problems_text_ids.length > 0}
+            <h3>Ok, but something weird may be happening...</h3>
+        {:else}
+            <h3>Nice! What if we try some different things?</h3>
+        {/if}
+
+        {#if all_problems_text_ids.includes("alpha_low")}
+            <li>Your learning rate (alpha) is a bit too shy! It's like your robot is learning to dance in slow motion. Try bumping it up to 0.1 or 0.2 so it can pick up new moves faster!</li>
+        {/if}
+        {#if all_problems_text_ids.includes("gamma_low")}
+            <li>Your discount factor (gamma) is a little short-sighted! It's like your robot only cares about the very next step and forgets about future rewards. Try raising it to 0.8 or 0.9 so it can plan better for the long run!</li>
+        {/if}
+        {#if all_problems_text_ids.includes("epsilons_combination")}
+            <li>Your robot is staying too curious for too long with a high epsilon and low epsilon decay, just wandering instead of using its knowledge; try lowering epsilon (e.g., to 0.1) and increasing epsilon decay (e.g., to 0.99).</li>
+        {/if}
+        {#if all_problems_text_ids.includes("max_steps_low")}
+            <li>Your robot's 'game time' (maximum steps per episode) is too short! It's like ending the game just as it's figuring things out. Give it more turns so it can learn properly.</li>
+        {/if}
+        {#if all_problems_text_ids.includes("epsilon_high")}
+            <li>Your robot is a bit too adventurous with such a high epsilon! It's like it's just randomly wandering around instead of using all the cool stuff it's learned. This can make it take ages to find the best path. Try bringing it down a bit, maybe to 0.1 or 0.2, so it can focus better!</li>
+        {/if}
+        {#if all_problems_text_ids.includes("epsilon_decay_low")}
+            <li>Your robot's epsilon decay is a bit too slow! It's like your robot is staying curious for ages, constantly exploring even when it should be using what it's learned to find the best path. Try speeding up its learning by increasing the decay, maybe to 0.01 or 0.005.</li>
+        {/if}
+        {#if all_problems_text_ids.includes("num_episodes_low")}
+            <li>Your robot needs more 'game time'! A low number of episodes means it's not getting enough practice to master the grid world. Try giving it more episodes to really learn the ropes!</li>
+        {/if}
+        {#if all_problems_text_ids.includes("epsilon_low")}
+            <li>Your robot's epsilon is a bit too shy! It's like it's always taking the same familiar path and never dares to explore new ways, which means it might miss out on even better routes! Try bumping it up to 0.1 or 0.2 so it can discover more of the grid world.</li>
+        {/if}
+        {#if all_problems_text_ids.includes("alpha_high")}
+            <li>Your learning rate (alpha) is a bit too excited! It's like your robot is trying to learn by jumping straight into a triple backflip before it's even mastered a pirouette, which can make its learning very unstable. Try bringing it down a notch, maybe to 0.1 or 0.05, so it can learn more smoothly.</li>
+        {/if}
+        {#if all_problems_text_ids.includes("gamma_high")}
+            <li>Your discount factor (gamma) is a bit too focused on the distant future! It's like your robot only cares about rewards way down the road and might ignore what's important right now. Try lowering it to 0.8 or 0.9 for better balance.</li>
+        {/if}
+    {/if}
+
+    {#if all_suggestions_text_ids}
+        {#if all_suggestions_text_ids.includes("alpha_low")}
+            <li>Curious what happens when learning slows to a crawl? Try setting your alpha (learning rate) to a tiny value (0.01 or lower) and see how your robot struggles to make progress!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("gamma_low")}
+            <li>Curious what happens if your robot only thinks about right now? Try setting your gamma (discount factor) to a super tiny value (0.1 or lower) and watch it completely ignore future rewards!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("epsilons_combination")}
+            <li>Curious what happens if your robot just keeps wandering and never learns to focus? Try setting epsilon super high (0.1 or higher) and epsilon decay super low (0.001 or lower), and watch it explore endlessly without making real progress!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("max_steps_low")}
+            <li>Ever wondered what happens if the 'game timer' runs out too fast? Set your maximum steps per episode super low and watch your robot's attempts get cut short before it can even learn!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("epsilon_high")}
+            <li>Want to see your robot get super distracted? Set epsilon to a really high value (0.1 or higher) and watch it wander around aimlessly instead of sticking to the plan!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("epsilon_decay_low")}
+            <li>Want to see your robot stay a random explorer forever? Set epsilon decay to a super low value (0.001 or lower) and watch it never truly settle down and exploit its best paths!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("num_episodes_low")}
+            <li>Want to see your robot stay a total beginner? Set your number of episodes to a tiny amount and watch it struggle to learn anything substantial!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("epsilon_low")}
+            <li>Want to see your robot get stuck in a rut? Set epsilon to a super tiny value (0.01 or lower) and watch it never truly explore new paths!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("alpha_high")}
+            <li>Want to see your robot learn in a chaotic, wild way? Set your alpha (learning rate) to a super high value (0.9 or higher) and watch it bounce all over the place without settling down!</li>
+        {/if}
+        {#if all_suggestions_text_ids.includes("gamma_high")}
+            <li>Want to see your robot get stuck thinking too far ahead? Set your gamma (discount factor) to a super high value (0.99 or higher) and watch it ignore all the important steps right in front of it!</li>
+        {/if}
     {/if}
 </ul>
+
+<style>
+
+</style>
