@@ -14,6 +14,18 @@
     import ControlsPanel from "$lib/Buttons.svelte";
     import { base } from '$app/paths';
     import SuggestionTexts from "$lib/SuggestionTexts.svelte";
+        import TutorialModal from '$lib/TutorialModal.svelte';
+
+    let showTutorial = false;
+
+    function openTutorial() {
+        showTutorial = true;
+    }
+
+    function closeTutorial() {
+        showTutorial = false;
+    }
+
 
     //Grid Params
     let world_width = 5;
@@ -219,6 +231,13 @@
     href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap"
     rel="stylesheet"
 />
+
+<button class="tutorial-button" on:click={openTutorial}>
+        Tutorial
+    </button>
+
+    <TutorialModal bind:showModal={showTutorial} on:close={closeTutorial} />
+
 
 <div class="main-layout">
     <div class="right-panel">
