@@ -14,7 +14,7 @@
     import ControlsPanel from "$lib/Buttons.svelte";
     import { base } from '$app/paths';
     import SuggestionTexts from "$lib/SuggestionTexts.svelte";
-        import TutorialModal from '$lib/TutorialModal.svelte';
+    import TutorialModal from '$lib/TutorialModal.svelte';
 
     let showTutorial = false;
 
@@ -96,6 +96,7 @@
     // Variáveis para a célula que o usuário vai inspecionar
     let inspectedRow = null;
     let inspectedCol = null;
+    let hoveredAction = null;
 
     // Função para obter os Q-valores de uma célula específica
     function getCellQValues(row, col, qTable) {
@@ -305,6 +306,7 @@
                 globalMaxAbsQValue={100}
                 {inspectedRow}
                 {inspectedCol}
+                bind:hoveredAction
             />
 
             <QValuesChart
@@ -316,6 +318,7 @@
                 bind:currentEpisode
                 {playing}
                 speedIndex={currentSpeedIndex}
+                hoveredAction={hoveredAction}
             />
         </div>
 

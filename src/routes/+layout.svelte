@@ -27,7 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Tiny5&family=VT323&display=swap" rel="stylesheet">
 
 <div class="header" on:click={returnStart} role="button" tabindex="0">
-  <h1>Reinforcement Learning Unveilled</h1>
+  <h1>Reinforcement Learning Unveiled</h1>
   <h2> <span class="clickable-word" on:click|stopPropagation={gotoLearn}>Learn</span>
   ·
   <span class="clickable-word" on:click|stopPropagation={gotoExplore}>Explore</span>

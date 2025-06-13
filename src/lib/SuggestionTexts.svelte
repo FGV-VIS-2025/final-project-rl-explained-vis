@@ -163,23 +163,22 @@
 </ul>
 
 <style>
-    /* Estilos globais (assumindo que estes são aplicados em um layout principal ou CSS global) */
     body {
-        background-color: #1a1a2e; /* Fundo escuro */
-        color: #e0e0e0; /* Texto claro para contraste */
-        font-family: 'DotGothic16', sans-serif; /* Fonte padrão para legibilidade */
+        background-color: #1a1a2e;
+        color: #e0e0e0;
+        font-family: 'DotGothic16', sans-serif;
         margin: 0;
         padding: 20px;
     }
 
     .feedback-list {
-        background-color: #0d0d0d; /* Fundo ligeiramente mais escuro para o container da lista */
-        /* border: 1px solid #454b5e; Borda combinando com a referência */
-        border-radius: 8px; /* Cantos arredondados */
+        background-color: #0d0d0d;
+        /* border: 1px solid #454b5e; */
+        border-radius: 8px;
         padding: 5px 15px;
-        margin: 40px auto; /* Centralização e espaçamento vertical */
-        max-width: 500px; /* Limitar largura para melhor legibilidade */
-        /* box-shadow: 0 0 15px rgba(0, 174, 255, 0.2); Brilho sutil */
+        margin: 40px auto;
+        max-width: 500px;
+        /* box-shadow: 0 0 15px rgba(0, 174, 255, 0.2); */
     }
 
     .feedback-heading {
@@ -189,48 +188,48 @@
         margin-bottom: 10px;
         padding-bottom: 10px;
         margin-top: 12px;
-        border-bottom: 1px dashed #454b5e; /* Separador tracejado */
-        color: #e0e0e0; /* Cor padrão do título */
+        border-bottom: 1px dashed #454b5e;
+        color: #e0e0e0;
     }
 
     .feedback-heading.problem {
-        color: #ff4d4d; /* Vermelho para problemas */
+        color: #ff4d4d;
         /* text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); */
     }
 
     .feedback-heading.warning {
-        color: #ffeb3b; /* Amarelo para avisos */
+        color: #ffeb3b;
         /* text-shadow: 0 0 8px rgba(255, 235, 59, 0.5); */
     }
 
     .feedback-heading.suggestion-header {
-        color: #6B5FE8; /* Azul para sugestões */
+        color: #6B5FE8;
         /* text-shadow: 0 0 8px rgba(0, 174, 255, 0.5); */
     }
 
     .feedback-list li {
-        font-family: Arial, Helvetica, sans-serif; /* Fonte monoespaçada para itens da lista */
+        font-family: Arial, Helvetica, sans-serif;
         font-size: 0.8em;
         line-height: 1.6;
         margin-bottom: 5px;
-        background-color: #1a1a2e; /* Fundo para o item da lista */
+        background-color: #1a1a2e;
         padding: 5px 5px;
-        border-left: 3px solid #0084ff; /* Borda de destaque */
+        border-left: 3px solid #0084ff;
         border-radius: 5px;
         transition: background-color 0.3s ease, transform 0.2s ease;
-        list-style: none; /* Remover marcador padrão */
-        position: relative; /* Para marcador personalizado */
-        padding-left: 25px; /* Espaço para marcador personalizado */
+        list-style: none;
+        position: relative;
+        padding-left: 25px;
     }
 
     .feedback-list li::before {
-        content: '🎮'; /* Emoji de controle de jogo como marcador */
+        content: '🎮';
         position: absolute;
         left: 0;
         top: 50%;
         transform: translateY(-50%);
         margin-left: 5px;
-        font-size: 0.8em; /* Ajustar tamanho do emoji */
+        font-size: 0.8em;
     }
 
     /*
@@ -240,7 +239,6 @@
     }
     */
 
-    /* Ajustes responsivos */
     @media (max-width: 768px) {
         .feedback-list {
             margin: 20px auto;

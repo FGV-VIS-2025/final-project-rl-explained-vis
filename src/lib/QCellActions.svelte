@@ -6,6 +6,7 @@
     export let globalMaxAbsQValue;
     export let inspectedRow;
     export let inspectedCol;
+    export let hoveredAction = null;
 
     const interpolateQValueColor = d3.interpolateRgbBasis(["#ce0303", "#1A1A1A", "#E6E6FA"]);
 
@@ -31,7 +32,6 @@
 
     // Para exibir os valores no tooltip
     let hoveredValue = null;
-    let hoveredAction = '';
 
     function handleMouseEnter(action, value) {
         hoveredAction = action;
@@ -71,25 +71,25 @@
         <div
             class="triangle up"
             style="border-bottom-color: {upColor};"
-            on:mouseenter={() => handleMouseEnter('Up', qValuesForCell.up)}
+            on:mouseenter={() => handleMouseEnter('up', qValuesForCell.up)}
             on:mouseleave={handleMouseLeave}
         ></div>
         <div
             class="triangle down"
             style="border-top-color: {downColor};"
-            on:mouseenter={() => handleMouseEnter('Down', qValuesForCell.down)}
+            on:mouseenter={() => handleMouseEnter('down', qValuesForCell.down)}
             on:mouseleave={handleMouseLeave}
         ></div>
         <div
             class="triangle left"
             style="border-right-color: {leftColor};"
-            on:mouseenter={() => handleMouseEnter('Left', qValuesForCell.left)}
+            on:mouseenter={() => handleMouseEnter('left', qValuesForCell.left)}
             on:mouseleave={handleMouseLeave}
         ></div>
         <div
             class="triangle right"
             style="border-left-color: {rightColor};"
-            on:mouseenter={() => handleMouseEnter('Right', qValuesForCell.right)}
+            on:mouseenter={() => handleMouseEnter('right', qValuesForCell.right)}
             on:mouseleave={handleMouseLeave}
         ></div>
 

@@ -10,6 +10,7 @@
     export let currentEpisode = 0;
     export let playing = false;
     export let speedIndex = 0;
+    export let hoveredAction = null;
 
     let svgContainer;
 
@@ -63,6 +64,24 @@
                     overlayRect.raise();
                 }
             }
+        }
+    }
+
+    $: {
+        if (svgContainer && hoveredAction !== null) {
+            const svg = d3.select(svgContainer);
+            const actions = ['up', 'down', 'left', 'right'];
+            actions.forEach(action => {
+                svg.selectAll(`.${action}-line`)
+                    .transition().duration(100)
+                    .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
+                svg.selectAll(`.${action}-q-value-label`)
+                    .transition().duration(100)
+                    .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
+                svg.selectAll(`.${action}-last-point-circle`)
+                    .transition().duration(100)
+                    .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
+            });
         }
     }
 
@@ -325,7 +344,8 @@
                 .attr("fill", "none")
                 .attr("stroke", colors[action])
                 .attr("stroke-width", 2)
-                .attr("d", line);
+                .attr("d", line)
+                .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
 
             // Círculo no último ponto
             const lastPointData = lastPoints.find(p => p.action === action);
@@ -337,7 +357,8 @@
                     .attr("r", 5)
                     .attr("fill", colors[action])
                     .attr("stroke", "white")
-                    .attr("stroke-width", 1.5);
+                    .attr("stroke-width", 1.5)
+                    .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
                 
                 // Texto do Q-Value do último ponto
                 svg.append("text")
@@ -347,7 +368,8 @@
                     .attr("text-anchor", "start")
                     .style("fill", colors[action])
                     .style("font-size", "0.9em")
-                    .text(`${action.charAt(0).toUpperCase() + action.slice(1)}: ${lastPointData.value.toFixed(1)}`);
+                    .text(`${action.charAt(0).toUpperCase() + action.slice(1)}: ${lastPointData.value.toFixed(1)}`)
+                    .attr("opacity", hoveredAction ? (hoveredAction.toLowerCase() === action ? 1 : 0.2) : 1);
             }
         });
 
