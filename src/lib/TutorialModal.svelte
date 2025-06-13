@@ -7,6 +7,7 @@
     import QTableValues from "$lib/QTableValues.svelte";
     import QCellActions from "$lib/QCellActions.svelte";
     import QValuesChart from "$lib/QValuesChart.svelte";
+    import ControlsPanel from "$lib/Buttons.svelte";
     import Icon from "$lib/Icons.svelte";
 
     export let showModal;
@@ -108,6 +109,16 @@
         }
     },
     {
+            title: "Control Panel and Parameters",
+            description: `The control panel at the top offers several ways to interact with the application: Grid parameters you can change the size of grid and the ghosts, RL parameters you can change RL params, with the other ones you can speed up the vis and etc.`,
+            setup: () => {
+                currentEpisode = success_rates_data.length - 1; // Show the final learned state
+                currentStep = 0;
+                inspectedRow = null; // Ensure no cell is inspected to show full Q-tables
+                inspectedCol = null;
+            }
+        },
+    {
         title: "The Gridworld Environment",
         description: "This is the Gridworld, the environment where the Q-Learning agent will learn. Pacman is the agent, the cherry is the goal, and ghosts represent holes. You can click on a cell to show specific information.",
         setup: () => {
@@ -204,7 +215,110 @@
         tutorialSteps[currentTutorialStep].setup();
     });
 
+     function nextStep() {
+        if (!agent_positions_data[currentEpisode]) return;
 
+        if (currentStep < agent_positions_data[currentEpisode].length - 1) {
+            currentStep++;
+        } else if (currentEpisode < agent_positions_data.length - 1) {
+            currentEpisode++;
+            currentStep = 0;
+        } else {
+            stopAnimation();
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 0) {
+            currentStep--;
+        } else if (currentEpisode > 0) {
+            currentEpisode--;
+            currentStep =
+                (agent_positions_data[currentEpisode]?.length || 1) - 1;
+        }
+    }
+
+    function togglePlay() {
+        if (playing) {
+            stopAnimation();
+        } else if (
+            !playing &&
+            currentEpisode == success_rates_data.length - 1
+        ) {
+            currentEpisode = 0;
+            startAnimation();
+        } else {
+            startAnimation();
+        }
+    }
+
+    function startAnimation() {
+        playing = true;
+        clearInterval(intervalId);
+        intervalId = setInterval(nextStep, playSpeed);
+    }
+
+    function stopAnimation() {
+        playing = false;
+        clearInterval(intervalId);
+    }
+
+    function goToEpisode(e) {
+        const episodeNum = parseInt(e.target.value, 10);
+        if (
+            !isNaN(episodeNum) &&
+            episodeNum >= 0 &&
+            episodeNum < agent_positions_data.length
+        ) {
+            currentEpisode = episodeNum;
+            currentStep = 0; // Reset step when changing episode
+        }
+    }
+
+    function goToStep(e) {
+        const stepNum = parseInt(e.target.value, 10);
+        if (
+            !isNaN(stepNum) &&
+            stepNum >= 0 &&
+            stepNum < (agent_positions_data[currentEpisode]?.length || 0)
+        ) {
+            currentStep = stepNum;
+        }
+    }
+
+    // Função para alternar a velocidade de reprodução
+    function togglePlaySpeed() {
+        currentSpeedIndex = (currentSpeedIndex + 1) % speeds.length;
+        playSpeed = speeds[currentSpeedIndex];
+        // Se estiver tocando, reinicia a animação com a nova velocidade
+        if (playing) {
+            startAnimation();
+        }
+    }
+    let showParamGrid = false;
+    let showParamRL = false;
+     // Texto dinâmico para o botão de velocidade
+    $: playSpeedText =
+        currentSpeedIndex === 0
+            ? "1X"
+            : currentSpeedIndex === 1
+              ? "2X"
+              : currentSpeedIndex === 2
+                ? "5X"
+                : "10X";
+
+    $: showParamGrid = false;
+    function showParamSetter() {
+        showParamGrid = true;
+    }
+
+    $: showParamRL = false;
+    function showRLSetter() {
+        console.log(showParamRL);
+        showParamRL = true;
+    }
+
+    let width_icon = 19
 </script>
 
 {#if showModal}
@@ -296,6 +410,33 @@
                             speedIndex={currentSpeedIndex}
                         />
                     </div>
+                {:else if tutorialSteps[currentTutorialStep].title === "Control Panel and Parameters"}
+                    <ControlsPanel
+                    bind:showParamGrid
+                    bind:showParamRL
+                    bind:world_width
+                    bind:world_height
+                    bind:holes
+                    bind:start
+                    bind:goal
+                    bind:alpha
+                    bind:gamma
+                    bind:epsilon
+                    bind:epsilon_decay
+                    bind:num_episodes
+                    bind:max_steps
+                    {playSpeedText}
+                    bind:playing
+                    {width_icon}
+                    bind:currentEpisode
+                    {agent_positions_data}
+                    {initializeQLearning}
+                    {prevStep}
+                    {nextStep}
+                    {togglePlay}
+                    {togglePlaySpeed}
+                    on:goToEpisode={goToEpisode}
+                />
                 {:else}
                     <p>Let's start!</p>
                 {/if}
