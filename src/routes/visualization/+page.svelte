@@ -409,8 +409,8 @@
         justify-content: center;
         gap: 20px;
         margin-top: -10px;
-        background-color: #0d0d0d;
-        border: 1px solid #3318e9;
+        /* background-color: #0d0d0d;
+        border: 1px solid #8278c1; */
         border-radius: 8px;
         min-width: 1100px;
         padding-top: 30px;

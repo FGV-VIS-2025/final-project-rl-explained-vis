@@ -34,7 +34,7 @@
 
     let interactiveElementsCreated = false;
 
-    $: if (allQTables && inspectedRow && inspectedCol) {
+    $: if (inspectedRow !== null && inspectedCol !== null && allQTables.length > 0) {
         calculateGlobalQValueExtremes(allQTables, inspectedRow, inspectedCol);
     }
 
