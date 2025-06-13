@@ -334,19 +334,21 @@
                     <p>Carregando visualização da Q-table (Valores)...</p>
                 {/if}
             </div>
+
+            <div class="suggestions-wrapper">
+                <SuggestionTexts
+                    alpha={alpha}
+                    gamma={gamma}
+                    epsilon={epsilon}
+                    epsilon_decay={epsilon_decay}
+                    n_of_episodes={num_episodes}
+                    max_steps={max_steps}
+                    final_accuracy={success_rates_data[success_rates_data.length - 1]}
+                />
+            </div>
         </div>
     {/if}
 </div>
-
-<SuggestionTexts
-    alpha={alpha}
-    gamma={gamma}
-    epsilon={epsilon}
-    epsilon_decay={epsilon_decay}
-    n_of_episodes={num_episodes}
-    max_steps={max_steps}
-    final_accuracy={success_rates_data[success_rates_data.length - 1]}
-/>
 
 <style>
     .main-layout {
@@ -400,7 +402,7 @@
         align-items: flex-start;
         display: flex;
         gap: 50px;
-        min-height: 50vh;
+        min-height: 70vh;
     }
 
     .cell-details-wrapper {
@@ -409,8 +411,8 @@
         justify-content: center;
         gap: 20px;
         margin-top: -10px;
-        /* background-color: #0d0d0d;
-        border: 1px solid #8278c1; */
+        background-color: #0d0d0d;
+        /* border: 1px solid #8278c1; */
         border-radius: 8px;
         min-width: 1100px;
         padding-top: 30px;
@@ -420,8 +422,8 @@
         display: flex;
         flex-direction: row;
         gap: 30px;
-        align-items: top;
-        margin-top: -10px;
+        align-items: center;
+        margin-top: -60px;
     }
 
     .grid-display-wrapper {
@@ -434,5 +436,9 @@
 
     .details-panel {
         margin-top: 10px;
+    }
+
+    .suggestions-wrapper {
+        margin-top: 20px;
     }
 </style>

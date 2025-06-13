@@ -14,7 +14,7 @@
         let problems_text_ids = [];
         let suggestions_text_ids = [];
         let n_texts = 0;
-        
+
         if (final_accuracy <= 1) {
             let problem_found = false;
             if (alpha < 0.01 && n_texts < 3) {
@@ -84,14 +84,14 @@
     $: ({problems: all_problems_text_ids, suggestions: all_suggestions_text_ids} = defineTexts(alpha, gamma, epsilon, epsilon_decay, final_accuracy));
 </script>
 
-<ul>
+<ul class="feedback-list">
     {#if all_problems_text_ids}
         {#if final_accuracy < 90}
-            <h3>Houston, we have a problem...</h3>
+            <h3 class="feedback-heading problem">Houston, we have a problem...</h3>
         {:else if all_problems_text_ids.length > 0}
-            <h3>Ok, but something weird may be happening...</h3>
-        {:else}
-            <h3>Nice! What if we try some different things?</h3>
+            <h3 class="feedback-heading warning">Ok, but something weird may be happening...</h3>
+        <!-- {:else}
+            <h3 class="feedback-heading success">Nice! What if we try some different things?</h3> -->
         {/if}
 
         {#if all_problems_text_ids.includes("alpha_low")}
@@ -126,7 +126,9 @@
         {/if}
     {/if}
 
-    {#if all_suggestions_text_ids}
+    {#if all_suggestions_text_ids && all_suggestions_text_ids.length > 0}
+        <h3 class="feedback-heading suggestion-header">It's working! What if we do some tests?</h3>
+
         {#if all_suggestions_text_ids.includes("alpha_low")}
             <li>Curious what happens when learning slows to a crawl? Try setting your alpha (learning rate) to a tiny value (0.01 or lower) and see how your robot struggles to make progress!</li>
         {/if}
@@ -161,5 +163,121 @@
 </ul>
 
 <style>
+    /* Estilos globais (assumindo que estes são aplicados em um layout principal ou CSS global) */
+    body {
+        background-color: #1a1a2e; /* Fundo escuro */
+        color: #e0e0e0; /* Texto claro para contraste */
+        font-family: 'DotGothic16', sans-serif; /* Fonte padrão para legibilidade */
+        margin: 0;
+        padding: 20px;
+    }
 
+    .feedback-list {
+        background-color: #0d0d0d; /* Fundo ligeiramente mais escuro para o container da lista */
+        /* border: 1px solid #454b5e; Borda combinando com a referência */
+        border-radius: 8px; /* Cantos arredondados */
+        padding: 5px 15px;
+        margin: 40px auto; /* Centralização e espaçamento vertical */
+        max-width: 500px; /* Limitar largura para melhor legibilidade */
+        /* box-shadow: 0 0 15px rgba(0, 174, 255, 0.2); Brilho sutil */
+    }
+
+    .feedback-heading {
+        font-family: 'Press Start 2P', cursive;
+        text-align: center;
+        font-size: 0.8em;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        margin-top: 12px;
+        border-bottom: 1px dashed #454b5e; /* Separador tracejado */
+        color: #e0e0e0; /* Cor padrão do título */
+    }
+
+    .feedback-heading.problem {
+        color: #ff4d4d; /* Vermelho para problemas */
+        /* text-shadow: 0 0 8px rgba(255, 77, 77, 0.5); */
+    }
+
+    .feedback-heading.warning {
+        color: #ffeb3b; /* Amarelo para avisos */
+        /* text-shadow: 0 0 8px rgba(255, 235, 59, 0.5); */
+    }
+
+    .feedback-heading.suggestion-header {
+        color: #6B5FE8; /* Azul para sugestões */
+        /* text-shadow: 0 0 8px rgba(0, 174, 255, 0.5); */
+    }
+
+    .feedback-list li {
+        font-family: Arial, Helvetica, sans-serif; /* Fonte monoespaçada para itens da lista */
+        font-size: 0.8em;
+        line-height: 1.6;
+        margin-bottom: 5px;
+        background-color: #1a1a2e; /* Fundo para o item da lista */
+        padding: 5px 5px;
+        border-left: 3px solid #0084ff; /* Borda de destaque */
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        list-style: none; /* Remover marcador padrão */
+        position: relative; /* Para marcador personalizado */
+        padding-left: 25px; /* Espaço para marcador personalizado */
+    }
+
+    .feedback-list li::before {
+        content: '🎮'; /* Emoji de controle de jogo como marcador */
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        margin-left: 5px;
+        font-size: 0.8em; /* Ajustar tamanho do emoji */
+    }
+
+    /*
+    .feedback-list li:hover {
+        background-color: #2a2a44;
+        transform: translateY(-2px);
+    }
+    */
+
+    /* Ajustes responsivos */
+    @media (max-width: 768px) {
+        .feedback-list {
+            margin: 20px auto;
+            padding: 15px 20px;
+            border-radius: 5px;
+        }
+
+        .feedback-heading {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        .feedback-list li {
+            font-size: 0.95em;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .feedback-list {
+            margin: 10px auto;
+            padding: 10px 15px;
+        }
+
+        .feedback-heading {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .feedback-list li {
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            padding-left: 20px;
+        }
+    }
 </style>
