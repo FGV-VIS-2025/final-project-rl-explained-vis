@@ -54,6 +54,10 @@
 
     // Manipulador de clique na célula
     function handleCellClick(row, col) {
+        const cellType = getCellType(row, col);
+        if (cellType === "goal" || cellType === "hole") {
+            return;
+        }
         if (
             getCellContent(row, col) != "H" &&
             getCellContent(row, col) != "G"
