@@ -29,22 +29,29 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 
 ### Componentes Visuais
 
-#### 🗺️ Grid do Ambiente
-- Visualização clara do mundo onde o agente opera
-- Posições de início, objetivo e buracos claramente marcadas
-- Acompanhamento da posição atual do agente
+#### Grid do Ambiente
+- Visualização do mundo onde o agente opera
+- Posições de início, objetivo e obstaculos (fantasmas) claramente marcadas
+- Acompanhamento da posição atual do agente ao longo do aprendizado
 
-#### 📊 Q-Table Interativa
-- **Visualização por Setas**: Mostra a política aprendida através de setas direcionais.
-- **Valores Q**: Exibe os valores numéricos para cada ação em cada estado.
-- **Inspeção de Células**: Clique em qualquer célula para ver seus valores Q detalhados.
-- **Gráfico de Barras**: Visualização dos Q-valores da célula selecionada.
+#### Sucesso ao longo dos episódios
+- Acompanha a evolução da performance do agente ao longo dos episódios.
+   Mostra como o agente melhora com o tempo.
 
-#### 📈 Gráficos de Desempenho
-- **Taxa de Sucesso**: Acompanha a evolução da performance do agente ao longo dos episódios.
-- **Análise Temporal**: Observe como o agente melhora com o tempo.
+#### Grid de Q-valores
+- Mostra o valor máximo de Q para cada célula
+- Representa o maior valor esperado para aquela célula em uma iteração específica
+- Mostra o melhor caminho aprendido claramente
 
-## 🧠 Algoritmo Q-Learning
+#### Grid da Política Aprendida
+- Mostra a política aprendida para cada célula através de setas direcionais.
+- Células com um ponto de interrogação ("?") representam estados que não foram explorados
+
+#### Gráficos de uma célula específica
+- **Q-Valor**: Mostra o Q-valor para cada ação (esquerda, direita, cima e baixo) para a célula selecionada
+- **Q-Valor ao longo dos episódios**: Mostra a evolução do Q-valor ao longo dos episódios para a célula selecionada
+
+## Algoritmo Q-Learning
 
 O projeto implementa o algoritmo Q-learning clássico com os seguintes parâmetros:
 
@@ -58,7 +65,7 @@ O agente usa uma estratégia epsilon-greedy para balancear:
 - **Exploração**: Tentar ações aleatórias para descobrir novas possibilidades.
 - **Explotação**: Usar o conhecimento atual para escolher a melhor ação conhecida.
 
-## 🎨 Decisões de Design
+## Decisões de Design
 
 ### Interface do Usuário
 - **Design Gaming-Inspired**: Visual moderno com elementos que remetem a jogos clássicos.
@@ -75,7 +82,7 @@ O agente usa uma estratégia epsilon-greedy para balancear:
 - **Sugestões Contextuais**: Textos que aparecem baseados no estado atual da visualização.
 - **Controles Intuitivos**: Interface familiar similar a players de mídia.
 
-## 👥 Desenvolvedores
+## Desenvolvedores
 
 ### Kauan Mariani Ferreira
 **GitHub**: [@kauanmaf](https://github.com/kauanmaf)
@@ -103,7 +110,7 @@ O agente usa uma estratégia epsilon-greedy para balancear:
 - Design e experiência do usuário
 - Relatório
 
-## 📚 Contexto Acadêmico
+## Contexto Acadêmico
 
 Este projeto foi desenvolvido como trabalho final da disciplina de **Visualização de Dados** da **Fundação Getulio Vargas (FGV)**, com o objetivo de:
 
