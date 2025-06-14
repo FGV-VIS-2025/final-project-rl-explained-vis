@@ -335,11 +335,11 @@
         <div class="action-buttons">
             <button
                 class="btn-config button-reset"
-                on:click={resetConfiguration}>Reiniciar</button
+                on:click={resetConfiguration}>Reset</button
             >
             <button
                 class="btn-config button-apply"
-                on:click={applyConfiguration}>Aplicar Configurações</button
+                on:click={applyConfiguration}>Apply Settings</button
             >
         </div>
     </div>
