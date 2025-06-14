@@ -194,8 +194,8 @@
                         type="range"
                         id="epsilon_decay"
                         bind:value={tempEpsilonDecay}
-                        min="0"
-                        max="0.01"
+                        min="0.95"
+                        max="1"
                         step="0.0001"
                     />
                 </div>

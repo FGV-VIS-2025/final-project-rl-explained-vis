@@ -141,7 +141,7 @@ export function q_learning({
         }
 
         // Diminui o epsilon
-        epsilon *= (1 - epsilon_decay);
+        epsilon *= epsilon_decay;
 
         // Armazena se foi sucesso
         recentResults.push(reachedGoal ? 1 : 0);

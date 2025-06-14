@@ -44,7 +44,7 @@
     let alpha = 0.1;
     let gamma = 0.9;
     let epsilon = 0.1;
-    let epsilon_decay = 0.003;
+    let epsilon_decay = 0.99;
     let num_episodes = 1000;
     let max_steps = 9;
 

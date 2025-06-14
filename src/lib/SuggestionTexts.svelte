@@ -27,7 +27,7 @@
                 n_texts += 1;
                 problem_found = true;
             }
-            if (epsilon > 0.1 && epsilon_decay < 0.001 && n_texts < 3) {
+            if (epsilon > 0.1 && epsilon_decay > 0.999 && n_texts < 3) {
                 problems_text_ids.push("epsilons_combination");
                 n_texts += 1;
                 problem_found = true;
@@ -44,8 +44,8 @@
                 n_texts += 1;
                 problem_found = true;
             }
-            if (epsilon_decay < 0.001 && n_texts < 3) {
-                problems_text_ids.push("epsilon_decay_low");
+            if (epsilon_decay > 0.999 && n_texts < 3) {
+                problems_text_ids.push("epsilon_decay_high");
                 n_texts += 1;
                 problem_found = true;
             }
@@ -69,7 +69,7 @@
 
         if (n_texts < 3) {
             let all_ids = ["alpha_low", "gamma_low", "epsilons_combination", "max_steps_low", "epsilon_high",
-                           "epsilon_decay_low", "num_episodes_low", "epsilon_low", "alpha_high", "gamma_high"];
+                           "epsilon_decay_high", "num_episodes_low", "epsilon_low", "alpha_high", "gamma_high"];
             let shuffled = all_ids.filter(id => !problems_text_ids.includes(id));
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -101,7 +101,7 @@
             <li>Your discount factor (gamma) is a little short-sighted! It's like your robot only cares about the very next step and forgets about future rewards. Try raising it to 0.8 or 0.9 so it can plan better for the long run!</li>
         {/if}
         {#if all_problems_text_ids.includes("epsilons_combination")}
-            <li>Your robot is staying too curious for too long with a high epsilon and low epsilon decay, just wandering instead of using its knowledge; try lowering epsilon (e.g., to 0.1) and increasing epsilon decay (e.g., to 0.99).</li>
+            <li>Your robot is staying too curious for too long with a high epsilon and high epsilon decay, just wandering instead of using its knowledge; try lowering epsilon (e.g., to 0.1) and decreasing epsilon decay (e.g., to 0.99).</li>
         {/if}
         {#if all_problems_text_ids.includes("max_steps_low")}
             <li>Your robot's 'game time' (maximum steps per episode) is too short! It's like ending the game just as it's figuring things out. Give it more turns so it can learn properly.</li>
@@ -109,8 +109,8 @@
         {#if all_problems_text_ids.includes("epsilon_high")}
             <li>Your robot is a bit too adventurous with such a high epsilon! It's like it's just randomly wandering around instead of using all the cool stuff it's learned. This can make it take ages to find the best path. Try bringing it down a bit, maybe to 0.1 or 0.2, so it can focus better!</li>
         {/if}
-        {#if all_problems_text_ids.includes("epsilon_decay_low")}
-            <li>Your robot's epsilon decay is a bit too slow! It's like your robot is staying curious for ages, constantly exploring even when it should be using what it's learned to find the best path. Try speeding up its learning by increasing the decay, maybe to 0.01 or 0.005.</li>
+        {#if all_problems_text_ids.includes("epsilon_decay_high")}
+            <li>Your robot's epsilon decay is a bit too slow! It's like your robot is staying curious for ages, constantly exploring even when it should be using what it's learned to find the best path. Try speeding up its learning by decreasing the decay, maybe to 0.99 or 0.995.</li>
         {/if}
         {#if all_problems_text_ids.includes("num_episodes_low")}
             <li>Your robot needs more 'game time'! A low number of episodes means it's not getting enough practice to master the grid world. Try giving it more episodes to really learn the ropes!</li>
@@ -136,7 +136,7 @@
             <li>Curious what happens if your robot only thinks about right now? Try setting your gamma (discount factor) to a super tiny value (0.1 or lower) and watch it completely ignore future rewards!</li>
         {/if}
         {#if all_suggestions_text_ids.includes("epsilons_combination")}
-            <li>Curious what happens if your robot just keeps wandering and never learns to focus? Try setting epsilon super high (0.1 or higher) and epsilon decay super low (0.001 or lower), and watch it explore endlessly without making real progress!</li>
+            <li>Curious what happens if your robot just keeps wandering and never learns to focus? Try setting epsilon super high (0.1 or higher) and epsilon decay super high (0.999 or higher), and watch it explore endlessly without making real progress!</li>
         {/if}
         {#if all_suggestions_text_ids.includes("max_steps_low")}
             <li>Ever wondered what happens if the 'game timer' runs out too fast? Set your maximum steps per episode super low and watch your robot's attempts get cut short before it can even learn!</li>
@@ -144,8 +144,8 @@
         {#if all_suggestions_text_ids.includes("epsilon_high")}
             <li>Want to see your robot get super distracted? Set epsilon to a really high value (0.1 or higher) and watch it wander around aimlessly instead of sticking to the plan!</li>
         {/if}
-        {#if all_suggestions_text_ids.includes("epsilon_decay_low")}
-            <li>Want to see your robot stay a random explorer forever? Set epsilon decay to a super low value (0.001 or lower) and watch it never truly settle down and exploit its best paths!</li>
+        {#if all_suggestions_text_ids.includes("epsilon_decay_high")}
+            <li>Want to see your robot stay a random explorer forever? Set epsilon decay to a super high value (0.999 or higher) and watch it never truly settle down and exploit its best paths!</li>
         {/if}
         {#if all_suggestions_text_ids.includes("num_episodes_low")}
             <li>Want to see your robot stay a total beginner? Set your number of episodes to a tiny amount and watch it struggle to learn anything substantial!</li>
