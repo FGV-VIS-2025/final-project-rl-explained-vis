@@ -97,10 +97,10 @@
     // Tutorial-specific state
     let currentTutorialStep = 0;
 
-    const tutorialSteps = [
+const tutorialSteps = [
     {
         title: "Welcome to the Tutorial!",
-        description: "This tutorial will guide you through the different parts of the visualization, explaining how the Q-Learning algorithm works and how to interact with the environment.",
+        description: "This tutorial will guide you through the visualization, explaining how the Q-Learning algorithm works and how to interact with the environment.",
         setup: () => {
             currentEpisode = 0;
             currentStep = 0;
@@ -109,18 +109,18 @@
         }
     },
     {
-            title: "Control Panel and Parameters",
-            description: `The control panel at the top offers several ways to interact with the application: Grid parameters you can change the size of grid and the ghosts, RL parameters you can change RL params, with the other ones you can speed up the vis and etc.`,
-            setup: () => {
-                currentEpisode = success_rates_data.length - 1; // Show the final learned state
-                currentStep = 0;
-                inspectedRow = null; // Ensure no cell is inspected to show full Q-tables
-                inspectedCol = null;
-            }
-        },
+        title: "Control Panel and Parameters",
+        description: `The control panel at the top let you interact with the application: Adjust "Grid parameters" to change grid size and ghosts, "RL parameters" to modify algorithm settings or other options like control visualization speed. You can click on them.`,
+        setup: () => {
+            currentEpisode = success_rates_data.length - 1; // Show the final learned state
+            currentStep = 0;
+            inspectedRow = null; // Ensure no cell is inspected to show full Q-tables
+            inspectedCol = null;
+        }
+    },
     {
         title: "The Gridworld Environment",
-        description: "This is the Gridworld, the environment where the Q-Learning agent will learn. Pacman is the agent, the cherry is the goal, and ghosts represent holes. You can click on a cell to show specific information.",
+        description: "This is the Gridworld, where the Q-Learning agent learns. Pacman is the agent, the cherry is the goal, and ghosts are obstacles. Click on any cell to view specific information.",
         setup: () => {
             currentEpisode = 0;
             currentStep = 0;
@@ -130,7 +130,7 @@
     },
     {
         title: "Success Rate Over Episodes",
-        description: "This chart shows the agent's success rate in reaching the goal throughout each training episode. A rising rate indicates that the agent is learning. You can click on the graph to go to a specific episode.",
+        description: "This chart displays the agent's success rate in reaching the goal throughout training. A rising rate indicates learning. Click on the graph to jump to a specific episode.",
         setup: () => {
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
@@ -140,7 +140,7 @@
     },
     {
         title: "Q-Table: Action Arrows",
-        description: "Each cell represents a state, and the arrows indicate the action the agent learns to prefer in that state, based on Q-values. Larger, more colored arrows (green/red) signify higher (better) Q-values for that action.",
+        description: "Each cell is a state, and arrows show the agent's preferred action based on Q-values. Larger signify higher (better) Q-values. This graph is not clickable.",
         setup: () => {
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
@@ -150,7 +150,7 @@
     },
     {
         title: "Q-Table: Numeric Values",
-        description: "Here you can see the maximum Q-value in the cell. If the graph shows a white path to the goal, it's a good sign that your algorithm is learning. This graph is not clickable.",
+        description: "Here you can see the maximum Q-value for each cell. A visible white path to the goal indicates successful algorithm learning. This graph is not clickable.",
         setup: () => {
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
@@ -160,7 +160,7 @@
     },
     {
         title: "Inspect Individual Cells",
-        description: "By clicking a cell in the main Gridworld visualization, you can inspect it to see the detailed Q-values for each action in that cell. In this tutorial, cell (2,2) is highlighted as an example.",
+        description: "By clicking a cell in the main Gridworld, you can inspect it to see detailed Q-values for each action. For this tutorial, cell (2,2) is highlighted as an example. This graph is not clickable.",
         setup: (row = 2, col = 2) => { // Added default parameters for setup
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
@@ -170,7 +170,7 @@
     },
     {
         title: "Q-Values Chart (Inspected Cell)",
-        description: "This chart shows the evolution of Q-values for the currently inspected cell (cell (2,2) in the tutorial) across episodes. You can observe how the agent adjusts its value estimates for each action as it learns.",
+        description: "This chart shows how Q-values evolve for the currently inspected cell (e.g., cell (2,2) in this tutorial) across episodes, demonstrating the agent's learning process. You can click to go to a specific episode.",
         setup: (row = 2, col = 2) => { // Added default parameters for setup
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
@@ -180,7 +180,7 @@
     },
     {
         title: "End of Tutorial!",
-        description: "You have completed the tutorial! You are now ready to explore the Q-Learning visualization on your own. Have fun experimenting with parameters and observing the agent learn!",
+        description: "You've completed the tutorial! You're now ready to explore the Q-Learning visualization independently. Have fun experimenting with parameters and observing the agent learn!",
         setup: () => {
             currentEpisode = 0;
             currentStep = 0;
@@ -350,7 +350,7 @@
                         <AccuracyChart
                             success_rates_data={success_rates_data}
                             bind:currentEpisode={currentEpisode}
-                            width={500} height={180} speedIndex={currentSpeedIndex}
+                            width={650} height={200} speedIndex={currentSpeedIndex}
                             playing={playing}
                         />
                     </div>
@@ -444,7 +444,7 @@
 
             <div class="tutorial-navigation">
                 <button on:click={prevTutorialStep} disabled={currentTutorialStep === 0}>Previous</button>
-                <span>{currentTutorialStep + 1} / {tutorialSteps.length}</span>
+                <span class = "number-total">{currentTutorialStep + 1} / {tutorialSteps.length}</span>
                 <button on:click={nextTutorialStep} disabled={currentTutorialStep === tutorialSteps.length - 1}>Next</button>
             </div>
         </div>
@@ -459,7 +459,10 @@
         --dark-background: #1a1a1a;
         --light-text: #f0f0f0;
     }
-
+    .number-total {
+        font-family: "Arial";
+        font-size: 1px;
+    }
     .tutorial-modal-overlay {
         position: fixed;
         top: 0;
