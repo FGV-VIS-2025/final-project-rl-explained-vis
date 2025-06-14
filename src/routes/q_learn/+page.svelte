@@ -187,7 +187,7 @@
 </script>
 
 <svelte:head>
-    <title>Q-Learning Explicado</title>
+    <title>Q-Learning Explained</title>
 </svelte:head>
 
 <div class="container">
@@ -205,7 +205,7 @@
 
         <h3>How it Works:</h3>
         <p>The agent learns by interacting with the environment and receiving <strong>rewards</strong> (positive or negative) as feedback. Q-Learning is the algorithm used to iteratively refine a special function called the Q-function. </p>
-        <p>Internally, our Q-function is encoded by a  <strong> Q-table</strong>, a table where each cell corresponds to a state-action pair value. A Q-Table stores the expected value of each action in each state, being updated with experience.</p>
+        <p>Internally, our Q-function is encoded by a <strong> Q-table</strong>, a table where each cell corresponds to a state-action pair value. A Q-Table stores the expected value of each action in each state, being updated with experience.</p>
 
         <h3>How the Q-Table is updated:</h3>
         <ul>
@@ -319,7 +319,7 @@
 
         <!-- Controle de iteração -->
         <div class="iteration-control">
-            <label>Interaction: <span class="iteration-value">{currentIteration}</span> de {maxIterations}</label>
+            <label>Interaction: <span class="iteration-value">{currentIteration}</span> / {maxIterations}</label>
             <input
                 type="range"
                 bind:value={currentIteration}
@@ -537,17 +537,92 @@
 
     .iteration-value {
         color: #fff;
-        font-family: monospace;
+        /* font-family: monospace; */
     }
 
-    .iteration-slider {
+    /* Estilo para a barra de progresso (o "track") */
+    .iteration-control input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
         width: 100%;
         height: 6px;
-        background: #222;
+        background: transparent;
         border-radius: 3px;
         outline: none;
+        margin-top: 8px;
     }
 
+    .iteration-control input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 6px;
+        background: #9a5bf4;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .iteration-control input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 6px;
+        background: #9a5bf4;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .iteration-control input[type="range"]::-ms-track {
+        width: 100%;
+        height: 6px;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+        cursor: pointer;
+    }
+
+    .iteration-control input[type="range"]::-ms-fill-lower {
+        background: #9a5bf4;
+        border-radius: 3px;
+    }
+
+    .iteration-control input[type="range"]::-ms-fill-upper {
+        background: #ccc;
+        border-radius: 3px;
+    }
+
+    /* Estilo para o "polegar" (o "thumb") */
+    .iteration-control input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        cursor: pointer;
+        margin-top: -6px;
+        box-shadow:
+            1px 1px 1px #000000,
+            0px 0px 1px #0d0d0d;
+    }
+
+    .iteration-control input[type="range"]::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        cursor: pointer;
+        box-shadow:
+            1px 1px 1px #ffffff,
+            0px 0px 1px #0d0d0d;
+    }
+
+    .iteration-control input[type="range"]::-ms-thumb {
+        height: 18px;
+        width: 18px;
+        border-radius: 50%;
+        background: #ffffff;
+        cursor: pointer;
+        margin-top: 0px;
+        box-shadow:
+            1px 1px 1px #ffffff,
+            0px 0px 1px #0d0d0d;
+    }
 
 
     .visualization {

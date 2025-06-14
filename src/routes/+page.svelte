@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-    <title>Reinforcement Learning Visualized</title>
+    <title>Reinforcement Learning Unveiled</title>
 </svelte:head>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
