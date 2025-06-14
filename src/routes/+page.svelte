@@ -23,16 +23,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <div class="main-container">
-    <div class="visualization-showcase">
-        <div class="showcase-content">
-            <h2>Interactive Visualization</h2>
-            <p>Explore how reinforcement learning works by interacting with a live model. Adjust parameters, watch the agent learn, and see the results in real time.</p>
-            <button class="btn-primary" on:click={goToVisualization}>
-                Start Exploring
-            </button>
-        </div>
-    </div>
-
     <div class="learning-section">
         <div class="explanation-card">
             <h3>What is Reinforcement Learning?</h3>
@@ -47,6 +37,15 @@
             <p>Dive deeper into the theory with formal definitions of agents, environments, policies, and rewards in reinforcement learning.</p>
             <button class="btn-secondary" on:click={goToTheory}>
                 Explore Theory
+            </button>
+        </div>
+    </div>
+    <div class="visualization-showcase">
+        <div class="showcase-content">
+            <h2>Interactive Visualization</h2>
+            <p>Explore how reinforcement learning works by interacting with a live model. Adjust parameters, watch the agent learn, and see the results in real time.</p>
+            <button class="btn-primary" on:click={goToVisualization}>
+                Start Exploring
             </button>
         </div>
     </div>
