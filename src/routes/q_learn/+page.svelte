@@ -425,7 +425,7 @@
 
 <div class="button-container column">
     <button class="large-button">
-      <a href="{base + "/visualization"}" style="text-decoration: none; color: inherit;">Explore the Iterative Visualization</a>
+      <a href="{base + "/visualization"}" style="text-decoration: none; color: inherit;">Explore the Interactive Visualization</a>
     </button>
 </div>
 
