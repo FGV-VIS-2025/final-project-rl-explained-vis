@@ -407,6 +407,9 @@
         margin-left: auto; /* ESSENCIAL: Empurra este item para a direita */
         cursor: pointer;
         transition: background-color 0.2s ease;
+        font-family: "Press Start 2P"; /* Added font-family */
+        font-size: 1em; /* Adjust size if needed */
+        
     }
 
     .info-message {
@@ -417,8 +420,7 @@
 
 
 .texto-exp {
-
-    line-height: 1.6;         /* Espaçamento entre linhas maior (ajuste conforme necessário) */
+    line-height: 1.6;        /* Espaçamento entre linhas maior (ajuste conforme necessário) */
     text-align: justify;      /* Justifica o texto (correto é 'text-align', não 'justify') */
 }
 
@@ -434,8 +436,8 @@
     .controls-and-grid {
         display: flex;
         flex-direction: row; /* Arrange inputs and grid side-by-side */
-        gap: 10%; /* Space between them */
-        width: 80%;
+        gap: 5%; /* Reduced gap */
+        width: 95%; /* Increased width */
         justify-content: center;
         flex-grow: 1; /* Allow this section to take available space */
     }
@@ -448,10 +450,11 @@
         border: 2px solid black;
         border-radius: 10px; /* estilo quadrado */
         font-family: "Press Start 2P", monospace; /* estilo pixel retro */
-        font-size: 10px;
+        font-size: 1em;
         text-transform: none;
         display: inline-block;
         text-align: center;
+        
     }
 
     .grid-size-inputs-text {
@@ -461,9 +464,10 @@
         justify-content: center;
         gap: 10px;
         align-items: flex-start;
-        padding: 10px;
+        padding-left: 20px;
         border-radius: 5px;
-        width: 256px;
+        width: 400px; /* Increased width */
+        flex: 1; /* Added flex to control proportion */
     }
 
     .grid-size-inputs {
@@ -496,7 +500,8 @@
         justify-content: center;
         align-items: center;
         flex-grow: 1;
-        gap: 15px;
+        flex: 2; /* Added flex to make grid area twice as wide as controls */
+        margin:0;
     }
 
     .grid-container {
@@ -519,8 +524,8 @@
     }
 
     .grid-cell {
-        width: 35px;
-        height: 35px;
+        width: 50px; /* Increased cell size */
+        height: 50px; /* Increased cell size */
         border-right: var(--size-border) solid var(--color-border);
         border-bottom: var(--size-border) solid var(--color-border);
         display: flex;

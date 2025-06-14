@@ -472,9 +472,7 @@
         align-items: center;
         z-index: 1000;
     }
-    button {
-        font-family: "Press Start 2P";
-    }
+
 
     .tutorial-modal-content {
         background-color: var(--dark-background);
@@ -495,24 +493,20 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background: none;
-        border: none;
-        font-size: 24px;
+        background: none; /* Keep background none */
+        border: none; /* Keep no border */
+        font-size: 16px; /* Matched font size from previous component's .btn-config */
         cursor: pointer;
-        color: var(--light-text);
+        color: white; /* Matched initial color to white */
         padding: 5px;
         border-radius: 5px;
-        transition: color 0.3s ease, background-color 0.3s ease;
+        font-family: "Press Start 2P"; /* Applied the font family */
     }
 
     .info {
         font-family: Arial, sans-serif ;
     }
 
-    .close-button:hover {
-        color: var(--primary-purple);
-        background-color: rgba(154, 91, 244, 0.2);
-    }
 
     h2 {
         color: var(--primary-purple);

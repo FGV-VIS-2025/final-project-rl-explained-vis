@@ -164,7 +164,7 @@
 
 <style>
     body {
-        background-color: #1a1a2e;
+        background-color: #1e1e1e;
         color: #e0e0e0;
         font-family: 'DotGothic16', sans-serif;
         margin: 0;
@@ -172,7 +172,7 @@
     }
 
     .feedback-list {
-        background-color: #0d0d0d;
+        background-color: #161616;
         /* border: 1px solid #454b5e; */
         border-radius: 8px;
         padding: 5px 15px;
@@ -203,7 +203,7 @@
     }
 
     .feedback-heading.suggestion-header {
-        color: #6B5FE8;
+        color: #8a81ed;
         /* text-shadow: 0 0 8px rgba(0, 174, 255, 0.5); */
     }
 
@@ -214,7 +214,7 @@
         margin-bottom: 5px;
         background-color: #1a1a2e;
         padding: 5px 5px;
-        border-left: 3px solid #0084ff;
+        border-left: 3px solid #58a3e9;
         border-radius: 5px;
         transition: background-color 0.3s ease, transform 0.2s ease;
         list-style: none;
