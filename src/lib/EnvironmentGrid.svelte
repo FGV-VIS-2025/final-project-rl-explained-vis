@@ -104,18 +104,25 @@
                     {@const isAgent =
                         r === currentAgentPosition[0] &&
                         c === currentAgentPosition[1]}
+                    {@const isHole = holes.some((hole) => hole[0] === r && hole[1] === c)}
+                    {@const isAgentInHole = isAgent && isHole}
 
                     <div
                         class="q-grid-cell {getCellType(r, c)}"
-                        class:agent={r === currentAgentPosition[0] &&
-                            c === currentAgentPosition[1]}
+                        class:agent={isAgent}
                         class:inspected={r === inspectedRow &&
                             c === inspectedCol}
                         class:clickable={getCellType(r, c) != "goal" &&
                             getCellType(r, c) != "hole"}
                         on:click={() => handleCellClick(r, c)}
                     >
-                        {#if isAgent}
+                        {#if isAgentInHole}
+                            <img
+                                src={base + "/skull.png"}
+                                alt="Agent in Hole"
+                                style="width: 35px; height: 35px;"
+                            />
+                        {:else if isAgent}
                             <img
                                 src= {base + "/pacman.png"}
                                 alt="Agent"

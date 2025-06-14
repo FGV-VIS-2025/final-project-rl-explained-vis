@@ -202,6 +202,7 @@
 
     .episode-slider {
         flex-grow: 1;
+        min-width: 290px;
     }
 
     .play-btn {
