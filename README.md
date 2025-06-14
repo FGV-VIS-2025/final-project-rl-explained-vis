@@ -27,29 +27,40 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - **Navegação Manual**: Vá para episódios e passos específicos clicando nos gráficos ou na barra deslizante.
 - **Controles de Episódio**: Navegue entre diferentes tentativas do agente.
 
-### Componentes Visuais
+### Componentes Visuais!
 
 #### Grid do Ambiente
 - Visualização do mundo onde o agente opera
 - Posições de início, objetivo e obstaculos (fantasmas) claramente marcadas
 - Acompanhamento da posição atual do agente ao longo do aprendizado
 
+![ambiente](https://github.com/user-attachments/assets/20beb0a3-f356-4edb-854d-0fd5e642b025)
+
 #### Sucesso ao longo dos episódios
 - Acompanha a evolução da performance do agente ao longo dos episódios.
-   Mostra como o agente melhora com o tempo.
+- Mostra como o agente melhora com o tempo.
+- 
+![sucesso](https://github.com/user-attachments/assets/ef86a183-89ac-4f87-b3db-7efbb0e0e764)
 
 #### Grid de Q-valores
 - Mostra o valor máximo de Q para cada célula
 - Representa o maior valor esperado para aquela célula em uma iteração específica
 - Mostra o melhor caminho aprendido claramente
 
+![q-values-grid](https://github.com/user-attachments/assets/615fe881-e1cc-4f59-b20b-23ebf58fceb6)
+
 #### Grid da Política Aprendida
+
 - Mostra a política aprendida para cada célula através de setas direcionais.
 - Células com um ponto de interrogação ("?") representam estados que não foram explorados
+
+![politica](https://github.com/user-attachments/assets/42ba0a58-a0b6-4e13-829d-8edb8f1df322)
 
 #### Gráficos de uma célula específica
 - **Q-Valor**: Mostra o Q-valor para cada ação (esquerda, direita, cima e baixo) para a célula selecionada
 - **Q-Valor ao longo dos episódios**: Mostra a evolução do Q-valor ao longo dos episódios para a célula selecionada
+
+![cell](https://github.com/user-attachments/assets/9fa52ad4-bb80-4a75-8f16-a24a83a2dfd0)
 
 ## Algoritmo Q-Learning
 
@@ -118,7 +129,7 @@ Este projeto foi desenvolvido como trabalho final da disciplina de **Visualizaç
 - Criar interfaces interativas para exploração de algoritmos de machine learning;
 - Demonstrar a aplicação prática de conceitos teóricos de RL.
 
-## 📈 Próximos Passos
+## Próximos Passos
 
 Possíveis melhorias futuras incluem:
 - Implementação de outros algoritmos de RL;
