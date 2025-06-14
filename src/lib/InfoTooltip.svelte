@@ -82,6 +82,7 @@
         font-size: 14px;
         font-family: Arial, sans-serif;
         font-weight: normal;
+        text-align: center;
     }
 
     .tooltip-box.align-left {
