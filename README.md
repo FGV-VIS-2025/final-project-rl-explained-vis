@@ -35,7 +35,9 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - Acompanhamento da posição atual do agente ao longo do aprendizado
 
 <div align="center">
+  
 ![ambiente](https://github.com/user-attachments/assets/20beb0a3-f356-4edb-854d-0fd5e642b025)
+
 </div>
 
 #### Sucesso ao longo dos episódios
@@ -43,7 +45,9 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - Mostra como o agente melhora com o tempo.
 -
 <div align="center">
+  
 ![sucesso](https://github.com/user-attachments/assets/ef86a183-89ac-4f87-b3db-7efbb0e0e764)
+
 </div>
 
 #### Grid de Q-valores
@@ -52,7 +56,9 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - Mostra o melhor caminho aprendido claramente
 
 <div align="center">
+  
 ![q-values-grid](https://github.com/user-attachments/assets/615fe881-e1cc-4f59-b20b-23ebf58fceb6)
+
 </div>
 
 #### Grid da Política Aprendida
@@ -61,7 +67,9 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - Células com um ponto de interrogação ("?") representam estados que não foram explorados
 
 <div align="center">
+  
 ![politica](https://github.com/user-attachments/assets/42ba0a58-a0b6-4e13-829d-8edb8f1df322)
+
 </div>
 
 #### Gráficos de uma célula específica
@@ -69,7 +77,9 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 - **Q-Valor ao longo dos episódios**: Mostra a evolução do Q-valor ao longo dos episódios para a célula selecionada
 
 <div align="center">
+  
 ![cell](https://github.com/user-attachments/assets/9fa52ad4-bb80-4a75-8f16-a24a83a2dfd0)
+
 </div>
 
 ## Algoritmo Q-Learning
