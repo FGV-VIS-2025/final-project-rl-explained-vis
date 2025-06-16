@@ -117,7 +117,7 @@
             </p>
             <p>
                 This project was developed as part of the Data Visualization
-                course at FGV.
+                course at FGV. The main inspirations were the projects <a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a> and <a href="https://huggingface.co/learn/deep-rl-course/unit0/introduction">Hugging Face</a>. To run it locally, clone the repository at <a href="https://github.com/FGV-VIS-2025/final-project-rl-explained-vis">this link</a> and, after installing the dependencies required by Svelte, run "npm run dev --open".
             </p>
         </div>
 
@@ -417,5 +417,9 @@
 .paper-link a:hover {
     background-color: #b278ff;
 }
+
+    a {
+        color: #b278ff;
+    }
 
 </style>
