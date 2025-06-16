@@ -310,27 +310,31 @@
                     action: action,
                     value: lastDataPoint,
                     x: x(lastEpisodeIndex),
-                    y: y(lastDataPoint)
+                    y: y(lastDataPoint),
+                    adjustedY: y(lastDataPoint)
                 });
             }
         });
 
-        // Ordenar os pontos para melhor ajuste
-        lastPoints.sort((a, b) => a.y - b.y);
+        // Ordenar os pontos pela sua posição Y original
+        lastPoints.sort((a, b) => b.y - a.y);
 
-        // Altura aproximada de cada rótulo
-        const labelHeight = 15;
-        // Espaçamento extra entre os rótulos
-        const paddingBetweenLabels = -3;
+        const labelHeight = 7;
+        const paddingBetweenLabels = 5;
         
-        // Ajusta as posições Y dos rótulos
+        const floorY = h - margin.bottom - 2;
+
+        // Ajusta as posições Y dos rótulos, iterando de baixo para cima
         for (let i = 0; i < lastPoints.length; i++) {
             const currentPoint = lastPoints[i];
+            currentPoint.adjustedY = Math.min(currentPoint.adjustedY, floorY - labelHeight);
+
             if (i > 0) {
                 const prevPoint = lastPoints[i - 1];
-                // Se o rótulo atual estiver muito próximo do rótulo anterior, ajusta ele
-                if (currentPoint.y - prevPoint.y < labelHeight + paddingBetweenLabels) {
-                    currentPoint.y = prevPoint.y + labelHeight + paddingBetweenLabels;
+                const maxAllowedY = prevPoint.adjustedY - paddingBetweenLabels - labelHeight;
+
+                if (currentPoint.adjustedY > maxAllowedY) {
+                    currentPoint.adjustedY = maxAllowedY;
                 }
             }
         }
@@ -364,7 +368,7 @@
                 svg.append("text")
                     .attr("class", `q-value-label ${action}-q-value-label`)
                     .attr("x", lastPointData.x + 10)
-                    .attr("y", lastPointData.y + 4)
+                    .attr("y", lastPointData.adjustedY + 4)
                     .attr("text-anchor", "start")
                     .style("fill", colors[action])
                     .style("font-size", "0.9em")
