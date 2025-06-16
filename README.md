@@ -119,7 +119,6 @@ O agente usa uma estratégia epsilon-greedy para balancear:
 **GitHub**: [@kauanmaf](https://github.com/kauanmaf)
 
 **Principais Contribuições:**
-- Principais Contribuições
 - Desenvolvimento do grid base utilizado em todo o projeto
 - Implementação do tutorial interativo
 - Configuração dos parâmetros do grid e do agente de aprendizado por reforço (RL)
