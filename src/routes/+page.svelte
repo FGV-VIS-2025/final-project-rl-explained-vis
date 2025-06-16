@@ -97,7 +97,7 @@
 
         <div class="paper-link">
             <h3>Full Report (PDF)</h3>
-            <a href="https://github.com/FGV-VIS-2025/final-project-rl-explained-vis/blob/main/RL_unveilled_relatorio.pdf?raw=true" 
+            <a href="https://github.com/FGV-VIS-2025/final-project-rl-explained-vis/blob/main/FinalPaper.pdf?raw=true" 
                target="_blank" rel="noopener noreferrer" class="btn-secondary">
                 Download Report
             </a>
