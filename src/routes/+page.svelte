@@ -26,6 +26,7 @@
 />
 
 <div class="main-container">
+    <!-- Seção de Aprendizado -->
     <div class="learning-section">
         <div class="explanation-card">
             <h3>What is Reinforcement Learning?</h3>
@@ -50,6 +51,8 @@
             </button>
         </div>
     </div>
+
+    <!-- Seção de Visualização Interativa -->
     <div class="visualization-showcase">
         <div class="showcase-content">
             <h2>Interactive Visualization</h2>
@@ -64,6 +67,44 @@
         </div>
     </div>
 
+    <!-- Recursos: Vídeos e Relatório -->
+    <div class="resources-section">
+        <h2>Project Resources</h2>
+
+        <div class="video-grid">
+            <div class="video-card">
+                <h3>Teaser</h3>
+                <div class="video-wrapper">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/VTPore3dL1A" 
+                            title="Teaser - Reinforcement Learning Unveiled" 
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <div class="video-card">
+                <h3>Full Presentation</h3>
+                <div class="video-wrapper">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/ZsLunhm9WqM" 
+                            title="Full Presentation - Reinforcement Learning Unveiled" 
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="paper-link">
+            <h3>Full Report (PDF)</h3>
+            <a href="https://github.com/FGV-VIS-2025/final-project-rl-explained-vis/blob/main/RL_unveilled_relatorio.pdf?raw=true" 
+               target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                Download Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Sobre o Projeto -->
     <div class="about-section">
         <h2>About This Project</h2>
         <div class="about-content">
@@ -80,35 +121,7 @@
             </p>
         </div>
 
-        <div class="video-section">
-    <h2>Project Videos</h2>
-
-    <div class="video-grid">
-        <div class="video-card">
-            <h3>Teaser</h3>
-            <div class="video-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/VTPore3dL1A" 
-                        title="Teaser - Reinforcement Learning Unveiled" 
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-
-        <div class="video-card">
-            <h3>Full Presentation</h3>
-            <div class="video-wrapper">
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/ZsLunhm9WqM" 
-                        title="Full Presentation - Reinforcement Learning Unveiled" 
-                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-    </div>
-</div>
-
-
+        <!-- Autores -->
         <div class="authors-section">
             <h3>Developed by</h3>
             <div class="authors-list">
@@ -149,6 +162,7 @@
         </div>
     </div>
 </div>
+
 
 <style>
     /* Letra média */
@@ -363,6 +377,45 @@
     .video-card {
         flex: 1 1 100%;
     }
+}
+/* Seção de Recursos (vídeos e relatório) */
+.resources-section {
+    background-color: #2d2d2d;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.resources-section h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.resources-section p {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.paper-link {
+    margin-top: 2rem;
+}
+
+.paper-link a {
+    display: inline-block;
+    margin-top: 0.5rem;
+    background-color: #9a5bf4;
+    color: white;
+    font-family: "Press Start 2P", monospace;
+    font-size: 0.8rem;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.paper-link a:hover {
+    background-color: #b278ff;
 }
 
 </style>
