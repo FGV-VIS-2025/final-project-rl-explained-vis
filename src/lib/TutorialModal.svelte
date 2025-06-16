@@ -160,7 +160,7 @@ const tutorialSteps = [
     },
     {
         title: "Inspect Individual Cells",
-        description: "By clicking a cell in the main Gridworld, you can inspect it to see detailed Q-values for each action. For this tutorial, cell (2,2) is highlighted as an example. This graph is not clickable.",
+        description: "By clicking a cell in the main Gridworld, you can inspect it to see detailed Q-values for each action. For this tutorial, cell (2,2) is highlighted as an example. You can hover over the arrows to highlight the corresponding action in the sideline chart.",
         setup: (row = 2, col = 2) => { // Added default parameters for setup
             currentEpisode = success_rates_data.length - 1;
             currentStep = 0;
