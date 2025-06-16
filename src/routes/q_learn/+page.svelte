@@ -313,7 +313,7 @@
         <h2>See it in Action</h2>
         <p>
             Navigate through the iterations (scroll the slider below) to see how Pacman learns through trial and error.
-            The agent explores the environment, encounters dangers (ghosts), discovers rewards (coins),
+            The agent explores the environment, encounters dangers (ghosts), discovers rewards (cherries),
             and gradually develops a strategy. In this example, the <strong> α (alpha) was set to 0.3</strong> and the <strong> γ (gamma) was set to 0.9</strong>.
         </p>
 
@@ -342,7 +342,7 @@
                         <img src="{base}/pacman.png" alt="Agent" class="agent-icon"/>
                       {/if}
                       {#if cell === 1}
-                        <img src="{base}/coin.png" alt="Coin" class="coin-icon" />
+                        <img src="{base}/coin.png" alt="cherry" class="coin-icon" />
                       {/if}
                       {#if cell === 2}
                         <img src="{base}/fantasma.png" alt="Ghost" class="ghost-icon" />
@@ -358,8 +358,8 @@
                   <span>Pacman (Agent)</span>
                 </div>
                 <div class="legend-item">
-                  <img src="{base}/coin.png" alt="Coin" class="legend-icon">
-                  <span>Coin (+100)</span>
+                  <img src="{base}/coin.png" alt="cherry" class="legend-icon">
+                  <span>Cherry (+100)</span>
                 </div>
                 <div class="legend-item">
                   <img src="{base}/fantasma.png" alt="Ghost" class="legend-icon">

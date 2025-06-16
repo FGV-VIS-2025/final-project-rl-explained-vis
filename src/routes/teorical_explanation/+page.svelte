@@ -110,7 +110,7 @@
           </ul>
         </div>
 
-        <p>In our example, we have a deterministic environment where Pacman moves in a grid. If he encounters a ghost, he dies. The environment is deterministic because the ghosts and the coin are always in the same position.</p>
+        <p>In our example, we have a deterministic environment where Pacman moves in a grid. If he encounters a ghost, he dies. The environment is deterministic because the ghosts and the cherry are always in the same position.</p>
       </div>
 
       <div class="visual-content">
@@ -128,7 +128,7 @@
           <div class="grid-row">
             <div class="grid-cell"></div>
             <div class="grid-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
-            <div class="grid-cell"><img src="{base}/coin.png" alt="Moeda" class="coin-icon"></div>
+            <div class="grid-cell"><img src="{base}/coin.png" alt="Cherry" class="coin-icon"></div>
           </div>
         </div>
         <div class="environment-legend">
@@ -137,7 +137,7 @@
             <span>Agent</span>
           </div>
           <div class="legend-item">
-            <img src="{base}/coin.png" alt="Moeda" class="coin-icon">
+            <img src="{base}/coin.png" alt="Cherry" class="coin-icon">
             <span>Goal</span>
           </div>
           <div class="legend-item">
@@ -183,14 +183,14 @@
             </div>
             <div class="timeline-point positive">
               <div class="reward-value">+100</div>
-              <div class="reward-label">Coin</div>
+              <div class="reward-label">Cherry</div>
             </div>
           </div>
           <div class="cumulative-reward">
             <div class="reward-explanation">
               <p>Pacman receives -1 for each step taken, encouraging it to find the shortest path.</p>
-              <p>Gets +100 when collecting a coin, -100 when hitting a ghost.</p>
-              <p>The game ends when either a coin is collected, a ghost is hit or a limit number of steps is reached.</p>
+              <p>Gets +100 when collecting a cherry, -100 when hitting a ghost.</p>
+              <p>The game ends when either a cherry is collected, a ghost is hit or a limit number of steps is reached.</p>
             </div>
           </div>
         </div>
@@ -244,7 +244,7 @@
             <div class="policy-row">
               <div class="policy-cell"><span class="policy-question">?</span></div>
               <div class="policy-cell"><img src="{base}/fantasma.png" alt="Fantasma" class="ghost-icon"></div>
-              <div class="policy-cell"><img src="{base}/coin.png" alt="Moeda" class="coin-icon"></div>
+              <div class="policy-cell"><img src="{base}/coin.png" alt="Cherry" class="coin-icon"></div>
             </div>
           </div>
           <div class="policy-explanation">
