@@ -270,7 +270,7 @@
 
   {#if currentStep >= 3}
     <div bind:this={step3Element} class="step-content">
-      <p>He continues playing, avoiding ghosts, until he reaches a coin for the first time. He gets a +1 reward! Now he understands that in this game he must avoid ghosts and collect coins.</p>
+      <p>He continues playing, avoiding ghosts, until he reaches the cherry for the first time. He gets a +1 reward! Now he understands that in this game he must avoid ghosts and collect cherries.</p>
 
       <div class="demo-container">
         <div class="boy-container">
@@ -315,7 +315,7 @@
         </div>
       </div>
 
-      <p>By interacting with his environment through trial and error, your little brother understands that he needs to avoid ghosts and collect coins in this environment. Without any supervision, the child will get better and better at playing the game.</p>
+      <p>By interacting with his environment through trial and error, your little brother understands that he needs to avoid ghosts and collect cherries in this environment. Without any supervision, the child will get better and better at playing the game.</p>
 
       <p>That's how humans and animals learn, through interaction. Reinforcement Learning is just a computational approach of learning from actions.</p>
 
