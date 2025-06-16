@@ -43,7 +43,7 @@ Combinar explicações visuais com exploração para facilitar o entendimento de
 #### Sucesso ao longo dos episódios
 - Acompanha a evolução da performance do agente ao longo dos episódios.
 - Mostra como o agente melhora com o tempo.
--
+
 <div align="center">
   
 ![sucesso](https://github.com/user-attachments/assets/ef86a183-89ac-4f87-b3db-7efbb0e0e764)
